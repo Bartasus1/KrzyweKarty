@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "KKPlayer.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
 #include "Net/UnrealNetwork.h"
@@ -11,7 +12,7 @@
 class AKKPlayerController;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
-class UWidgetComponent;
+class UTextRenderComponent;
 
 
 USTRUCT(BlueprintType)
@@ -55,7 +56,7 @@ public:
 	USkeletalMeshComponent* CharacterMesh;
 
 	UPROPERTY(EditDefaultsOnly)
-	UWidgetComponent* CharacterNameWidget;
+	UTextRenderComponent* TextRanderName;
 
 	///////////////////////////////////////////////////////////////////////////////
 
@@ -89,6 +90,10 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
+
+private:
+	AKKPlayer* PlayerPawn;
 };

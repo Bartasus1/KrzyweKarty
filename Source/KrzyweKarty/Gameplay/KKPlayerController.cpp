@@ -43,12 +43,12 @@ AKKCharacter* AKKPlayerController::TraceForCharacter()
 	float Range = 1500;
 	FVector Start, Direction;
 	DeprojectMousePositionToWorld(Start, Direction);
-	
+
 	FHitResult HitResult;
 	FVector End = Start + (Direction * Range);
-	
+
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Camera);
-	
+
 	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(HitResult.GetActor()))
 	{
 		return CardCharacter;
@@ -57,14 +57,13 @@ AKKCharacter* AKKPlayerController::TraceForCharacter()
 	return nullptr;
 }
 
-
 void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation()
 {
 	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TraceForCharacter()))
 	{
 		// if (CardCharacter->OwningPlayer == this)
 		// {
-			SelectedCharacter = CardCharacter;
+		SelectedCharacter = CardCharacter;
 		//}
 	}
 }

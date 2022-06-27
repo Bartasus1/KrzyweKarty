@@ -6,6 +6,7 @@
 #include "KKCharacter.h"
 #include "KKPlayerController.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -18,26 +19,29 @@ AKKPlayer::AKKPlayer()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
+	SpotLight = CreateDefaultSubobject<USpotLightComponent>("SpotLight");
 
 	SetRootComponent(SpringArm);
 	Camera->SetupAttachment(SpringArm);
+	SpotLight->SetupAttachment(Camera);
 
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->TargetArmLength = 900.f;
 	SpringArm->SocketOffset = FVector(0, 0, 200.f);
+
 	Camera->SetRelativeRotation(FRotator(-10, 0, 0));
+
+	SpotLight->SetIntensity(100000.f);
+	SpotLight->SetAttenuationRadius(6000.f);
+}
+
+FRotator AKKPlayer::GetCameraRotation()
+{
+	return Camera->GetComponentTransform().GetRotation().Rotator();
 }
 
 // Called when the game starts or when spawned
 void AKKPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-
-void AKKPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 }

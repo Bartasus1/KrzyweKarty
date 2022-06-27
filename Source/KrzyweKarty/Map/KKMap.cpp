@@ -11,7 +11,7 @@ AKKMap::AKKMap()
 
 	MapMesh = CreateDefaultSubobject<UStaticMeshComponent>("MapMesh");
 
-	MapMesh->SetRelativeScale3D(FVector((1.086507, 0.949018, 1)));
+	MapMesh->SetRelativeScale3D(FVector((1.072922, 0.949018, 1)));
 
 	Tiles.Reserve(22);
 }

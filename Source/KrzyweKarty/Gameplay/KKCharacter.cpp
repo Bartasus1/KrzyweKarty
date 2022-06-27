@@ -3,33 +3,32 @@
 
 #include "KKCharacter.h"
 #include "KKPlayerController.h"
-#include "Components/WidgetComponent.h"
-#include "KrzyweKarty/UI/CharacterNameWidget.h"
-
+#include "Components/TextRenderComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Platform = CreateDefaultSubobject<UStaticMeshComponent>("Platform");
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CharacterMesh");
-	CharacterNameWidget = CreateDefaultSubobject<UWidgetComponent>("CharacterNameWidget");
+	TextRanderName = CreateDefaultSubobject<UTextRenderComponent>("TextRenderName");
 
 	SetRootComponent(Platform);
 	CharacterMesh->SetupAttachment(Platform);
-	CharacterNameWidget->SetupAttachment(Platform);
+	TextRanderName->SetupAttachment(Platform);
 
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
 	CharacterMesh->CastShadow = false;
 
 
-	CharacterNameWidget->SetRelativeLocation(FVector(0, 0, 110));
-	CharacterNameWidget->SetWidgetClass(UCharacterNameWidget::StaticClass());
-	CharacterNameWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	
+	TextRanderName->SetRelativeLocation(FVector(0, 0, 110));
+	TextRanderName->Text = CharacterName;
+
 
 	InitializeStats();
 }
@@ -58,10 +57,15 @@ void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (UCharacterNameWidget* NameWidget = Cast<UCharacterNameWidget>(CharacterNameWidget->GetWidget()))
-	{
-		NameWidget->CharacterName = CharacterName;
-	}
+	PlayerPawn = Cast<AKKPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+}
+
+void AKKCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	TextRanderName->SetWorldRotation(PlayerPawn->GetCameraRotation());
+	TextRanderName->AddRelativeRotation(FRotator(0, 180, 0));
 }
 
 void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

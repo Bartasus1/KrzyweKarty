@@ -19,10 +19,11 @@ class KRZYWEKARTY_API AKKPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AKKPlayerController();
-	
+
 	virtual void BeginPlay() override;
 
 	AKKCharacter* TraceForCharacter();
+	FRotator GetRotation();
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	AKKCharacter* SelectedCharacter;

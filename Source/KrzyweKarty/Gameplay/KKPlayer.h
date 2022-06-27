@@ -9,6 +9,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USpotLightComponent;
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayer : public APawn
@@ -19,16 +20,18 @@ public:
 	// Sets default values for this pawn's properties
 	AKKPlayer();
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	FRotator GetCameraRotation();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-protected:
+
 	UPROPERTY(EditDefaultsOnly, Category="Camera", meta=(AllowPrivateAccess="true"))
 	UCameraComponent* Camera;
 
 	UPROPERTY(EditDefaultsOnly, Category="Camera", meta=(AllowPrivateAccess="true"))
 	USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditDefaultsOnly, Category="Camera", meta=(AllowPrivateAccess="true"))
+	USpotLightComponent* SpotLight;
 };
