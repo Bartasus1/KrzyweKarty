@@ -5,13 +5,13 @@
 #include "KKPlayerController.h"
 #include "Components/TextRenderComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
 
 	Platform = CreateDefaultSubobject<UStaticMeshComponent>("Platform");
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CharacterMesh");
@@ -27,8 +27,6 @@ AKKCharacter::AKKCharacter()
 
 
 	TextRanderName->SetRelativeLocation(FVector(0, 0, 110));
-	TextRanderName->Text = CharacterName;
-
 
 	InitializeStats();
 }
@@ -58,6 +56,7 @@ void AKKCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerPawn = Cast<AKKPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	TextRanderName->SetText(CharacterName);
 }
 
 void AKKCharacter::Tick(float DeltaSeconds)

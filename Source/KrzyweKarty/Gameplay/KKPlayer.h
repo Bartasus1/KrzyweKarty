@@ -20,7 +20,7 @@ public:
 	// Sets default values for this pawn's properties
 	AKKPlayer();
 
-	FRotator GetCameraRotation();
+	FRotator GetCameraRotation() const;
 
 protected:
 	// Called when the game starts or when spawned

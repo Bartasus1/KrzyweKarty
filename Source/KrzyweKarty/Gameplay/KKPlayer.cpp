@@ -32,12 +32,12 @@ AKKPlayer::AKKPlayer()
 	Camera->SetRelativeRotation(FRotator(-10, 0, 0));
 
 	SpotLight->SetIntensity(100000.f);
-	SpotLight->SetAttenuationRadius(6000.f);
+	SpotLight->SetAttenuationRadius(7000.f);
 }
 
-FRotator AKKPlayer::GetCameraRotation()
+FRotator AKKPlayer::GetCameraRotation() const
 {
-	return Camera->GetComponentTransform().GetRotation().Rotator();
+	return Camera->GetComponentTransform().Rotator();
 }
 
 // Called when the game starts or when spawned
