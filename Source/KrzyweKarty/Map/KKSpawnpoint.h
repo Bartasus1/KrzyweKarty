@@ -27,7 +27,7 @@ public:
 	// Sets default values for this actor's properties
 	AKKSpawnpoint();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MustImplement="FSpawnSet"))
 	UDataTable* SpawnTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

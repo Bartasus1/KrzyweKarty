@@ -6,10 +6,12 @@
 #include "GameFramework/Pawn.h"
 #include "KKPlayer.generated.h"
 
-
+class AKKCharacter;
 class UCameraComponent;
 class USpringArmComponent;
 class USpotLightComponent;
+
+
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayer : public APawn
@@ -19,8 +21,8 @@ class KRZYWEKARTY_API AKKPlayer : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AKKPlayer();
+	
 
-	FRotator GetCameraRotation() const;
 
 protected:
 	// Called when the game starts or when spawned

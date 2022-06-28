@@ -4,6 +4,7 @@
 #include "KKPlayer.h"
 
 #include "KKCharacter.h"
+#include "KKGameMode.h"
 #include "KKPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SpotLightComponent.h"
@@ -14,7 +15,7 @@ AKKPlayer::AKKPlayer()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
+	bReplicates = true;
 	bUseControllerRotationYaw = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
@@ -35,13 +36,10 @@ AKKPlayer::AKKPlayer()
 	SpotLight->SetAttenuationRadius(7000.f);
 }
 
-FRotator AKKPlayer::GetCameraRotation() const
-{
-	return Camera->GetComponentTransform().Rotator();
-}
-
 // Called when the game starts or when spawned
 void AKKPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+

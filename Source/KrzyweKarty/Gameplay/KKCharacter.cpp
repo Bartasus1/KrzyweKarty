@@ -12,6 +12,7 @@ AKKCharacter::AKKCharacter()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
+	SetReplicateMovement(true);
 
 	Platform = CreateDefaultSubobject<UStaticMeshComponent>("Platform");
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CharacterMesh");
@@ -63,7 +64,7 @@ void AKKCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(OwningPlayer)
+	if (OwningPlayer)
 	{
 		TextRenderName->SetWorldRotation(OwningPlayer->GetControlRotation());
 		TextRenderName->AddRelativeRotation(FRotator(0, 180, 0));

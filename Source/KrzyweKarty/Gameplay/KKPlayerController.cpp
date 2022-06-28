@@ -3,6 +3,7 @@
 
 #include "KKPlayerController.h"
 #include "KKCharacter.h"
+#include "KKGameMode.h"
 
 
 AKKPlayerController::AKKPlayerController()
@@ -28,6 +29,16 @@ void AKKPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("SelectCharacter", IE_Pressed, this, &AKKPlayerController::SelectCharacter);
 	InputComponent->BindAction("TargetCharacter", IE_Pressed, this, &AKKPlayerController::TargetCharacter);
+
+	InputComponent->BindAction("AddOnPosition0", IE_Pressed, this, &AKKPlayerController::AddOnPosition0);
+	InputComponent->BindAction("AddOnPosition1", IE_Pressed, this, &AKKPlayerController::AddOnPosition1);
+	InputComponent->BindAction("AddOnPosition2", IE_Pressed, this, &AKKPlayerController::AddOnPosition2);
+	InputComponent->BindAction("AddOnPosition3", IE_Pressed, this, &AKKPlayerController::AddOnPosition3);
+
+	InputComponent->BindAction("MoveCardForward", IE_Pressed, this, &AKKPlayerController::MoveForward);
+	InputComponent->BindAction("MoveCardBackward", IE_Pressed, this, &AKKPlayerController::MoveBackward);
+	InputComponent->BindAction("MoveCardRight", IE_Pressed, this, &AKKPlayerController::MoveRight);
+	InputComponent->BindAction("MoveCardLeft", IE_Pressed, this, &AKKPlayerController::MoveLeft);
 }
 
 void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -40,6 +51,7 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 AKKCharacter* AKKPlayerController::TraceForCharacter()
 {
+
 	float Range = 1500;
 	FVector Start, Direction;
 	DeprojectMousePositionToWorld(Start, Direction);
@@ -53,13 +65,12 @@ AKKCharacter* AKKPlayerController::TraceForCharacter()
 	{
 		return CardCharacter;
 	}
-
 	return nullptr;
 }
 
-void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation()
+void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
-	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TraceForCharacter()))
+	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TracedCharacter))
 	{
 		// if (CardCharacter->OwningPlayer == this)
 		// {
@@ -68,10 +79,46 @@ void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation()
 	}
 }
 
-void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation()
+void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
-	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TraceForCharacter()))
+	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TracedCharacter))
 	{
 		TargetedCharacter = CardCharacter;
+	}
+}
+
+void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
+{
+	if (HasAuthority() && SelectedCharacter != nullptr)
+	{
+		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
+		GameMode->AddCharacterToMap(SelectedCharacter, TileID);
+	}
+}
+
+void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection MovementDirection)
+{
+	if (HasAuthority() && SelectedCharacter != nullptr)
+	{
+		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
+
+		switch (MovementDirection)
+		{
+		case EMD_Forward:
+			GameMode->MoveForward(SelectedCharacter, 1);
+			break;
+		case EMD_Backward:
+			GameMode->MoveBackward(SelectedCharacter, 1);
+			break;
+		case EMD_Right:
+			GameMode->MoveRight(SelectedCharacter, 1);
+			break;
+		case EMD_Left:
+			GameMode->MoveLeft(SelectedCharacter, 1);
+			break;
+
+		default:
+			break;
+		}
 	}
 }
