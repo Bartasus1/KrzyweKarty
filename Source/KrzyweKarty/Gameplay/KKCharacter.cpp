@@ -15,18 +15,18 @@ AKKCharacter::AKKCharacter()
 
 	Platform = CreateDefaultSubobject<UStaticMeshComponent>("Platform");
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CharacterMesh");
-	TextRanderName = CreateDefaultSubobject<UTextRenderComponent>("TextRenderName");
+	TextRenderName = CreateDefaultSubobject<UTextRenderComponent>("TextRenderName");
 
 	SetRootComponent(Platform);
 	CharacterMesh->SetupAttachment(Platform);
-	TextRanderName->SetupAttachment(Platform);
+	TextRenderName->SetupAttachment(Platform);
 
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
 	CharacterMesh->CastShadow = false;
 
 
-	TextRanderName->SetRelativeLocation(FVector(0, 0, 110));
+	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
 
 	InitializeStats();
 }
@@ -55,16 +55,19 @@ void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerPawn = Cast<AKKPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	TextRanderName->SetText(CharacterName);
+	TextRenderName->SetText(CharacterName);
+	OwningPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 void AKKCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	TextRanderName->SetWorldRotation(PlayerPawn->GetCameraRotation());
-	TextRanderName->AddRelativeRotation(FRotator(0, 180, 0));
+	if(OwningPlayer)
+	{
+		TextRenderName->SetWorldRotation(OwningPlayer->GetControlRotation());
+		TextRenderName->AddRelativeRotation(FRotator(0, 180, 0));
+	}
 }
 
 void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

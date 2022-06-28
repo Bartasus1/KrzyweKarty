@@ -56,7 +56,7 @@ public:
 	USkeletalMeshComponent* CharacterMesh;
 
 	UPROPERTY(EditDefaultsOnly)
-	UTextRenderComponent* TextRanderName;
+	UTextRenderComponent* TextRenderName;
 
 	///////////////////////////////////////////////////////////////////////////////
 
@@ -71,6 +71,9 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	AKKPlayerController* OwningPlayer;
+
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	int32 OwnedTileID = -1;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ActiveAbility();
@@ -93,7 +96,4 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
-
-private:
-	AKKPlayer* PlayerPawn;
 };
