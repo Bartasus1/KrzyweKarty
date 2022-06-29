@@ -36,6 +36,9 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	AKKCharacter* TargetedCharacter;
 
+	UPROPERTY(Replicated)
+	int32 MovesCounter;
+
 protected:
 	UFUNCTION(Server, Reliable)
 	void Server_TraceForSelectedCharacter(AKKCharacter* TracedCharacter);
@@ -49,7 +52,7 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Server_MoveCharacter(EMovementDirection MovementDirection);
 
-	virtual void SetupInputComponent();
+	virtual void SetupInputComponent() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private: // Input functions

@@ -51,7 +51,6 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 AKKCharacter* AKKPlayerController::TraceForCharacter()
 {
-
 	float Range = 1500;
 	FVector Start, Direction;
 	DeprojectMousePositionToWorld(Start, Direction);
@@ -92,7 +91,11 @@ void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 	if (HasAuthority() && SelectedCharacter != nullptr)
 	{
 		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
-		GameMode->AddCharacterToMap(SelectedCharacter, TileID);
+		if (GameMode->AddCharacterToMap(SelectedCharacter, TileID))
+		{
+			MovesCounter++;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("%d"), MovesCounter);
 	}
 }
 
@@ -101,24 +104,30 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 	if (HasAuthority() && SelectedCharacter != nullptr)
 	{
 		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
+		bool (AKKGameMode::*MoveFunction)(AKKCharacter*, int) = &AKKGameMode::MoveForward;
 
 		switch (MovementDirection)
 		{
 		case EMD_Forward:
-			GameMode->MoveForward(SelectedCharacter, 1);
+			MoveFunction = &AKKGameMode::MoveForward;
 			break;
 		case EMD_Backward:
-			GameMode->MoveBackward(SelectedCharacter, 1);
+			MoveFunction = &AKKGameMode::MoveBackward;
 			break;
 		case EMD_Right:
-			GameMode->MoveRight(SelectedCharacter, 1);
+			MoveFunction = &AKKGameMode::MoveRight;
 			break;
 		case EMD_Left:
-			GameMode->MoveLeft(SelectedCharacter, 1);
+			MoveFunction = &AKKGameMode::MoveLeft;
 			break;
-
 		default:
 			break;
 		}
+
+		if ((GameMode->*MoveFunction)(SelectedCharacter, 1))
+		{
+			MovesCounter++;
+		}
+		UE_LOG(LogTemp, Warning, TEXT("%d"), MovesCounter);
 	}
 }

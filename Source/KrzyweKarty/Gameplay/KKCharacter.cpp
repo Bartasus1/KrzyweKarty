@@ -24,9 +24,9 @@ AKKCharacter::AKKCharacter()
 
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
+	CharacterMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	CharacterMesh->CastShadow = false;
-
-
+	
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
 
 	InitializeStats();

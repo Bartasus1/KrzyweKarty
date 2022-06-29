@@ -8,66 +8,66 @@ AKKGameMode::AKKGameMode()
 {
 }
 
-void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
+bool AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 	
-	Map->AddCharacterToMap(Character, TileID);
+	return Map->AddCharacterToMap(Character, TileID);
 }
 
-void AKKGameMode::MoveForward(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveForward(AKKCharacter* Character, int32 ID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
 	if (ID == 1)
 	{
-		Map->MoveForward(Character);
+		return Map->MoveForward(Character);
 	}
 	else
 	{
-		Map->MoveBackward(Character);
+		return Map->MoveBackward(Character);
 	}
 }
 
-void AKKGameMode::MoveBackward(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveBackward(AKKCharacter* Character, int32 ID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
 	if (ID == 1)
 	{
-		Map->MoveBackward(Character);
+		return Map->MoveBackward(Character);
 	}
 	else
 	{
-		Map->MoveForward(Character);
+		return Map->MoveForward(Character);
 	}
 }
 
-void AKKGameMode::MoveRight(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveRight(AKKCharacter* Character, int32 ID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
 	if (ID == 1)
 	{
-		Map->MoveRight(Character);
+		return Map->MoveRight(Character);
 	}
 	else
 	{
-		Map->MoveLeft(Character);
+		return Map->MoveLeft(Character);
 	}
 }
 
-void AKKGameMode::MoveLeft(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveLeft(AKKCharacter* Character, int32 ID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
 	if (ID == 1)
 	{
-		Map->MoveLeft(Character);
+		return Map->MoveLeft(Character);
 	}
 	else
 	{
-		Map->MoveRight(Character);
+		return Map->MoveRight(Character);
 	}
 }
 

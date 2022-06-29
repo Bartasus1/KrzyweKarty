@@ -12,7 +12,6 @@ class USpringArmComponent;
 class USpotLightComponent;
 
 
-
 UCLASS()
 class KRZYWEKARTY_API AKKPlayer : public APawn
 {
@@ -21,8 +20,8 @@ class KRZYWEKARTY_API AKKPlayer : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AKKPlayer();
-	
 
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -36,4 +35,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Camera", meta=(AllowPrivateAccess="true"))
 	USpotLightComponent* SpotLight;
+
+private:
+	void ZoomIn();
+	void ZoomOut();
 };

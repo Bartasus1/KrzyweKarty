@@ -17,84 +17,70 @@ AKKMap::AKKMap()
 	Characters.Init(nullptr, 22);
 }
 
-void AKKMap::AddCharacterToMap(AKKCharacter *Character, int32 TileID)
+bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 {
 	if (Character->OwnedTileID < 0)
 	{
-		AssignCharacterToTile(Character, TileID);
+		return AssignCharacterToTile(Character, TileID);
 	}
+
+	return false;
 }
 
-void AKKMap::MoveForward(AKKCharacter *Character)
+bool AKKMap::MoveForward(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-
-	if (TileID < 0)
-		return;
-
-	if (TileID < 16 && Characters.IsValidIndex(TileID + 4))
+	
+	if (TileID < 16 && CanMoveCharacter(TileID, TileID + 4))
 	{
-		if (Characters[TileID + 4] != nullptr)
-			return;
-
 		Characters[TileID] = nullptr;
 
-		AssignCharacterToTile(Character, TileID + 4);
+		return AssignCharacterToTile(Character, TileID + 4);
 	}
+
+	return false;
 }
 
-void AKKMap::MoveBackward(AKKCharacter *Character)
+bool AKKMap::MoveBackward(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-
-	if (TileID < 0)
-		return;
-
-	if (TileID > 3 && Characters.IsValidIndex(TileID - 4))
+	
+	if (TileID > 3 && CanMoveCharacter(TileID, TileID - 4))
 	{
-		if (Characters[TileID - 4] != nullptr)
-			return;
-
 		Characters[TileID] = nullptr;
 
-		AssignCharacterToTile(Character, TileID - 4);
+		return AssignCharacterToTile(Character, TileID - 4);
 	}
+
+	return false;
 }
 
-void AKKMap::MoveRight(AKKCharacter *Character)
+bool AKKMap::MoveRight(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-
-	if (TileID < 0)
-		return;
-
-	if (TileID % MapSize != 3 && Characters.IsValidIndex(TileID + 1))
+	
+	if (TileID % MapSize != 3 && CanMoveCharacter(TileID, TileID + 1))
 	{
-		if (Characters[TileID + 1] != nullptr)
-			return;
-
 		Characters[TileID] = nullptr;
 
-		AssignCharacterToTile(Character, TileID + 1);
+		return AssignCharacterToTile(Character, TileID + 1);
 	}
+
+	return false;
 }
 
-void AKKMap::MoveLeft(AKKCharacter *Character)
+bool AKKMap::MoveLeft(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-
-	if (TileID < 0)
-		return;
-
-	if (TileID % MapSize != 0 && Characters.IsValidIndex(TileID - 1))
+	
+	if (TileID % MapSize != 0 && CanMoveCharacter(TileID, TileID - 1))
 	{
-		if (Characters[TileID - 1] != nullptr)
-			return;
-
 		Characters[TileID] = nullptr;
 
-		AssignCharacterToTile(Character, TileID - 1);
+		return AssignCharacterToTile(Character, TileID - 1);
 	}
+
+	return false;
 }
 
 void AKKMap::BeginPlay()
@@ -122,15 +108,24 @@ void AKKMap::SetupMap()
 	}
 }
 
-void AKKMap::AssignCharacterToTile(AKKCharacter *Character, int32 TileID)
+bool AKKMap::CanMoveCharacter(int32 TileID, int32 NextTileID)
+{
+	if (TileID < 0)
+		return false;
+
+	return (Characters.IsValidIndex(NextTileID) && Characters[NextTileID] == nullptr);
+}
+
+bool AKKMap::AssignCharacterToTile(AKKCharacter* Character, int32 TileID)
 {
 	Characters[TileID] = Character;
 
 	Character->OwnedTileID = TileID;
 	Character->SetActorLocation(Tiles[TileID]);
+	return true;
 }
 
-void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 

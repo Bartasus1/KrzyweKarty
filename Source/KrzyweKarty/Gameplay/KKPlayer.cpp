@@ -36,10 +36,34 @@ AKKPlayer::AKKPlayer()
 	SpotLight->SetAttenuationRadius(7000.f);
 }
 
+void AKKPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AKKPlayer::ZoomIn);
+	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AKKPlayer::ZoomOut);
+}
+
 // Called when the game starts or when spawned
 void AKKPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
+void AKKPlayer::ZoomIn()
+{
+	if (Camera->FieldOfView > 45)
+	{
+		float FOV = Camera->FieldOfView - 5;
+		Camera->SetFieldOfView(FOV);
+	}
+}
 
+void AKKPlayer::ZoomOut()
+{
+	if (Camera->FieldOfView < 130)
+	{
+		float FOV = Camera->FieldOfView + 5;
+		Camera->SetFieldOfView(FOV);
+	}
+}

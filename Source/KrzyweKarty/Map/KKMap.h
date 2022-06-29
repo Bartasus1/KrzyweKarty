@@ -26,12 +26,12 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
 	TArray<AKKCharacter*> Characters;
 
-	void AddCharacterToMap(AKKCharacter* Character, int32 TileID);
+	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
 
-	void MoveForward(AKKCharacter* Character);
-	void MoveBackward(AKKCharacter* Character);
-	void MoveRight(AKKCharacter* Character);
-	void MoveLeft(AKKCharacter* Character);
+	bool MoveForward(AKKCharacter* Character);
+	bool MoveBackward(AKKCharacter* Character);
+	bool MoveRight(AKKCharacter* Character);
+	bool MoveLeft(AKKCharacter* Character);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))
@@ -43,10 +43,10 @@ protected:
 
 private:
 	void SetupMap();
-	void AssignCharacterToTile(AKKCharacter* Character, int32 TileID);
+	bool CanMoveCharacter(int32 TileID, int32 NextTileID);
+	bool AssignCharacterToTile(AKKCharacter* Character, int32 TileID);
 
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
 	const uint8 MapSize = 4;
-	
 };

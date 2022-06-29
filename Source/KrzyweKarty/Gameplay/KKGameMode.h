@@ -18,12 +18,12 @@ class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 public:
 	AKKGameMode();
 
-	void AddCharacterToMap(AKKCharacter* Character, int32 TileID);
+	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
 
-	void MoveForward(AKKCharacter* Character, int32 ID);
-	void MoveBackward(AKKCharacter* Character, int32 ID);
-	void MoveRight(AKKCharacter* Character, int32 ID);
-	void MoveLeft(AKKCharacter* Character, int32 ID);
+	bool MoveForward(AKKCharacter* Character, int32 ID);
+	bool MoveBackward(AKKCharacter* Character, int32 ID);
+	bool MoveRight(AKKCharacter* Character, int32 ID);
+	bool MoveLeft(AKKCharacter* Character, int32 ID);
 
 protected:
 	virtual void BeginPlay() override;
