@@ -19,7 +19,7 @@ AKKMap::AKKMap()
 
 bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 {
-	if (Character->OwnedTileID < 0)
+	if (Character->OwnedTileID < 0 && Characters[TileID] == nullptr)
 	{
 		return AssignCharacterToTile(Character, TileID);
 	}

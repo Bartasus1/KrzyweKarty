@@ -37,6 +37,9 @@ public:
 	AKKCharacter* TargetedCharacter;
 
 	UPROPERTY(Replicated)
+	int32 PlayerID = 1;
+	
+	UPROPERTY(Replicated)
 	int32 MovesCounter;
 
 protected:

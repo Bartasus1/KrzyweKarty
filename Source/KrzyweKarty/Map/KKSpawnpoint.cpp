@@ -20,6 +20,7 @@ void AKKSpawnpoint::BeginPlay()
 	if (HasAuthority())
 	{
 		SpawnCards();
+		//todo: assign spawned cards to player controller
 	}
 }
 

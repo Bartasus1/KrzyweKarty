@@ -8,18 +8,23 @@ AKKGameMode::AKKGameMode()
 {
 }
 
-bool AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
+void AKKGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+}
+
+bool AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-	
+	TileID = (PlayerID == 1) ? TileID : 19 - TileID;
 	return Map->AddCharacterToMap(Character, TileID);
 }
 
-bool AKKGameMode::MoveForward(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveForward(AKKCharacter* Character, int32 PlayerID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
-	if (ID == 1)
+	if (PlayerID == 1)
 	{
 		return Map->MoveForward(Character);
 	}
@@ -29,11 +34,11 @@ bool AKKGameMode::MoveForward(AKKCharacter* Character, int32 ID)
 	}
 }
 
-bool AKKGameMode::MoveBackward(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveBackward(AKKCharacter* Character, int32 PlayerID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
-	if (ID == 1)
+	if (PlayerID == 1)
 	{
 		return Map->MoveBackward(Character);
 	}
@@ -43,11 +48,11 @@ bool AKKGameMode::MoveBackward(AKKCharacter* Character, int32 ID)
 	}
 }
 
-bool AKKGameMode::MoveRight(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveRight(AKKCharacter* Character, int32 PlayerID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
-	if (ID == 1)
+	if (PlayerID == 1)
 	{
 		return Map->MoveRight(Character);
 	}
@@ -57,11 +62,11 @@ bool AKKGameMode::MoveRight(AKKCharacter* Character, int32 ID)
 	}
 }
 
-bool AKKGameMode::MoveLeft(AKKCharacter* Character, int32 ID)
+bool AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 
-	if (ID == 1)
+	if (PlayerID == 1)
 	{
 		return Map->MoveLeft(Character);
 	}

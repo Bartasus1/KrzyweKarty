@@ -24,10 +24,15 @@ AKKCharacter::AKKCharacter()
 
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
+	CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CharacterMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-	CharacterMesh->CastShadow = false;
-	
+	CharacterMesh->SetCastShadow(false);
+
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
+	TextRenderName->SetTextRenderColor(FColor::Red);
+	TextRenderName->SetHorizontalAlignment(EHTA_Center);
+	TextRenderName->SetWorldSize(18.f);
+
 
 	InitializeStats();
 }

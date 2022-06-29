@@ -91,7 +91,7 @@ void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 	if (HasAuthority() && SelectedCharacter != nullptr)
 	{
 		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
-		if (GameMode->AddCharacterToMap(SelectedCharacter, TileID))
+		if (GameMode->AddCharacterToMap(SelectedCharacter, TileID, PlayerID))
 		{
 			MovesCounter++;
 		}
@@ -124,7 +124,7 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 			break;
 		}
 
-		if ((GameMode->*MoveFunction)(SelectedCharacter, 1))
+		if ((GameMode->*MoveFunction)(SelectedCharacter, PlayerID))
 		{
 			MovesCounter++;
 		}
