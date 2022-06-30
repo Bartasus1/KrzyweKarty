@@ -4,6 +4,7 @@
 #include "KKPlayerController.h"
 #include "KKCharacter.h"
 #include "KKGameMode.h"
+#include "KrzyweKarty/UI/CharacterStatsWidget.h"
 
 
 AKKPlayerController::AKKPlayerController()
@@ -12,7 +13,16 @@ AKKPlayerController::AKKPlayerController()
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+
+	static ConstructorHelpers::FClassFinder<UCharacterStatsWidget>
+		ClassFinder(TEXT("/Game/UI/WB_CharacterStatsWidget"));
+
+	if (ClassFinder.Class)
+	{
+		CharacterStatsWidgetClass = ClassFinder.Class;
+	}
 }
+
 
 void AKKPlayerController::BeginPlay()
 {
@@ -47,6 +57,9 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(AKKPlayerController, SelectedCharacter);
 	DOREPLIFETIME(AKKPlayerController, TargetedCharacter);
+
+	DOREPLIFETIME(AKKPlayerController, PlayerID);
+	DOREPLIFETIME(AKKPlayerController, MovesCounter)
 }
 
 AKKCharacter* AKKPlayerController::TraceForCharacter()
@@ -74,6 +87,8 @@ void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCha
 		// if (CardCharacter->OwningPlayer == this)
 		// {
 		SelectedCharacter = CardCharacter;
+
+		ShowCharacterStats(SelectedCharacter);
 		//}
 	}
 }
@@ -129,5 +144,18 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 			MovesCounter++;
 		}
 		UE_LOG(LogTemp, Warning, TEXT("%d"), MovesCounter);
+	}
+}
+
+void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCharacter)
+{
+	if (CharacterStatsWidgetClass)
+	{
+		CleanupGameViewport();
+		
+		UCharacterStatsWidget* Widget = CreateWidget<UCharacterStatsWidget>(this, CharacterStatsWidgetClass);
+
+		Widget->ShowStats(CardCharacter);
+		Widget->AddToViewport();
 	}
 }

@@ -63,10 +63,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText CharacterName;
 
-	UPROPERTY(BlueprintReadWrite) // used to store max stats values
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere) // used to store max stats values
 	FCharacterStats MaxCharacterStats;
 
-	UPROPERTY(Replicated, BlueprintReadWrite) // used to track stats in game
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // used to track stats in game
 	FCharacterStats CharacterStats;
 
 	UPROPERTY(Replicated, BlueprintReadWrite)

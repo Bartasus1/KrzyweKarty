@@ -32,9 +32,7 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-
-
-	InitializeStats();
+	
 }
 
 void AKKCharacter::ActiveAbility()
@@ -53,6 +51,14 @@ void AKKCharacter::InitializeStats()
 
 		MaxCharacterStats = *ReadStats;
 		CharacterStats = *ReadStats;
+
+		/*
+		UE_LOG(LogTemp, Warning, TEXT("\nHealth : %d \nMana : %d \nDefence : %d \nStrength : %d \n"),
+			   CharacterStats.Health,
+			   CharacterStats.Mana,
+			   CharacterStats.Defence,
+			   CharacterStats.Strength);
+		*/
 	}
 }
 
@@ -60,6 +66,8 @@ void AKKCharacter::InitializeStats()
 void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitializeStats();
 
 	TextRenderName->SetText(CharacterName);
 	OwningPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -82,4 +90,5 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
 	DOREPLIFETIME(AKKCharacter, OwningPlayer);
+	DOREPLIFETIME(AKKCharacter, OwnedTileID);
 }

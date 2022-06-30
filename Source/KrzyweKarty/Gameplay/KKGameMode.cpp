@@ -16,6 +16,7 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 bool AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)
 {
 	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
+	
 	TileID = (PlayerID == 1) ? TileID : 19 - TileID;
 	return Map->AddCharacterToMap(Character, TileID);
 }

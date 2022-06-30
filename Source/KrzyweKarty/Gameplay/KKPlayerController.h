@@ -38,7 +38,7 @@ public:
 
 	UPROPERTY(Replicated)
 	int32 PlayerID = 1;
-	
+
 	UPROPERTY(Replicated)
 	int32 MovesCounter;
 
@@ -55,6 +55,13 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Server_MoveCharacter(EMovementDirection MovementDirection);
 
+private:
+	UFUNCTION(Client, Reliable)
+	void ShowCharacterStats(AKKCharacter* CardCharacter);
+
+	TSubclassOf<class UCharacterStatsWidget> CharacterStatsWidgetClass;
+protected:
+	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -71,6 +78,4 @@ private: // Input functions
 	FORCEINLINE void MoveBackward() { Server_MoveCharacter(EMD_Backward); }
 	FORCEINLINE void MoveRight() { Server_MoveCharacter(EMD_Right); }
 	FORCEINLINE void MoveLeft() { Server_MoveCharacter(EMD_Left); }
-
-	virtual void BeginPlay() override;
 };
