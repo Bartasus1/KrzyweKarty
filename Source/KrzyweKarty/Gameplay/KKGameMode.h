@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "KrzyweKarty/Map/KKMap.h"
 #include "KKGameMode.generated.h"
 
-/**
- * 
- */
+class AKKMap;
+class AKKCharacter;
+class AKKPlayerController;
+
 UCLASS()
 class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 {
@@ -19,17 +19,27 @@ public:
 	AKKGameMode();
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
-	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
+	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
 
-	bool MoveForward(AKKCharacter* Character, int32 PlayerID);
-	bool MoveBackward(AKKCharacter* Character, int32 PlayerID);
-	bool MoveRight(AKKCharacter* Character, int32 PlayerID);
-	bool MoveLeft(AKKCharacter* Character, int32 PlayerID);
+	void MoveForward(AKKCharacter* Character, int32 PlayerID);
+	void MoveBackward(AKKCharacter* Character, int32 PlayerID);
+	void MoveRight(AKKCharacter* Character, int32 PlayerID);
+	void MoveLeft(AKKCharacter* Character, int32 PlayerID);
 
 protected:
 	virtual void BeginPlay() override;
+	void IncreaseCounter();
+	void ChangeTurn();
 
-	UPROPERTY()
+
+	int8 MoveCounter = 0;
+	bool FirstPlayerTurn = true;
+
+	UPROPERTY(Transient)
 	AKKMap* Map;
+
+	UPROPERTY(Transient)
+	TArray<AKKPlayerController*> Players;
 };

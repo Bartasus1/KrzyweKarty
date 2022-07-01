@@ -10,7 +10,7 @@
 AKKPlayerController::AKKPlayerController()
 {
 	bReplicates = true;
-
+	
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 
@@ -59,7 +59,7 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AKKPlayerController, TargetedCharacter);
 
 	DOREPLIFETIME(AKKPlayerController, PlayerID);
-	DOREPLIFETIME(AKKPlayerController, MovesCounter)
+	DOREPLIFETIME(AKKPlayerController, CanMove);
 }
 
 AKKCharacter* AKKPlayerController::TraceForCharacter()
@@ -105,12 +105,10 @@ void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 {
 	if (HasAuthority() && SelectedCharacter != nullptr)
 	{
-		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
-		if (GameMode->AddCharacterToMap(SelectedCharacter, TileID, PlayerID))
+		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			MovesCounter++;
+			GameMode->AddCharacterToMap(SelectedCharacter, TileID, PlayerID);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("%d"), MovesCounter);
 	}
 }
 
@@ -118,32 +116,30 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 {
 	if (HasAuthority() && SelectedCharacter != nullptr)
 	{
-		AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode());
-		bool (AKKGameMode::*MoveFunction)(AKKCharacter*, int) = &AKKGameMode::MoveForward;
-
-		switch (MovementDirection)
+		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-		case EMD_Forward:
-			MoveFunction = &AKKGameMode::MoveForward;
-			break;
-		case EMD_Backward:
-			MoveFunction = &AKKGameMode::MoveBackward;
-			break;
-		case EMD_Right:
-			MoveFunction = &AKKGameMode::MoveRight;
-			break;
-		case EMD_Left:
-			MoveFunction = &AKKGameMode::MoveLeft;
-			break;
-		default:
-			break;
-		}
+			void (AKKGameMode::*MoveFunction)(AKKCharacter*, int) = &AKKGameMode::MoveForward;
 
-		if ((GameMode->*MoveFunction)(SelectedCharacter, PlayerID))
-		{
-			MovesCounter++;
+			switch (MovementDirection)
+			{
+			case EMD_Forward:
+				MoveFunction = &AKKGameMode::MoveForward;
+				break;
+			case EMD_Backward:
+				MoveFunction = &AKKGameMode::MoveBackward;
+				break;
+			case EMD_Right:
+				MoveFunction = &AKKGameMode::MoveRight;
+				break;
+			case EMD_Left:
+				MoveFunction = &AKKGameMode::MoveLeft;
+				break;
+			default:
+				break;
+			}
+
+			(GameMode->*MoveFunction)(SelectedCharacter, PlayerID);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("%d"), MovesCounter);
 	}
 }
 
@@ -151,11 +147,16 @@ void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCh
 {
 	if (CharacterStatsWidgetClass)
 	{
-		CleanupGameViewport();
-		
-		UCharacterStatsWidget* Widget = CreateWidget<UCharacterStatsWidget>(this, CharacterStatsWidgetClass);
+		if (StatsWidget != nullptr)
+		{
+			StatsWidget->RemoveFromParent();
+		}
+		else
+		{
+			StatsWidget = CreateWidget<UCharacterStatsWidget>(this, CharacterStatsWidgetClass);
+		}
 
-		Widget->ShowStats(CardCharacter);
-		Widget->AddToViewport();
+		StatsWidget->ShowStats(CardCharacter);
+		StatsWidget->AddToViewport();
 	}
 }

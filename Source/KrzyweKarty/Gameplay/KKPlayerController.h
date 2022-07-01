@@ -11,6 +11,7 @@
  * 
  */
 class AKKCharacter;
+class UCharacterStatsWidget;
 
 UENUM()
 enum EMovementDirection
@@ -40,7 +41,8 @@ public:
 	int32 PlayerID = 1;
 
 	UPROPERTY(Replicated)
-	int32 MovesCounter;
+	bool CanMove = true;
+
 
 protected:
 	UFUNCTION(Server, Reliable)
@@ -59,7 +61,11 @@ private:
 	UFUNCTION(Client, Reliable)
 	void ShowCharacterStats(AKKCharacter* CardCharacter);
 
-	TSubclassOf<class UCharacterStatsWidget> CharacterStatsWidgetClass;
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<UCharacterStatsWidget> CharacterStatsWidgetClass;
+
+	UPROPERTY()
+	UCharacterStatsWidget* StatsWidget;
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -69,13 +75,13 @@ private: // Input functions
 	FORCEINLINE void SelectCharacter() { Server_TraceForSelectedCharacter(TraceForCharacter()); }
 	FORCEINLINE void TargetCharacter() { Server_TraceForTargetedCharacter(TraceForCharacter()); }
 
-	FORCEINLINE void AddOnPosition0() { Server_AddCharacterToMap(0); }
-	FORCEINLINE void AddOnPosition1() { Server_AddCharacterToMap(1); }
-	FORCEINLINE void AddOnPosition2() { Server_AddCharacterToMap(2); }
-	FORCEINLINE void AddOnPosition3() { Server_AddCharacterToMap(3); }
+	FORCEINLINE void AddOnPosition0() { if(CanMove) Server_AddCharacterToMap(0); }
+	FORCEINLINE void AddOnPosition1() { if(CanMove) Server_AddCharacterToMap(1); }
+	FORCEINLINE void AddOnPosition2() { if(CanMove) Server_AddCharacterToMap(2); }
+	FORCEINLINE void AddOnPosition3() { if(CanMove) Server_AddCharacterToMap(3); }
 
-	FORCEINLINE void MoveForward() { Server_MoveCharacter(EMD_Forward); }
-	FORCEINLINE void MoveBackward() { Server_MoveCharacter(EMD_Backward); }
-	FORCEINLINE void MoveRight() { Server_MoveCharacter(EMD_Right); }
-	FORCEINLINE void MoveLeft() { Server_MoveCharacter(EMD_Left); }
+	FORCEINLINE void MoveForward()	{ if(CanMove) Server_MoveCharacter(EMD_Forward); }
+	FORCEINLINE void MoveBackward() { if(CanMove) Server_MoveCharacter(EMD_Backward); }
+	FORCEINLINE void MoveRight()	{ if(CanMove) Server_MoveCharacter(EMD_Right); }
+	FORCEINLINE void MoveLeft()		{ if(CanMove) Server_MoveCharacter(EMD_Left); }
 };

@@ -2,6 +2,9 @@
 
 
 #include "KKGameMode.h"
+#include "KKPlayerController.h"
+#include "GameFramework/PlayerStart.h"
+#include "KrzyweKarty/Map/KKMap.h"
 #include "Kismet/GameplayStatics.h"
 
 AKKGameMode::AKKGameMode()
@@ -11,73 +14,105 @@ AKKGameMode::AKKGameMode()
 void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
+
+	if (AKKPlayerController* PlayerController = Cast<AKKPlayerController>(NewPlayer))
+	{
+		Players.Add(PlayerController);
+		PlayerController->PlayerID = Players.Num();
+
+		if (Players.Num() == 2)
+		{
+			ChangeTurn();
+		}
+	}
 }
 
-bool AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)
+AActor* AKKGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
-	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-	
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
+
+	for (AActor* Point : FoundActors)
+	{
+		if (APlayerStart* StartPoint = Cast<APlayerStart>(Point))
+		{
+			if (StartPoint->PlayerStartTag.ToString() == FString::FromInt(Players.Num() + 1))
+			{
+				return StartPoint;
+			}
+		}
+	}
+	return nullptr;
+}
+
+void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)
+{
 	TileID = (PlayerID == 1) ? TileID : 19 - TileID;
-	return Map->AddCharacterToMap(Character, TileID);
-}
 
-bool AKKGameMode::MoveForward(AKKCharacter* Character, int32 PlayerID)
-{
-	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-
-	if (PlayerID == 1)
+	if (Map->AddCharacterToMap(Character, TileID))
 	{
-		return Map->MoveForward(Character);
-	}
-	else
-	{
-		return Map->MoveBackward(Character);
+		IncreaseCounter();
 	}
 }
 
-bool AKKGameMode::MoveBackward(AKKCharacter* Character, int32 PlayerID)
+void AKKGameMode::MoveForward(AKKCharacter* Character, int32 PlayerID)
 {
-	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-
-	if (PlayerID == 1)
+	if ((PlayerID == 1) ? Map->MoveForward(Character) : Map->MoveBackward(Character))
 	{
-		return Map->MoveBackward(Character);
-	}
-	else
-	{
-		return Map->MoveForward(Character);
+		IncreaseCounter();
 	}
 }
 
-bool AKKGameMode::MoveRight(AKKCharacter* Character, int32 PlayerID)
+void AKKGameMode::MoveBackward(AKKCharacter* Character, int32 PlayerID)
 {
-	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-
-	if (PlayerID == 1)
+	if ((PlayerID == 1) ? Map->MoveBackward(Character) : Map->MoveForward(Character))
 	{
-		return Map->MoveRight(Character);
-	}
-	else
-	{
-		return Map->MoveLeft(Character);
+		IncreaseCounter();
 	}
 }
 
-bool AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
+void AKKGameMode::MoveRight(AKKCharacter* Character, int32 PlayerID)
 {
-	Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-
-	if (PlayerID == 1)
+	if ((PlayerID == 1) ? Map->MoveRight(Character) : Map->MoveLeft(Character))
 	{
-		return Map->MoveLeft(Character);
+		IncreaseCounter();
 	}
-	else
+}
+
+void AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
+{
+	if ((PlayerID == 1) ? Map->MoveLeft(Character) : Map->MoveRight(Character))
 	{
-		return Map->MoveRight(Character);
+		IncreaseCounter();
 	}
 }
 
 void AKKGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	while (Map == nullptr)
+	{
+		Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
+		//todo: Use Delegate to determine if Map has been Spawned
+	}
+}
+
+void AKKGameMode::IncreaseCounter()
+{
+	MoveCounter++;
+
+	if (MoveCounter >= 3)
+	{
+		MoveCounter = 0;
+		ChangeTurn();
+	}
+}
+
+void AKKGameMode::ChangeTurn()
+{
+	Players[0]->CanMove = FirstPlayerTurn;
+	Players[1]->CanMove = !FirstPlayerTurn;
+
+	FirstPlayerTurn = !FirstPlayerTurn;
 }
