@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "KKCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "KKGameMode.generated.h"
 
@@ -36,7 +37,12 @@ protected:
 	void IncreaseCounter();
 	void ChangeTurn();
 
+public:
+	
+	static int32 GetDistance(AKKCharacter* FirstCharacter, AKKCharacter* SecondCharacter);
 
+protected:
+	
 	int8 MoveCounter = 0;
 	bool FirstPlayerTurn = true;
 

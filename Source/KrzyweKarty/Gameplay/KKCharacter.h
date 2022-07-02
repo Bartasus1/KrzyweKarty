@@ -63,20 +63,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText CharacterName;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere) // used to store max stats values
-	FCharacterStats DefaultCharacterStats;
-
-	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // used to track stats in game
-	FCharacterStats CharacterStats;
-
-	UPROPERTY(Replicated, BlueprintReadWrite)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	AKKPlayerController* OwningPlayer;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	int32 OwnedTileID = -1;
 
-
 protected:
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere) // used to store max stats values
+	FCharacterStats DefaultCharacterStats;
+
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // used to track stats in game
+	FCharacterStats CharacterStats;
+
 	/// Data Table Access ///
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
 	FDataTableRowHandle StatsDataTableHandle;
@@ -86,9 +85,10 @@ protected:
 public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter, int32 Distance);
 
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter);
-
-	virtual bool PassiveAbility(AKKCharacter* TargetCharacter);
+	//virtual bool ActiveAbility(AKKCharacter* TargetCharacter);
+	virtual void ActiveAbility();
+	virtual void PassiveAbility();
+	//virtual bool PassiveAbility(AKKCharacter* TargetCharacter);
 
 protected:
 	void KillCharacter(AKKCharacter* TargetCharacter);
@@ -100,18 +100,18 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
 public:
-	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
-	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }
-	FORCEINLINE int32 GetDefence()	const { return CharacterStats.Defence; }
+	FORCEINLINE int32 GetHealth() const { return CharacterStats.Health; }
+	FORCEINLINE int32 GetMana() const { return CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefence() const { return CharacterStats.Defence; }
 	FORCEINLINE int32 GetStrength() const { return CharacterStats.Strength; }
 
-	FORCEINLINE int32 GetDefaultHealth()	const { return DefaultCharacterStats.Health; }
-	FORCEINLINE int32 GetDefaultMana()		const { return DefaultCharacterStats.Mana; }
-	FORCEINLINE int32 GetDefaultDefence()	const { return DefaultCharacterStats.Defence; }
-	FORCEINLINE int32 GetDefaultStrength()	const { return DefaultCharacterStats.Strength; }
+	FORCEINLINE int32 GetDefaultHealth() const { return DefaultCharacterStats.Health; }
+	FORCEINLINE int32 GetDefaultMana() const { return DefaultCharacterStats.Mana; }
+	FORCEINLINE int32 GetDefaultDefence() const { return DefaultCharacterStats.Defence; }
+	FORCEINLINE int32 GetDefaultStrength() const { return DefaultCharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth)		{ CharacterStats.Health = NewHealth; }
-	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana = NewMana; }
-	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence = NewDefence; }
+	FORCEINLINE void SetHealth(int32 NewHealth) { CharacterStats.Health = NewHealth; }
+	FORCEINLINE void SetMana(int32 NewMana) { CharacterStats.Mana = NewMana; }
+	FORCEINLINE void SetDefence(int32 NewDefence) { CharacterStats.Defence = NewDefence; }
 	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength = NewStrength; }
 };

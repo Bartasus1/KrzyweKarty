@@ -10,16 +10,18 @@ void UCharacterStatsWidget::ShowStats(AKKCharacter* Character)
 	if (!CharacterNameText && !CharacterHealthText && !CharacterManaText && !CharacterDefenceText && !CharacterDefenceText)
 		return;
 	
-	
 	CharacterNameText->SetText(Character->CharacterName);
+
+	const FText FormatText = FText::FromString("{0} / {1}");
 	
-	CharacterHealthText->SetText(FText::AsNumber(Character->CharacterStats.Health));
-	CharacterManaText->SetText(FText::AsNumber(Character->CharacterStats.Mana));
-	CharacterDefenceText->SetText(FText::AsNumber(Character->CharacterStats.Defence));
-	CharacterStrengthText->SetText(FText::AsNumber(Character->CharacterStats.Strength));
+	CharacterHealthText->SetText(FText::Format(FormatText, Character->GetHealth(), Character->GetDefaultHealth()));
+	CharacterManaText->SetText(FText::Format(FormatText, Character->GetMana(), Character->GetDefaultMana()));
+	CharacterDefenceText->SetText(FText::Format(FormatText, Character->GetDefence(), Character->GetDefaultDefence()));
+	CharacterStrengthText->SetText(FText::Format(FormatText, Character->GetStrength(), Character->GetDefaultStrength()));
 }
 
 void UCharacterStatsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
 }

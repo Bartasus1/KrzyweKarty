@@ -57,6 +57,9 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void Server_MoveCharacter(EMovementDirection MovementDirection);
 
+	UFUNCTION(Server, Reliable)
+	void Server_AttackCharacter();
+
 private:
 	UFUNCTION(Client, Reliable)
 	void ShowCharacterStats(AKKCharacter* CardCharacter);
@@ -74,6 +77,8 @@ protected:
 private: // Input functions
 	FORCEINLINE void SelectCharacter() { Server_TraceForSelectedCharacter(TraceForCharacter()); }
 	FORCEINLINE void TargetCharacter() { Server_TraceForTargetedCharacter(TraceForCharacter()); }
+	
+	FORCEINLINE void AttackCharacter() { if(CanMove) Server_AttackCharacter(); }
 
 	FORCEINLINE void AddOnPosition0() { if(CanMove) Server_AddCharacterToMap(0); }
 	FORCEINLINE void AddOnPosition1() { if(CanMove) Server_AddCharacterToMap(1); }

@@ -10,7 +10,7 @@
 AKKPlayerController::AKKPlayerController()
 {
 	bReplicates = true;
-	
+
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 
@@ -22,7 +22,6 @@ AKKPlayerController::AKKPlayerController()
 		CharacterStatsWidgetClass = ClassFinder.Class;
 	}
 }
-
 
 void AKKPlayerController::BeginPlay()
 {
@@ -39,6 +38,8 @@ void AKKPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("SelectCharacter", IE_Pressed, this, &AKKPlayerController::SelectCharacter);
 	InputComponent->BindAction("TargetCharacter", IE_Pressed, this, &AKKPlayerController::TargetCharacter);
+	
+	InputComponent->BindAction("Attack", IE_Pressed, this, &AKKPlayerController::AttackCharacter);
 
 	InputComponent->BindAction("AddOnPosition0", IE_Pressed, this, &AKKPlayerController::AddOnPosition0);
 	InputComponent->BindAction("AddOnPosition1", IE_Pressed, this, &AKKPlayerController::AddOnPosition1);
@@ -84,16 +85,28 @@ void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCha
 {
 	// if (CardCharacter->OwningPlayer == this)
 	// {
-	SelectedCharacter = TracedCharacter;
+	if(TracedCharacter != nullptr)
+	{
+		SelectedCharacter = TracedCharacter;
 
-	ShowCharacterStats(SelectedCharacter);
+		ShowCharacterStats(SelectedCharacter);
+	}
 	//}
-
 }
 
 void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
 	TargetedCharacter = TracedCharacter;
+}
+
+void AKKPlayerController::Server_AttackCharacter_Implementation()
+{
+	if (SelectedCharacter && TargetedCharacter)
+	{
+		const int32 Distance = AKKGameMode::GetDistance(SelectedCharacter, TargetedCharacter);
+		
+		SelectedCharacter->DefaultAttack(TargetedCharacter, Distance);
+	}
 }
 
 void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
@@ -109,7 +122,7 @@ void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 
 void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection MovementDirection)
 {
-	if (HasAuthority() && SelectedCharacter != nullptr)
+	if (HasAuthority() && SelectedCharacter != nullptr )
 	{
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
@@ -119,13 +132,13 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 				GameMode->MoveForward(SelectedCharacter, PlayerID);
 				break;
 			case EMD_Backward:
-				GameMode->MoveForward(SelectedCharacter, PlayerID);
+				GameMode->MoveBackward(SelectedCharacter, PlayerID);
 				break;
 			case EMD_Right:
-				GameMode->MoveForward(SelectedCharacter, PlayerID);
+				GameMode->MoveRight(SelectedCharacter, PlayerID);
 				break;
 			case EMD_Left:
-				GameMode->MoveForward(SelectedCharacter, PlayerID);
+				GameMode->MoveLeft(SelectedCharacter, PlayerID);
 				break;
 			default:
 				break;

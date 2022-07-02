@@ -50,17 +50,26 @@ void AKKCharacter::InitializeStats()
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter, int32 Distance)
 {
+	DealDamage(TargetCharacter);
 	return true;
 }
 
-bool AKKCharacter::ActiveAbility(AKKCharacter* TargetCharacter)
+void AKKCharacter::ActiveAbility()
 {
-	return true;
 }
 
-bool AKKCharacter::PassiveAbility(AKKCharacter* TargetCharacter)
+// bool AKKCharacter::ActiveAbility(AKKCharacter* TargetCharacter)
+// {
+// 	return true;
+// }
+//
+// bool AKKCharacter::PassiveAbility(AKKCharacter* TargetCharacter)
+// {
+// 	return true;
+// }
+
+void AKKCharacter::PassiveAbility()
 {
-	return true;
 }
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter)
@@ -80,8 +89,8 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter)
 {
 	const int32 NewHealth = TargetCharacter->GetHealth() - (GetStrength() - TargetCharacter->GetDefence());
 
-	TargetCharacter->SetHealth(FMath::Clamp(NewHealth, 0, TargetCharacter->GetDefaultHealth()));
-	TargetCharacter->SetDefence(FMath::Clamp(TargetCharacter->GetDefence() - 1, 0, TargetCharacter->GetDefaultDefence()));
+	TargetCharacter->SetHealth(FMath::Clamp(NewHealth, 0, TargetCharacter->GetHealth()));
+	TargetCharacter->SetDefence(FMath::Clamp(TargetCharacter->GetDefence() - 1, 0, TargetCharacter->GetDefence()));
 
 	if (TargetCharacter->GetHealth() <= 0)
 	{

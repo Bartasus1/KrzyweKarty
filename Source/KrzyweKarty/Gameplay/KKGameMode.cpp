@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "Kismet/GameplayStatics.h"
+#include "KrzyweKarty/Interfaces/BaseInterface.h"
 
 AKKGameMode::AKKGameMode()
 {
@@ -90,7 +91,6 @@ void AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
 void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 {
 	AKKPlayerController* Winner = Players[PlayerID - 1];
-	
 }
 
 void AKKGameMode::BeginPlay()
@@ -121,4 +121,25 @@ void AKKGameMode::ChangeTurn()
 	Players[1]->CanMove = !FirstPlayerTurn;
 
 	FirstPlayerTurn = !FirstPlayerTurn;
+}
+
+int32 AKKGameMode::GetDistance(AKKCharacter* FirstCharacter, AKKCharacter* SecondCharacter)
+{
+	int32 TileOne = FirstCharacter->OwnedTileID;
+	int32 TileTwo = SecondCharacter->OwnedTileID;
+	
+	if (SecondCharacter->Implements<UBaseInterface>())
+	{
+		if (TileOne == 1 || TileOne == 2 || TileOne == 17 || TileOne == 18)
+		{
+			return 0;
+		}
+	}
+
+	FVector2D PositionOne = FVector2D(TileOne / 4, TileOne % 4);
+	FVector2D PositionTwo = FVector2D(TileTwo / 4, TileTwo % 4);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
+
+	return FVector2D::Distance(PositionOne, PositionTwo);
 }
