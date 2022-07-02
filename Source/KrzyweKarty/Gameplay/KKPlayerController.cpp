@@ -82,23 +82,18 @@ AKKCharacter* AKKPlayerController::TraceForCharacter()
 
 void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
-	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TracedCharacter))
-	{
-		// if (CardCharacter->OwningPlayer == this)
-		// {
-		SelectedCharacter = CardCharacter;
+	// if (CardCharacter->OwningPlayer == this)
+	// {
+	SelectedCharacter = TracedCharacter;
 
-		ShowCharacterStats(SelectedCharacter);
-		//}
-	}
+	ShowCharacterStats(SelectedCharacter);
+	//}
+
 }
 
 void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
-	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(TracedCharacter))
-	{
-		TargetedCharacter = CardCharacter;
-	}
+	TargetedCharacter = TracedCharacter;
 }
 
 void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
@@ -118,27 +113,23 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 	{
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			void (AKKGameMode::*MoveFunction)(AKKCharacter*, int) = &AKKGameMode::MoveForward;
-
 			switch (MovementDirection)
 			{
 			case EMD_Forward:
-				MoveFunction = &AKKGameMode::MoveForward;
+				GameMode->MoveForward(SelectedCharacter, PlayerID);
 				break;
 			case EMD_Backward:
-				MoveFunction = &AKKGameMode::MoveBackward;
+				GameMode->MoveForward(SelectedCharacter, PlayerID);
 				break;
 			case EMD_Right:
-				MoveFunction = &AKKGameMode::MoveRight;
+				GameMode->MoveForward(SelectedCharacter, PlayerID);
 				break;
 			case EMD_Left:
-				MoveFunction = &AKKGameMode::MoveLeft;
+				GameMode->MoveForward(SelectedCharacter, PlayerID);
 				break;
 			default:
 				break;
 			}
-
-			(GameMode->*MoveFunction)(SelectedCharacter, PlayerID);
 		}
 	}
 }

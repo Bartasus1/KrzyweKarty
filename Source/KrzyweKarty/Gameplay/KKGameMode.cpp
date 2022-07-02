@@ -87,6 +87,12 @@ void AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
 	}
 }
 
+void AKKGameMode::EndGameWithWinner(int32 PlayerID)
+{
+	AKKPlayerController* Winner = Players[PlayerID - 1];
+	
+}
+
 void AKKGameMode::BeginPlay()
 {
 	Super::BeginPlay();

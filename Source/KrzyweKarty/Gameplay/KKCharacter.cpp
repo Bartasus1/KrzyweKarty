@@ -2,9 +2,12 @@
 
 
 #include "KKCharacter.h"
+
+#include "KKGameMode.h"
 #include "KKPlayerController.h"
 #include "Components/TextRenderComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "KrzyweKarty/Interfaces/BaseInterface.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
@@ -32,15 +35,6 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-	
-}
-
-void AKKCharacter::ActiveAbility()
-{
-}
-
-void AKKCharacter::PassiveAbility()
-{
 }
 
 void AKKCharacter::InitializeStats()
@@ -49,16 +43,49 @@ void AKKCharacter::InitializeStats()
 	{
 		const FCharacterStats* ReadStats = StatsDataTableHandle.GetRow<FCharacterStats>("");
 
-		MaxCharacterStats = *ReadStats;
+		DefaultCharacterStats = *ReadStats;
 		CharacterStats = *ReadStats;
+	}
+}
 
-		/*
-		UE_LOG(LogTemp, Warning, TEXT("\nHealth : %d \nMana : %d \nDefence : %d \nStrength : %d \n"),
-			   CharacterStats.Health,
-			   CharacterStats.Mana,
-			   CharacterStats.Defence,
-			   CharacterStats.Strength);
-		*/
+bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter, int32 Distance)
+{
+	return true;
+}
+
+bool AKKCharacter::ActiveAbility(AKKCharacter* TargetCharacter)
+{
+	return true;
+}
+
+bool AKKCharacter::PassiveAbility(AKKCharacter* TargetCharacter)
+{
+	return true;
+}
+
+void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter)
+{
+	if (HasAuthority() && TargetCharacter->Implements<UBaseInterface>())
+	{
+		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameMode->EndGameWithWinner(OwningPlayer->PlayerID);
+		}
+	}
+
+	TargetCharacter->Destroy();
+}
+
+void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter)
+{
+	const int32 NewHealth = TargetCharacter->GetHealth() - (GetStrength() - TargetCharacter->GetDefence());
+
+	TargetCharacter->SetHealth(FMath::Clamp(NewHealth, 0, TargetCharacter->GetDefaultHealth()));
+	TargetCharacter->SetDefence(FMath::Clamp(TargetCharacter->GetDefence() - 1, 0, TargetCharacter->GetDefaultDefence()));
+
+	if (TargetCharacter->GetHealth() <= 0)
+	{
+		KillCharacter(TargetCharacter);
 	}
 }
 
@@ -92,3 +119,11 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AKKCharacter, OwningPlayer);
 	DOREPLIFETIME(AKKCharacter, OwnedTileID);
 }
+
+/*
+UE_LOG(LogTemp, Warning, TEXT("\nHealth : %d \nMana : %d \nDefence : %d \nStrength : %d \n"),
+	   CharacterStats.Health,
+	   CharacterStats.Mana,
+	   CharacterStats.Defence,
+	   CharacterStats.Strength);
+*/

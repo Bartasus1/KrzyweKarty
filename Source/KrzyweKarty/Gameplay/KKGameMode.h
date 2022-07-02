@@ -17,16 +17,19 @@ class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 
 public:
 	AKKGameMode();
-
+protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
+public:
 	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
 
 	void MoveForward(AKKCharacter* Character, int32 PlayerID);
 	void MoveBackward(AKKCharacter* Character, int32 PlayerID);
 	void MoveRight(AKKCharacter* Character, int32 PlayerID);
 	void MoveLeft(AKKCharacter* Character, int32 PlayerID);
+
+	void EndGameWithWinner(int32 PlayerID);
 
 protected:
 	virtual void BeginPlay() override;
