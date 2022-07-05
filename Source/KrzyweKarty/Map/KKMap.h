@@ -49,4 +49,7 @@ private:
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
 	const uint8 MapSize = 4;
+
+public:
+	FORCEINLINE int8 GetMapSize() const { return MapSize; }
 };

@@ -16,8 +16,9 @@ class KRZYWEKARTY_API AZakon_Kaplan : public AZakon
 public:
 	AZakon_Kaplan();
 
-	//virtual void ActiveAbility() override; //Modlitwa
-	//virtual void ActiveAbility2() override; //Wola Boga
-	//virtual void PassiveAbility() override; //Moc Duchowa
+	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
+	
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
+	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
 
 };

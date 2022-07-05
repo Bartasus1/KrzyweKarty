@@ -52,7 +52,7 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
-		IncreaseCounter();
+		IncreaseMovesCounter();
 	}
 }
 
@@ -60,7 +60,7 @@ void AKKGameMode::MoveForward(AKKCharacter* Character, int32 PlayerID)
 {
 	if ((PlayerID == 1) ? Map->MoveForward(Character) : Map->MoveBackward(Character))
 	{
-		IncreaseCounter();
+		IncreaseMovesCounter();
 	}
 }
 
@@ -68,7 +68,7 @@ void AKKGameMode::MoveBackward(AKKCharacter* Character, int32 PlayerID)
 {
 	if ((PlayerID == 1) ? Map->MoveBackward(Character) : Map->MoveForward(Character))
 	{
-		IncreaseCounter();
+		IncreaseMovesCounter();
 	}
 }
 
@@ -76,7 +76,7 @@ void AKKGameMode::MoveRight(AKKCharacter* Character, int32 PlayerID)
 {
 	if ((PlayerID == 1) ? Map->MoveRight(Character) : Map->MoveLeft(Character))
 	{
-		IncreaseCounter();
+		IncreaseMovesCounter();
 	}
 }
 
@@ -84,7 +84,7 @@ void AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
 {
 	if ((PlayerID == 1) ? Map->MoveLeft(Character) : Map->MoveRight(Character))
 	{
-		IncreaseCounter();
+		IncreaseMovesCounter();
 	}
 }
 
@@ -104,7 +104,7 @@ void AKKGameMode::BeginPlay()
 	}
 }
 
-void AKKGameMode::IncreaseCounter()
+void AKKGameMode::IncreaseMovesCounter()
 {
 	MoveCounter++;
 
@@ -123,23 +123,3 @@ void AKKGameMode::ChangeTurn()
 	FirstPlayerTurn = !FirstPlayerTurn;
 }
 
-int32 AKKGameMode::GetDistance(AKKCharacter* FirstCharacter, AKKCharacter* SecondCharacter)
-{
-	int32 TileOne = FirstCharacter->OwnedTileID;
-	int32 TileTwo = SecondCharacter->OwnedTileID;
-	
-	if (SecondCharacter->Implements<UBaseInterface>())
-	{
-		if (TileOne == 1 || TileOne == 2 || TileOne == 17 || TileOne == 18)
-		{
-			return 0;
-		}
-	}
-
-	FVector2D PositionOne = FVector2D(TileOne / 4, TileOne % 4);
-	FVector2D PositionTwo = FVector2D(TileTwo / 4, TileTwo % 4);
-
-	UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
-
-	return FVector2D::Distance(PositionOne, PositionTwo);
-}

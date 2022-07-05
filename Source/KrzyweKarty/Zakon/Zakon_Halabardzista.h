@@ -17,6 +17,8 @@ class KRZYWEKARTY_API AZakon_Halabardzista : public AZakon
 public:
 	AZakon_Halabardzista();
 
-	virtual void ActiveAbility() override; //Przedluzenie
-	virtual void PassiveAbility() override; //Pika
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override; 
+
+	virtual  int32 GetStrengthAtDistance(int32 Distance) override;
+	
 };

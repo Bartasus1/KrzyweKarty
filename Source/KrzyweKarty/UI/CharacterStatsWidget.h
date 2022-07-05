@@ -18,10 +18,12 @@ class KRZYWEKARTY_API UCharacterStatsWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
-	void ShowStats(AKKCharacter* Character);
+	void ShowStats(AKKCharacter* NewCharacter);
 
 protected:
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	AKKCharacter* Character;
+
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
@@ -38,4 +40,22 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UTextBlock* CharacterStrengthText;
+
+public:
+	const FText FormatText = FText::FromString("{0}: {1} / {2}");
+
+	UFUNCTION(BlueprintPure)
+	FText HealthText();
+
+	UFUNCTION(BlueprintPure)
+	FText ManaText();
+
+	UFUNCTION(BlueprintPure)
+	FText DefenceText();
+
+	UFUNCTION(BlueprintPure)
+	FText StrengthText();
+
+	UFUNCTION()
+	void RemoveCharacter();
 };

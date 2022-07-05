@@ -5,23 +5,56 @@
 #include "Components/TextBlock.h"
 #include "KrzyweKarty/Gameplay/KKCharacter.h"
 
-void UCharacterStatsWidget::ShowStats(AKKCharacter* Character)
+void UCharacterStatsWidget::ShowStats(AKKCharacter* NewCharacter)
 {
-	if (!CharacterNameText && !CharacterHealthText && !CharacterManaText && !CharacterDefenceText && !CharacterDefenceText)
-		return;
-	
+	Character = NewCharacter;
+
 	CharacterNameText->SetText(Character->CharacterName);
 
-	const FText FormatText = FText::FromString("{0} / {1}");
-	
-	CharacterHealthText->SetText(FText::Format(FormatText, Character->GetHealth(), Character->GetDefaultHealth()));
-	CharacterManaText->SetText(FText::Format(FormatText, Character->GetMana(), Character->GetDefaultMana()));
-	CharacterDefenceText->SetText(FText::Format(FormatText, Character->GetDefence(), Character->GetDefaultDefence()));
-	CharacterStrengthText->SetText(FText::Format(FormatText, Character->GetStrength(), Character->GetDefaultStrength()));
+	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
 }
 
 void UCharacterStatsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+}
+
+FText UCharacterStatsWidget::HealthText()
+{
+	if (!Character)
+		return FText();
+
+	return FText::FormatOrdered(FormatText, FText::FromString("Health"), Character->GetHealth(), Character->GetDefaultHealth());
+}
+
+FText UCharacterStatsWidget::ManaText()
+{
+	if (!Character)
+		return FText();
+
+	return FText::FormatOrdered(FormatText, FText::FromString("Mana"), Character->GetMana(), Character->GetDefaultMana());
+}
+
+FText UCharacterStatsWidget::DefenceText()
+{
+	if (!Character)
+		return FText();
+
+	return FText::FormatOrdered(FormatText, FText::FromString("Defence"), Character->GetDefence(), Character->GetDefaultDefence());
+}
+
+FText UCharacterStatsWidget::StrengthText()
+{
+	if (!Character)
+		return FText();
+
+	return FText::FormatOrdered(FormatText, FText::FromString("Strength"), Character->GetStrength(), Character->GetDefaultStrength());
+}
+
+void UCharacterStatsWidget::RemoveCharacter()
+{
+	Character = nullptr;
+	CharacterNameText->SetText(FText());
+	RemoveFromParent();
 }

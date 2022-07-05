@@ -14,10 +14,14 @@ class KRZYWEKARTY_API AZakon_Rycerz : public AZakon
 {
 	GENERATED_BODY()
 
-	bool bAbleToBlock = false;
-	uint8 AttacksCount = 0;
-	
 public:
 	AZakon_Rycerz();
-	
+
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
+
+protected:
+	virtual bool CanBeAttacked(EAttackType AttackType) override;
+
+private:
+	int8 AttacksCounter = 0;
 };

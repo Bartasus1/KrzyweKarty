@@ -28,6 +28,9 @@ void AKKPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	SetInputMode(FInputModeGameAndUI());
+	
+	if(IsLocalController())
+		StatsWidget = CreateWidget<UCharacterStatsWidget>(this, CharacterStatsWidgetClass);
 }
 
 void AKKPlayerController::SetupInputComponent()
@@ -38,8 +41,9 @@ void AKKPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("SelectCharacter", IE_Pressed, this, &AKKPlayerController::SelectCharacter);
 	InputComponent->BindAction("TargetCharacter", IE_Pressed, this, &AKKPlayerController::TargetCharacter);
-	
+
 	InputComponent->BindAction("Attack", IE_Pressed, this, &AKKPlayerController::AttackCharacter);
+	InputComponent->BindAction("ActiveAbility1", IE_Pressed, this, &AKKPlayerController::ActiveAbility1);
 
 	InputComponent->BindAction("AddOnPosition0", IE_Pressed, this, &AKKPlayerController::AddOnPosition0);
 	InputComponent->BindAction("AddOnPosition1", IE_Pressed, this, &AKKPlayerController::AddOnPosition1);
@@ -85,7 +89,7 @@ void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCha
 {
 	// if (CardCharacter->OwningPlayer == this)
 	// {
-	if(TracedCharacter != nullptr)
+	if (TracedCharacter != nullptr)
 	{
 		SelectedCharacter = TracedCharacter;
 
@@ -103,9 +107,27 @@ void AKKPlayerController::Server_AttackCharacter_Implementation()
 {
 	if (SelectedCharacter && TargetedCharacter)
 	{
-		const int32 Distance = AKKGameMode::GetDistance(SelectedCharacter, TargetedCharacter);
-		
-		SelectedCharacter->DefaultAttack(TargetedCharacter, Distance);
+		if(SelectedCharacter->DefaultAttack(TargetedCharacter))
+		{
+			if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+			{
+				GameMode->IncreaseMovesCounter();
+			}
+		}
+	}
+}
+
+void AKKPlayerController::Server_ActiveAbility_Implementation()
+{
+	if (SelectedCharacter)
+	{
+		if(SelectedCharacter->ActiveAbility(TargetedCharacter))
+		{
+			if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+			{
+				GameMode->IncreaseMovesCounter();
+			}
+		}
 	}
 }
 
@@ -122,7 +144,7 @@ void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 
 void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection MovementDirection)
 {
-	if (HasAuthority() && SelectedCharacter != nullptr )
+	if (HasAuthority() && SelectedCharacter != nullptr)
 	{
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
@@ -151,13 +173,9 @@ void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCh
 {
 	if (CharacterStatsWidgetClass)
 	{
-		if (StatsWidget != nullptr)
+		if (StatsWidget)
 		{
 			StatsWidget->RemoveFromParent();
-		}
-		else
-		{
-			StatsWidget = CreateWidget<UCharacterStatsWidget>(this, CharacterStatsWidgetClass);
 		}
 
 		StatsWidget->ShowStats(CardCharacter);

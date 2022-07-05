@@ -48,32 +48,30 @@ void AKKCharacter::InitializeStats()
 	}
 }
 
-bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter, int32 Distance)
+
+bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	DealDamage(TargetCharacter);
-	return true;
+	if (TargetCharacter == nullptr && TargetCharacter == this)
+		return false;
+
+	if (GetDistanceTo(TargetCharacter) > CharacterStats.MaxAttackRange || !IsInLineWith(TargetCharacter))
+		return false;
+
+	if (TargetCharacter->CanBeAttacked(EAT_DefaultAttack) && !IsFromSameFraction(TargetCharacter))
+	{
+		const int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
+		DealDamage(TargetCharacter, Damage);
+		return true;
+	}
+
+	return false;
 }
 
-void AKKCharacter::ActiveAbility()
-{
-}
 
-// bool AKKCharacter::ActiveAbility(AKKCharacter* TargetCharacter)
-// {
-// 	return true;
-// }
-//
-// bool AKKCharacter::PassiveAbility(AKKCharacter* TargetCharacter)
-// {
-// 	return true;
-// }
-
-void AKKCharacter::PassiveAbility()
+void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 {
-}
+	OnCharacterDeath.Broadcast();
 
-void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter)
-{
 	if (HasAuthority() && TargetCharacter->Implements<UBaseInterface>())
 	{
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
@@ -85,18 +83,55 @@ void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter)
 	TargetCharacter->Destroy();
 }
 
-void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter)
+void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 {
-	const int32 NewHealth = TargetCharacter->GetHealth() - (GetStrength() - TargetCharacter->GetDefence());
+	const int32 NewHealth = TargetCharacter->GetHealth() - (Damage - TargetCharacter->GetDefence());
 
-	TargetCharacter->SetHealth(FMath::Clamp(NewHealth, 0, TargetCharacter->GetHealth()));
-	TargetCharacter->SetDefence(FMath::Clamp(TargetCharacter->GetDefence() - 1, 0, TargetCharacter->GetDefence()));
+	TargetCharacter->SetHealth(NewHealth);
+	TargetCharacter->DecreaseDefence();
 
 	if (TargetCharacter->GetHealth() <= 0)
 	{
 		KillCharacter(TargetCharacter);
 	}
 }
+
+
+int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
+{
+	int32 TargetTileID = TargetCharacter->OwnedTileID;
+
+	if (TargetCharacter->Implements<UBaseInterface>())
+	{
+		if (OwnedTileID == 1 || OwnedTileID == 2 || OwnedTileID == 17 || OwnedTileID == 18) //todo: Eliminate bug with attacking enemy base from starting point 
+		{
+			return 0;
+		}
+	}
+
+	FVector2D PositionOne = FVector2D(OwnedTileID / 4, OwnedTileID % 4);
+	FVector2D PositionTwo = FVector2D(TargetTileID / 4, TargetTileID % 4);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
+
+	return FVector2D::Distance(PositionOne, PositionTwo);
+}
+
+bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
+{
+	int32 TargetTileID = TargetCharacter->OwnedTileID;
+
+	bool InLineX = (OwnedTileID / 4) == (TargetTileID / 4);
+	bool InLineY = (OwnedTileID % 4) == (TargetTileID % 4);
+
+	return (InLineX || InLineY);
+}
+
+bool AKKCharacter::IsFromSameFraction(AKKCharacter* TargetCharacter)
+{
+	return (TargetCharacter->GetClass() == StaticClass());
+}
+
 
 // Called when the game starts or when spawned
 void AKKCharacter::BeginPlay()
@@ -115,7 +150,7 @@ void AKKCharacter::Tick(float DeltaSeconds)
 
 	if (OwningPlayer)
 	{
-		TextRenderName->SetWorldRotation(OwningPlayer->GetControlRotation());
+		TextRenderName->SetWorldRotation(OwningPlayer->GetControlRotation()); //todo: Instead of OwningPlayer use Client's Controller
 		TextRenderName->AddRelativeRotation(FRotator(0, 180, 0));
 	}
 }

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "KKPlayer.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
 #include "Net/UnrealNetwork.h"
@@ -13,6 +12,9 @@ class AKKPlayerController;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 
 USTRUCT(BlueprintType)
@@ -39,6 +41,13 @@ struct FCharacterStats : public FTableRowBase
 	int32 MaxAttackRange = 1;
 };
 
+UENUM()
+enum EAttackType
+{
+	EAT_DefaultAttack,
+	EAT_ActiveAbility,
+	EAT_PassiveAbility
+};
 
 UCLASS(Abstract)
 class KRZYWEKARTY_API AKKCharacter : public AActor
@@ -69,11 +78,14 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	int32 OwnedTileID = -1;
 
+	UPROPERTY(BlueprintAssignable)
+	FCharacterDiedDelegate OnCharacterDeath;
+
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere) // used to store max stats values
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere) // store max stats values
 	FCharacterStats DefaultCharacterStats;
 
-	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // used to track stats in game
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
 
 	/// Data Table Access ///
@@ -83,18 +95,24 @@ protected:
 	void InitializeStats();
 
 public:
-	virtual bool DefaultAttack(AKKCharacter* TargetCharacter, int32 Distance);
+	virtual bool DefaultAttack(AKKCharacter* TargetCharacter);
 
-	//virtual bool ActiveAbility(AKKCharacter* TargetCharacter);
-	virtual void ActiveAbility();
-	virtual void PassiveAbility();
-	//virtual bool PassiveAbility(AKKCharacter* TargetCharacter);
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
+	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
 
 protected:
-	void KillCharacter(AKKCharacter* TargetCharacter);
-	void DealDamage(AKKCharacter* TargetCharacter);
+	//Subclass Sandbox
+	void KillCharacter(AKKCharacter* TargetCharacter) const;
+	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage);
 
-	// Called when the game starts or when spawned
+	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
+	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
+	bool IsFromSameFraction(AKKCharacter* TargetCharacter);
+
+public:
+	virtual int32 GetStrengthAtDistance(int32 Distance) { return GetStrength(); }
+	virtual bool CanBeAttacked(EAttackType AttackType) { return (OwnedTileID != -1); }
+protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
@@ -110,8 +128,16 @@ public:
 	FORCEINLINE int32 GetDefaultDefence() const { return DefaultCharacterStats.Defence; }
 	FORCEINLINE int32 GetDefaultStrength() const { return DefaultCharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth) { CharacterStats.Health = NewHealth; }
-	FORCEINLINE void SetMana(int32 NewMana) { CharacterStats.Mana = NewMana; }
-	FORCEINLINE void SetDefence(int32 NewDefence) { CharacterStats.Defence = NewDefence; }
-	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength = NewStrength; }
+	FORCEINLINE void SetHealth(int32 NewHealth) { CharacterStats.Health = FMath::Clamp(NewHealth, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetMana(int32 NewMana) { CharacterStats.Mana = FMath::Clamp(NewMana, 0, GetDefaultMana()); }
+	FORCEINLINE void SetDefence(int32 NewDefence) { CharacterStats.Defence = FMath::Clamp(NewDefence, 0, GetDefaultDefence()); }
+	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength = FMath::Clamp(NewStrength, 0, GetDefaultStrength()); }
+
+	FORCEINLINE void DecreaseHealth(int32 InHealth = 1) { CharacterStats.Health -= FMath::Clamp(InHealth, 0, GetHealth()); }
+	FORCEINLINE void DecreaseMana(int32 InMana = 1) { CharacterStats.Mana -= FMath::Clamp(InMana, 0, GetMana()); }
+	FORCEINLINE void DecreaseDefence(int32 InDefence = 1) { CharacterStats.Defence -= FMath::Clamp(InDefence, 0, GetDefence()); }
+
+	FORCEINLINE void IncreaseHealth(int32 InHealth = 1) { CharacterStats.Health += FMath::Clamp(InHealth, 0, GetDefaultHealth() - GetHealth()); }
+	FORCEINLINE void IncreaseMana(int32 InMana = 1) { CharacterStats.Mana += FMath::Clamp(InMana, 0, GetDefaultMana() - GetMana()); }
+	FORCEINLINE void IncreaseDefence(int32 InDefence = 1) { CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
 };

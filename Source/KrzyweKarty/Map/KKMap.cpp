@@ -2,6 +2,8 @@
 
 #include "KKMap.h"
 
+#include "KrzyweKarty/Interfaces/BaseInterface.h"
+
 // Sets default values
 AKKMap::AKKMap()
 {
@@ -30,7 +32,7 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 bool AKKMap::MoveForward(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-	
+
 	if (TileID < 16 && CanMoveCharacter(TileID, TileID + 4))
 	{
 		Characters[TileID] = nullptr;
@@ -44,7 +46,7 @@ bool AKKMap::MoveForward(AKKCharacter* Character)
 bool AKKMap::MoveBackward(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-	
+
 	if (TileID > 3 && CanMoveCharacter(TileID, TileID - 4))
 	{
 		Characters[TileID] = nullptr;
@@ -58,7 +60,7 @@ bool AKKMap::MoveBackward(AKKCharacter* Character)
 bool AKKMap::MoveRight(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-	
+
 	if (TileID % MapSize != 3 && CanMoveCharacter(TileID, TileID + 1))
 	{
 		Characters[TileID] = nullptr;
@@ -72,7 +74,7 @@ bool AKKMap::MoveRight(AKKCharacter* Character)
 bool AKKMap::MoveLeft(AKKCharacter* Character)
 {
 	int32 TileID = Character->OwnedTileID;
-	
+
 	if (TileID % MapSize != 0 && CanMoveCharacter(TileID, TileID - 1))
 	{
 		Characters[TileID] = nullptr;
@@ -132,3 +134,4 @@ void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	DOREPLIFETIME(AKKMap, Tiles);
 	DOREPLIFETIME(AKKMap, Characters);
 }
+

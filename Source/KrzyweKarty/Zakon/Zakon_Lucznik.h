@@ -16,11 +16,11 @@ class KRZYWEKARTY_API AZakon_Lucznik : public AZakon
 public:
 	AZakon_Lucznik();
 
+	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
 
-	//virtual void ActiveAbility() override; //Trojstrzal
-	//virtual void PassiveAbility() override; //Strzaly Rozrywajace
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
 
-protected:
+private:
 
-	int32 CountAttacks = 0;
+	int8 AttacksCounter = 0;
 };

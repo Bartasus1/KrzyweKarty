@@ -31,24 +31,23 @@ public:
 	void MoveLeft(AKKCharacter* Character, int32 PlayerID);
 
 	void EndGameWithWinner(int32 PlayerID);
+	void IncreaseMovesCounter();
 
 protected:
 	virtual void BeginPlay() override;
-	void IncreaseCounter();
 	void ChangeTurn();
 
-public:
-	
-	static int32 GetDistance(AKKCharacter* FirstCharacter, AKKCharacter* SecondCharacter);
-
-protected:
-	
+private:
 	int8 MoveCounter = 0;
 	bool FirstPlayerTurn = true;
 
+protected:
 	UPROPERTY(Transient)
 	AKKMap* Map;
 
 	UPROPERTY(Transient)
 	TArray<AKKPlayerController*> Players;
+
+public:
+	FORCEINLINE AKKMap* GetMap() const { return Map; }
 };

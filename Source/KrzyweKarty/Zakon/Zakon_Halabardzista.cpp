@@ -5,15 +5,46 @@
 
 AZakon_Halabardzista::AZakon_Halabardzista()
 {
-	
 }
 
-void AZakon_Halabardzista::ActiveAbility()
+bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 {
+	if (GetMana() < 2)
+		return false;
 
+	if (TargetCharacter == nullptr || !IsInLineWith(TargetCharacter))
+		return false;
+
+	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsFromSameFraction(TargetCharacter))
+	{
+		switch (GetDistanceTo(TargetCharacter))
+		{
+		case 3:
+			DealDamage(TargetCharacter, 7);
+			break;
+		case 2:
+			DealDamage(TargetCharacter, 9);
+			break;
+		case 1:
+			DealDamage(TargetCharacter, 9);
+			break;
+		default:
+			break;
+		}
+
+		DecreaseMana(2);
+		return true;
+	}
+
+	return false;
 }
 
-void AZakon_Halabardzista::PassiveAbility()
+int32 AZakon_Halabardzista::GetStrengthAtDistance(int32 Distance)
 {
+	if (Distance == 2)
+	{
+		return 6;
+	}
 
+	return GetStrength();
 }
