@@ -8,3 +8,13 @@ AZakon_Kawalerzysta::AZakon_Kawalerzysta()
 
 }
 
+bool AZakon_Kawalerzysta::ActiveAbility(AKKCharacter* TargetCharacter)
+{
+	return Super::ActiveAbility(TargetCharacter);
+}
+
+bool AZakon_Kawalerzysta::ActiveAbility2(AKKCharacter* TargetCharacter)
+{
+	return Super::ActiveAbility2(TargetCharacter);
+}
+

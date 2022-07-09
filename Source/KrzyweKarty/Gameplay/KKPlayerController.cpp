@@ -5,6 +5,7 @@
 #include "KKCharacter.h"
 #include "KKGameMode.h"
 #include "KrzyweKarty/UI/CharacterStatsWidget.h"
+#include "KrzyweKarty/UI/WidgetManagerComponent.h"
 
 
 AKKPlayerController::AKKPlayerController()
@@ -14,13 +15,8 @@ AKKPlayerController::AKKPlayerController()
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 
-	static ConstructorHelpers::FClassFinder<UCharacterStatsWidget>
-		ClassFinder(TEXT("/Game/UI/WB_CharacterStatsWidget"));
-
-	if (ClassFinder.Class)
-	{
-		CharacterStatsWidgetClass = ClassFinder.Class;
-	}
+	WidgetManager = CreateDefaultSubobject<UWidgetManagerComponent>("WidgetManager");
+	
 }
 
 void AKKPlayerController::BeginPlay()
@@ -29,8 +25,6 @@ void AKKPlayerController::BeginPlay()
 
 	SetInputMode(FInputModeGameAndUI());
 	
-	if(IsLocalController())
-		StatsWidget = CreateWidget<UCharacterStatsWidget>(this, CharacterStatsWidgetClass);
 }
 
 void AKKPlayerController::SetupInputComponent()
@@ -138,6 +132,7 @@ void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
 			GameMode->AddCharacterToMap(SelectedCharacter, TileID, PlayerID);
+			OnCharacterSpawned.Broadcast();
 		}
 	}
 }
@@ -173,14 +168,10 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 
 void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCharacter)
 {
-	if (CharacterStatsWidgetClass)
+	if (UCharacterStatsWidget* Widget = WidgetManager->SelectedCharacterWidget)
 	{
-		if (StatsWidget)
-		{
-			StatsWidget->RemoveFromParent();
-		}
-
-		StatsWidget->ShowStats(CardCharacter);
-		StatsWidget->AddToViewport();
+		Widget->RemoveFromParent();
+		Widget->ShowStats(CardCharacter);
+		Widget->AddToViewport();
 	}
 }

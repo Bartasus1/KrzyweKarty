@@ -11,7 +11,7 @@
  * 
  */
 class AKKCharacter;
-class UCharacterStatsWidget;
+class UWidgetManagerComponent;
 
 
 UENUM()
@@ -23,7 +23,9 @@ enum EMovementDirection
 	EMD_Left
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterSpawnedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterMoveDelegate, EMovementDirection, Direction);
+
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayerController : public APlayerController
@@ -49,6 +51,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FCharacterMoveDelegate OnCharacterMoved;
 
+	UPROPERTY(BlueprintAssignable)
+	FCharacterSpawnedDelegate OnCharacterSpawned;
 
 protected:
 	UFUNCTION(Server, Reliable)
@@ -73,11 +77,8 @@ private:
 	UFUNCTION(Client, Reliable)
 	void ShowCharacterStats(AKKCharacter* CardCharacter);
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
-	TSubclassOf<UCharacterStatsWidget> CharacterStatsWidgetClass;
-
-	UPROPERTY()
-	UCharacterStatsWidget* StatsWidget;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	UWidgetManagerComponent* WidgetManager;
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;

@@ -16,7 +16,7 @@ class KRZYWEKARTY_API AZakon_Kawalerzysta : public AZakon
 public:
 	AZakon_Kawalerzysta();
 
-	//virtual void ActiveAbility() override; //Taranowanie
-	//virtual void ActiveAbility2() override; //Wykop
-	//virtual void PassiveAbility() override; // Jazda Konna
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
+	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
+	
 };
