@@ -13,6 +13,7 @@
 class AKKCharacter;
 class UCharacterStatsWidget;
 
+
 UENUM()
 enum EMovementDirection
 {
@@ -21,6 +22,8 @@ enum EMovementDirection
 	EMD_Right,
 	EMD_Left
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterMoveDelegate, EMovementDirection, Direction);
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayerController : public APlayerController
@@ -42,6 +45,9 @@ public:
 
 	UPROPERTY(Replicated)
 	bool CanMove = true;
+
+	UPROPERTY(BlueprintAssignable)
+	FCharacterMoveDelegate OnCharacterMoved;
 
 
 protected:

@@ -148,6 +148,8 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 	{
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
+			OnCharacterMoved.Broadcast(MovementDirection);
+
 			switch (MovementDirection)
 			{
 			case EMD_Forward:
