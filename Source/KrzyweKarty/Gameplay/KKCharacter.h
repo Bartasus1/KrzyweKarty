@@ -89,7 +89,7 @@ protected:
 	FCharacterStats CharacterStats;
 
 	/// Data Table Access ///
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"), meta=(RowType="CharacterStats"))
 	FDataTableRowHandle StatsDataTableHandle;
 
 	void InitializeStats();

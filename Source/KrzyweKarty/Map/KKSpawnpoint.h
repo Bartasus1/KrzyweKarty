@@ -24,10 +24,10 @@ class KRZYWEKARTY_API AKKSpawnpoint : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
+	// Sets default values for this actor's propertiesRowType="SpawnSet"
 	AKKSpawnpoint();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MustImplement="FSpawnSet"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(RequiredAssetDataTags="RowStructure=SpawnSet"))
 	UDataTable* SpawnTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
