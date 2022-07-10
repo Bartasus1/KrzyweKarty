@@ -2,13 +2,12 @@
 
 
 #include "KKPlayer.h"
-
-#include "KKCharacter.h"
 #include "KKGameMode.h"
 #include "KKPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 
 // Sets default values
 AKKPlayer::AKKPlayer()

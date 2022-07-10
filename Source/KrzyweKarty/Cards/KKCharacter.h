@@ -3,48 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/DataTable.h"
+#include "CharacterDataAsset.h"
 #include "GameFramework/Actor.h"
 #include "Net/UnrealNetwork.h"
 #include "KKCharacter.generated.h"
 
 class AKKPlayerController;
+class UCharacterDataAsset;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
-
-
-USTRUCT(BlueprintType)
-struct FCharacterStats : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Strength;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Defence;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Health;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Mana;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 MaxAttackRange = 1;
-};
-
-UENUM()
-enum EAttackType
-{
-	EAT_DefaultAttack,
-	EAT_ActiveAbility,
-	EAT_PassiveAbility
-};
 
 UCLASS(Abstract)
 class KRZYWEKARTY_API AKKCharacter : public AActor
@@ -66,8 +37,8 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText CharacterName;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UCharacterDataAsset* CharacterDataAsset;
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	AKKPlayerController* OwningPlayer;
@@ -79,16 +50,10 @@ public:
 	FCharacterDiedDelegate OnCharacterDeath;
 
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere) // store max stats values
-	FCharacterStats DefaultCharacterStats;
-
+	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
-
-	/// Data Table Access ///
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"), meta=(RowType="CharacterStats"))
-	FDataTableRowHandle StatsDataTableHandle;
-
+	
 	void InitializeStats();
 
 public:
@@ -115,15 +80,17 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
 public:
+	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
+	
 	FORCEINLINE int32 GetHealth() const { return CharacterStats.Health; }
 	FORCEINLINE int32 GetMana() const { return CharacterStats.Mana; }
 	FORCEINLINE int32 GetDefence() const { return CharacterStats.Defence; }
 	FORCEINLINE int32 GetStrength() const { return CharacterStats.Strength; }
 
-	FORCEINLINE int32 GetDefaultHealth() const { return DefaultCharacterStats.Health; }
-	FORCEINLINE int32 GetDefaultMana() const { return DefaultCharacterStats.Mana; }
-	FORCEINLINE int32 GetDefaultDefence() const { return DefaultCharacterStats.Defence; }
-	FORCEINLINE int32 GetDefaultStrength() const { return DefaultCharacterStats.Strength; }
+	FORCEINLINE int32 GetDefaultHealth() const { return CharacterDataAsset->CharacterStats.Health; }
+	FORCEINLINE int32 GetDefaultMana() const { return CharacterDataAsset->CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefaultDefence() const { return CharacterDataAsset->CharacterStats.Defence; }
+	FORCEINLINE int32 GetDefaultStrength() const { return CharacterDataAsset->CharacterStats.Strength; }
 
 	FORCEINLINE void SetHealth(int32 NewHealth) { CharacterStats.Health = FMath::Clamp(NewHealth, 0, GetDefaultHealth()); }
 	FORCEINLINE void SetMana(int32 NewMana) { CharacterStats.Mana = FMath::Clamp(NewMana, 0, GetDefaultMana()); }

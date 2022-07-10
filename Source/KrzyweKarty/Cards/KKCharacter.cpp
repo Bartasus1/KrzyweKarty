@@ -2,11 +2,10 @@
 
 
 #include "KKCharacter.h"
-
-#include "KKGameMode.h"
-#include "KKPlayerController.h"
 #include "Components/TextRenderComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "KrzyweKarty/Gameplay/KKGameMode.h"
+#include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Interfaces/BaseInterface.h"
 
 // Sets default values
@@ -39,12 +38,9 @@ AKKCharacter::AKKCharacter()
 
 void AKKCharacter::InitializeStats()
 {
-	if (!StatsDataTableHandle.IsNull())
+	if (CharacterDataAsset)
 	{
-		const FCharacterStats* ReadStats = StatsDataTableHandle.GetRow<FCharacterStats>("");
-
-		DefaultCharacterStats = *ReadStats;
-		CharacterStats = *ReadStats;
+		CharacterStats = CharacterDataAsset->CharacterStats;
 	}
 }
 
@@ -140,7 +136,7 @@ void AKKCharacter::BeginPlay()
 
 	InitializeStats();
 
-	TextRenderName->SetText(CharacterName);
+	TextRenderName->SetText(CharacterDataAsset->CharacterName);
 	OwningPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 

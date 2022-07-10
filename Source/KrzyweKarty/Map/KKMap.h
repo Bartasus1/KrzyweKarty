@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "KrzyweKarty/Gameplay/KKCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "KKMap.generated.h"
 
 class UStaticMeshComponent;
+class AKKCharacter;
 
 
 UCLASS()

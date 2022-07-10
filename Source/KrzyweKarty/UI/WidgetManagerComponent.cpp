@@ -18,15 +18,19 @@ void UWidgetManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(SelectedCharacterWidgetClass)
-		SelectedCharacterWidget = CreateWidget<UCharacterStatsWidget>(Cast<AKKPlayerController>(GetOwner()), SelectedCharacterWidgetClass);
+	AKKPlayerController* PlayerController = Cast<AKKPlayerController>(GetOwner());
 
-	if(TargetCharacterWidgetClass)
-		TargetCharacterWidget = CreateWidget<UCharacterStatsWidget>(Cast<AKKPlayerController>(GetOwner()), TargetCharacterWidgetClass);
+	if(PlayerController->IsLocalController())
+	{
+		if(SelectedCharacterWidgetClass)
+			SelectedCharacterWidget = CreateWidget<UCharacterStatsWidget>(Cast<AKKPlayerController>(GetOwner()), SelectedCharacterWidgetClass);
 
-	if(ChangeTurnWidgetClass)
-		ChangeTurnWidget = CreateWidget(Cast<AKKPlayerController>(GetOwner()), ChangeTurnWidgetClass);
-	
+		if(TargetCharacterWidgetClass)
+			TargetCharacterWidget = CreateWidget<UCharacterStatsWidget>(Cast<AKKPlayerController>(GetOwner()), TargetCharacterWidgetClass);
+
+		if(ChangeTurnWidgetClass)
+			ChangeTurnWidget = CreateWidget(Cast<AKKPlayerController>(GetOwner()), ChangeTurnWidgetClass);
+	}
 }
 
 

@@ -2,8 +2,8 @@
 
 
 #include "KKPlayerController.h"
-#include "KKCharacter.h"
 #include "KKGameMode.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/UI/CharacterStatsWidget.h"
 #include "KrzyweKarty/UI/WidgetManagerComponent.h"
 

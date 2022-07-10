@@ -2,7 +2,7 @@
 
 
 #include "KKSpawnpoint.h"
-#include "KrzyweKarty/Gameplay/KKCharacter.h"
+#include "KrzyweKarty/Cards//KKCharacter.h"
 
 // Sets default values
 AKKSpawnpoint::AKKSpawnpoint()

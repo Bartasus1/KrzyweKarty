@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Gameplay/KKCharacter.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "Zakon.generated.h"
 
 /**

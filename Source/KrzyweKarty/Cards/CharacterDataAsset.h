@@ -3,25 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CharacterStructs.h"
 #include "Engine/DataAsset.h"
-#include "KrzyweKarty/Gameplay/KKCharacter.h"
 #include "CharacterDataAsset.generated.h"
 
-/**
- * 
- */
-USTRUCT(BlueprintType)
-struct FAbilityDescription
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText AbilityDescription;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* AbilityImage;
-	
-};
 
 UCLASS(BlueprintType)
 class KRZYWEKARTY_API UCharacterDataAsset : public UDataAsset

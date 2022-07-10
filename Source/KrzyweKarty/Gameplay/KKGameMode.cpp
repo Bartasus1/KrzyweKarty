@@ -4,9 +4,9 @@
 #include "KKGameMode.h"
 #include "KKPlayerController.h"
 #include "GameFramework/PlayerStart.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "Kismet/GameplayStatics.h"
-#include "KrzyweKarty/Interfaces/BaseInterface.h"
 
 AKKGameMode::AKKGameMode()
 {

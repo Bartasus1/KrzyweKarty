@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "KKCharacter.h"
 #include "GameFramework/GameModeBase.h"
 #include "KKGameMode.generated.h"
 

@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KKMap.h"
-
-#include "KrzyweKarty/Interfaces/BaseInterface.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 
 // Sets default values
 AKKMap::AKKMap()
