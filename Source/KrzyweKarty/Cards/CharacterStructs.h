@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "CharacterStructs.generated.h"
 
 USTRUCT(BlueprintType)
@@ -23,23 +22,29 @@ struct FCharacterStats
 	int32 MaxAttackRange = 1;
 };
 
-UENUM()
-enum EAttackType
-{
-	EAT_DefaultAttack,
-	EAT_ActiveAbility,
-	EAT_PassiveAbility
-};
-
 USTRUCT(BlueprintType)
 struct FAbilityDescription
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText AbilityName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText AbilityDescription;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ManaCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* AbilityImage;
 	
+};
+
+UENUM()
+enum EAttackType
+{
+	EAT_DefaultAttack,
+	EAT_ActiveAbility,
+	EAT_PassiveAbility
 };

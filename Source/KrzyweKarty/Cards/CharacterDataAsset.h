@@ -27,11 +27,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCharacterStats CharacterStats;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FAbilityDescription> ActiveAbilitiesDescriptions;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName} --> {AbilityDescription}"))
+	TArray<FAbilityDescription> ActiveAbilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FAbilityDescription> PassiveAbilitiesDescriptions;
+	TArray<FAbilityDescription> PassiveAbilities;
 	
 	
 	UFUNCTION(BlueprintPure)

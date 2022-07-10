@@ -34,14 +34,14 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
+	
 }
 
 void AKKCharacter::InitializeStats()
 {
-	if (CharacterDataAsset)
-	{
-		CharacterStats = CharacterDataAsset->CharacterStats;
-	}
+	check(CharacterDataAsset);
+	
+	CharacterStats = CharacterDataAsset->CharacterStats;
 }
 
 
@@ -125,7 +125,10 @@ bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
 
 bool AKKCharacter::IsFromSameFraction(AKKCharacter* TargetCharacter)
 {
-	return (TargetCharacter->GetClass() == StaticClass());
+	check(CharacterDataAsset);
+	check(TargetCharacter->CharacterDataAsset);
+	
+	return (TargetCharacter->CharacterDataAsset->CharacterFraction == CharacterDataAsset->CharacterFraction);
 }
 
 
@@ -135,8 +138,8 @@ void AKKCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitializeStats();
-
-	TextRenderName->SetText(CharacterDataAsset->CharacterName);
+	
+	TextRenderName->SetText(GetCharacterName());
 	OwningPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 

@@ -37,7 +37,7 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCharacterDataAsset* CharacterDataAsset;
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
@@ -80,28 +80,28 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
 public:
-	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
+	FORCEINLINE FText GetCharacterName() const { check(CharacterDataAsset); return CharacterDataAsset->CharacterName; }
 	
-	FORCEINLINE int32 GetHealth() const { return CharacterStats.Health; }
-	FORCEINLINE int32 GetMana() const { return CharacterStats.Mana; }
-	FORCEINLINE int32 GetDefence() const { return CharacterStats.Defence; }
+	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
+	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefence()	const { return CharacterStats.Defence; }
 	FORCEINLINE int32 GetStrength() const { return CharacterStats.Strength; }
 
-	FORCEINLINE int32 GetDefaultHealth() const { return CharacterDataAsset->CharacterStats.Health; }
-	FORCEINLINE int32 GetDefaultMana() const { return CharacterDataAsset->CharacterStats.Mana; }
-	FORCEINLINE int32 GetDefaultDefence() const { return CharacterDataAsset->CharacterStats.Defence; }
-	FORCEINLINE int32 GetDefaultStrength() const { return CharacterDataAsset->CharacterStats.Strength; }
+	FORCEINLINE int32 GetDefaultHealth()   const { check(CharacterDataAsset);	return CharacterDataAsset->CharacterStats.Health; }
+	FORCEINLINE int32 GetDefaultMana()     const { check(CharacterDataAsset);	return CharacterDataAsset->CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefaultDefence()  const { check(CharacterDataAsset);	return CharacterDataAsset->CharacterStats.Defence; }
+	FORCEINLINE int32 GetDefaultStrength() const { check(CharacterDataAsset);	return CharacterDataAsset->CharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth) { CharacterStats.Health = FMath::Clamp(NewHealth, 0, GetDefaultHealth()); }
-	FORCEINLINE void SetMana(int32 NewMana) { CharacterStats.Mana = FMath::Clamp(NewMana, 0, GetDefaultMana()); }
-	FORCEINLINE void SetDefence(int32 NewDefence) { CharacterStats.Defence = FMath::Clamp(NewDefence, 0, GetDefaultDefence()); }
+	FORCEINLINE void SetHealth(int32 NewHealth)		{ CharacterStats.Health = FMath::Clamp(NewHealth, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana = FMath::Clamp(NewMana, 0, GetDefaultMana()); }
+	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence = FMath::Clamp(NewDefence, 0, GetDefaultDefence()); }
 	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength = FMath::Clamp(NewStrength, 0, GetDefaultStrength()); }
 
-	FORCEINLINE void DecreaseHealth(int32 InHealth = 1) { CharacterStats.Health -= FMath::Clamp(InHealth, 0, GetHealth()); }
-	FORCEINLINE void DecreaseMana(int32 InMana = 1) { CharacterStats.Mana -= FMath::Clamp(InMana, 0, GetMana()); }
+	FORCEINLINE void DecreaseHealth(int32 InHealth = 1)   { CharacterStats.Health -= FMath::Clamp(InHealth, 0, GetHealth()); }
+	FORCEINLINE void DecreaseMana(int32 InMana = 1)		  { CharacterStats.Mana -= FMath::Clamp(InMana, 0, GetMana()); }
 	FORCEINLINE void DecreaseDefence(int32 InDefence = 1) { CharacterStats.Defence -= FMath::Clamp(InDefence, 0, GetDefence()); }
 
-	FORCEINLINE void IncreaseHealth(int32 InHealth = 1) { CharacterStats.Health += FMath::Clamp(InHealth, 0, GetDefaultHealth() - GetHealth()); }
-	FORCEINLINE void IncreaseMana(int32 InMana = 1) { CharacterStats.Mana += FMath::Clamp(InMana, 0, GetDefaultMana() - GetMana()); }
-	FORCEINLINE void IncreaseDefence(int32 InDefence = 1) { CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
+	FORCEINLINE void IncreaseHealth(int32 InHealth = 1)		{ CharacterStats.Health += FMath::Clamp(InHealth, 0, GetDefaultHealth() - GetHealth()); }
+	FORCEINLINE void IncreaseMana(int32 InMana = 1)			{ CharacterStats.Mana += FMath::Clamp(InMana, 0, GetDefaultMana() - GetMana()); }
+	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	{ CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
 };
