@@ -3,6 +3,7 @@
 
 #include "WidgetManagerComponent.h"
 #include "CharacterStatsWidget.h"
+#include "KrzyweKarty/Gameplay/KKPlayerController.h"
 
 // Sets default values for this component's properties
 UWidgetManagerComponent::UWidgetManagerComponent()
@@ -18,13 +19,13 @@ void UWidgetManagerComponent::BeginPlay()
 	Super::BeginPlay();
 
 	if(SelectedCharacterWidgetClass)
-		SelectedCharacterWidget = CreateWidget<UCharacterStatsWidget>(GetOwner(), SelectedCharacterWidgetClass);
+		SelectedCharacterWidget = CreateWidget<UCharacterStatsWidget>(Cast<AKKPlayerController>(GetOwner()), SelectedCharacterWidgetClass);
 
 	if(TargetCharacterWidgetClass)
-		TargetCharacterWidget = CreateWidget<UCharacterStatsWidget>(GetOwner(), TargetCharacterWidgetClass);
+		TargetCharacterWidget = CreateWidget<UCharacterStatsWidget>(Cast<AKKPlayerController>(GetOwner()), TargetCharacterWidgetClass);
 
 	if(ChangeTurnWidgetClass)
-		ChangeTurnWidget = ChangeTurnWidget(GetOwner(), ChangeTurnWidgetClass);
+		ChangeTurnWidget = CreateWidget(Cast<AKKPlayerController>(GetOwner()), ChangeTurnWidgetClass);
 	
 }
 

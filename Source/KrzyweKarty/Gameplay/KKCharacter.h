@@ -23,20 +23,17 @@ struct FCharacterStats : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Strength;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Mana;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Defence;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool CanAttack = true;
-
+	int32 Health;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Mana;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxAttackRange = 1;
 };
