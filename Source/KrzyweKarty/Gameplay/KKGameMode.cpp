@@ -111,7 +111,7 @@ void AKKGameMode::IncreaseMovesCounter()
 {
 	MoveCounter++;
 
-	if (MoveCounter >= 7)
+	if (MoveCounter >= 3)
 	{
 		MoveCounter = 0;
 		ChangeTurn();
