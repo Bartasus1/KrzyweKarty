@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KKMap.h"
+#include "KKTile.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 
 // Sets default values
@@ -105,7 +106,8 @@ void AKKMap::SetupMap()
 		TileLocation.X += (i / MapSize) * SpacingX;
 		TileLocation.Y += (i % MapSize) * SpacingY;
 
-		Tiles.Add(TileLocation);
+		AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileLocation, GetActorRotation());
+		Tiles.Add(Tile);
 	}
 }
 
@@ -122,7 +124,7 @@ bool AKKMap::AssignCharacterToTile(AKKCharacter* Character, int32 TileID)
 	Characters[TileID] = Character;
 
 	Character->OwnedTileID = TileID;
-	Character->SetActorLocation(Tiles[TileID]);
+	Character->SetActorLocation(Tiles[TileID]->GetActorLocation());
 	return true;
 }
 

@@ -9,6 +9,7 @@
 
 class UStaticMeshComponent;
 class AKKCharacter;
+class AKKTile;
 
 
 UCLASS()
@@ -21,7 +22,7 @@ public:
 	AKKMap();
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
-	TArray<FVector> Tiles;
+	TArray<AKKTile*> Tiles;
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
 	TArray<AKKCharacter*> Characters;
