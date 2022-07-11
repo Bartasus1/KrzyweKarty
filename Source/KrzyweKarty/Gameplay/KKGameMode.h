@@ -10,6 +10,8 @@ class AKKMap;
 class AKKCharacter;
 class AKKPlayerController;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerJoinedDelegate);
+
 UCLASS()
 class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 {
@@ -17,6 +19,10 @@ class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 
 public:
 	AKKGameMode();
+
+	UPROPERTY(BlueprintAssignable)
+	FPlayerJoinedDelegate OnPlayerJoined;
+	
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
@@ -49,4 +55,5 @@ protected:
 
 public:
 	FORCEINLINE AKKMap* GetMap() const { return Map; }
+	FORCEINLINE AKKPlayerController* GetPlayerController(int32 PlayerID) const { return Players.IsValidIndex(PlayerID) ? Players[PlayerID] : nullptr; }
 };

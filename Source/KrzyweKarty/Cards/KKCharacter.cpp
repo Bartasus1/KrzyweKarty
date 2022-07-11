@@ -66,7 +66,7 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 {
-	OnCharacterDeath.Broadcast();
+	TargetCharacter->OnCharacterDeath.Broadcast();
 
 	if (HasAuthority() && TargetCharacter->Implements<UBaseInterface>())
 	{
@@ -128,7 +128,7 @@ bool AKKCharacter::IsFromSameFraction(AKKCharacter* TargetCharacter)
 	check(CharacterDataAsset);
 	check(TargetCharacter->CharacterDataAsset);
 	
-	return (TargetCharacter->CharacterDataAsset->CharacterFraction == CharacterDataAsset->CharacterFraction);
+	return (TargetCharacter->OwningPlayer == OwningPlayer);
 }
 
 
@@ -140,16 +140,16 @@ void AKKCharacter::BeginPlay()
 	InitializeStats();
 	
 	TextRenderName->SetText(GetCharacterName());
-	OwningPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	ClientPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 void AKKCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (OwningPlayer)
+	if (ClientPlayer)
 	{
-		TextRenderName->SetWorldRotation(OwningPlayer->GetControlRotation()); //todo: Instead of OwningPlayer use Client's Controller
+		TextRenderName->SetWorldRotation(ClientPlayer->GetControlRotation());
 		TextRenderName->AddRelativeRotation(FRotator(0, 180, 0));
 	}
 }

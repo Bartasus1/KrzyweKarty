@@ -42,6 +42,9 @@ protected:
 
 	void SpawnCards();
 
+	UFUNCTION()
+	void AssignPlayerToCards();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

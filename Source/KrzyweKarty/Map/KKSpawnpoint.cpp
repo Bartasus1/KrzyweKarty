@@ -3,6 +3,7 @@
 
 #include "KKSpawnpoint.h"
 #include "KrzyweKarty/Cards//KKCharacter.h"
+#include "KrzyweKarty/Gameplay/KKGameMode.h"
 
 // Sets default values
 AKKSpawnpoint::AKKSpawnpoint()
@@ -20,7 +21,11 @@ void AKKSpawnpoint::BeginPlay()
 	if (HasAuthority())
 	{
 		SpawnCards();
-		//todo: assign spawned cards to player controller
+
+		if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			GameMode->OnPlayerJoined.AddUniqueDynamic(this, &AKKSpawnpoint::AssignPlayerToCards);
+		}
 	}
 }
 
@@ -49,6 +54,19 @@ void AKKSpawnpoint::SpawnCards()
 
 		StartLocation.Y += Spacing;
 	}
+}
+
+void AKKSpawnpoint::AssignPlayerToCards()
+{
+	UE_LOG(LogTemp, Warning, TEXT("PlayerID: %d, Accesed Index: %d"), ID, ID-1);
+	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		for (auto & Character : SpawnedCards)
+		{
+			Character->OwningPlayer = GameMode->GetPlayerController(ID - 1);
+		}
+	}
+	
 }
 
 // Called every frame

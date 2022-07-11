@@ -10,7 +10,7 @@ void UCharacterStatsWidget::ShowStats(AKKCharacter* NewCharacter)
 	Character = NewCharacter;
 
 	CharacterNameText->SetText(Character->GetCharacterName());
-
+	
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
 }
 

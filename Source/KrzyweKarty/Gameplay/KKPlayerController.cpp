@@ -81,15 +81,12 @@ AKKCharacter* AKKPlayerController::TraceForCharacter()
 
 void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
-	// if (CardCharacter->OwningPlayer == this)
-	// {
-	if (TracedCharacter != nullptr)
+	if (TracedCharacter != nullptr && TracedCharacter->OwningPlayer == this)
 	{
 		SelectedCharacter = TracedCharacter;
 
 		ShowCharacterStats(SelectedCharacter);
 	}
-	//}
 }
 
 void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)

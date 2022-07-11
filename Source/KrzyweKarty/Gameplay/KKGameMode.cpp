@@ -19,7 +19,10 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 	if (AKKPlayerController* PlayerController = Cast<AKKPlayerController>(NewPlayer))
 	{
 		Players.Add(PlayerController);
+		
 		PlayerController->PlayerID = Players.Num();
+
+		OnPlayerJoined.Broadcast();
 
 		if (Players.Num() == 2)
 		{
@@ -108,7 +111,7 @@ void AKKGameMode::IncreaseMovesCounter()
 {
 	MoveCounter++;
 
-	if (MoveCounter >= 3)
+	if (MoveCounter >= 7)
 	{
 		MoveCounter = 0;
 		ChangeTurn();
