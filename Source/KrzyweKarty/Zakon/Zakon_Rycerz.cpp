@@ -9,11 +9,11 @@ AZakon_Rycerz::AZakon_Rycerz()
 
 bool AZakon_Rycerz::ActiveAbility(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < 2)
+	if (GetMana() < GetAbilityManaCost())
 		return false;
 
 	IncreaseHealth(4);
-	DecreaseMana(2);
+	DecreaseManaForAbility();
 
 	return true;
 }

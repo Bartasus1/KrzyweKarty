@@ -25,7 +25,7 @@ FText UCharacterStatsWidget::HealthText()
 	if (!Character)
 		return FText();
 
-	return FText::FormatOrdered(FormatText, FText::FromString("Health"), Character->GetHealth(), Character->GetDefaultHealth());
+	return FText::FormatOrdered(FormatText, Character->GetHealth(), Character->GetDefaultHealth());
 }
 
 FText UCharacterStatsWidget::ManaText()
@@ -33,7 +33,7 @@ FText UCharacterStatsWidget::ManaText()
 	if (!Character)
 		return FText();
 
-	return FText::FormatOrdered(FormatText, FText::FromString("Mana"), Character->GetMana(), Character->GetDefaultMana());
+	return FText::FormatOrdered(FormatText, Character->GetMana(), Character->GetDefaultMana());
 }
 
 FText UCharacterStatsWidget::DefenceText()
@@ -41,7 +41,7 @@ FText UCharacterStatsWidget::DefenceText()
 	if (!Character)
 		return FText();
 
-	return FText::FormatOrdered(FormatText, FText::FromString("Defence"), Character->GetDefence(), Character->GetDefaultDefence());
+	return FText::FormatOrdered(FormatText, Character->GetDefence(), Character->GetDefaultDefence());
 }
 
 FText UCharacterStatsWidget::StrengthText()
@@ -49,7 +49,7 @@ FText UCharacterStatsWidget::StrengthText()
 	if (!Character)
 		return FText();
 
-	return FText::FormatOrdered(FormatText, FText::FromString("Strength"), Character->GetStrength(), Character->GetDefaultStrength());
+	return FText::FormatOrdered(FormatText, Character->GetStrength(), Character->GetDefaultStrength());
 }
 
 void UCharacterStatsWidget::RemoveCharacter()

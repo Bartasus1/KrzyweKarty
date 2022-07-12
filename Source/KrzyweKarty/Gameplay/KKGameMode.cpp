@@ -120,8 +120,8 @@ void AKKGameMode::IncreaseMovesCounter()
 
 void AKKGameMode::ChangeTurn()
 {
-	Players[0]->CanMove = FirstPlayerTurn;
-	Players[1]->CanMove = !FirstPlayerTurn;
+	Players[0]->IsMyTurn = FirstPlayerTurn;
+	Players[1]->IsMyTurn = !FirstPlayerTurn;
 
 	FirstPlayerTurn = !FirstPlayerTurn;
 }

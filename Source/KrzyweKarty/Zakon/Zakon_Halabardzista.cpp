@@ -9,7 +9,7 @@ AZakon_Halabardzista::AZakon_Halabardzista()
 
 bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < 2)
+	if (GetMana() < GetAbilityManaCost())
 		return false;
 
 	if (TargetCharacter == nullptr || !IsInLineWith(TargetCharacter))
@@ -32,7 +32,7 @@ bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 			break;
 		}
 
-		DecreaseMana(2);
+		DecreaseManaForAbility();
 		return true;
 	}
 

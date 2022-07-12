@@ -107,4 +107,9 @@ public:
 	FORCEINLINE void IncreaseHealth(int32 InHealth = 1)		{ CharacterStats.Health += FMath::Clamp(InHealth, 0, GetDefaultHealth() - GetHealth()); }
 	FORCEINLINE void IncreaseMana(int32 InMana = 1)			{ CharacterStats.Mana += FMath::Clamp(InMana, 0, GetDefaultMana() - GetMana()); }
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	{ CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
+
+	FORCEINLINE int32 GetAbilityManaCost(int32 Ability = 0) const
+	{ check(&CharacterDataAsset->ActiveAbilities[Ability]) return CharacterDataAsset->ActiveAbilities[Ability].ManaCost; }
+
+	FORCEINLINE void DecreaseManaForAbility(int32 Ability = 0) { DecreaseMana(GetAbilityManaCost(Ability)); }
 };

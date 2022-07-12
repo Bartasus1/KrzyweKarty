@@ -30,7 +30,7 @@ bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 {
-	if (GetMana() < 2 || !HasAuthority())
+	if (GetMana() < GetAbilityManaCost() || !HasAuthority())
 		return false;
 
 	if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
@@ -58,7 +58,7 @@ bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 			}
 		}
 
-		DecreaseMana(2);
+		DecreaseManaForAbility();
 		return true;
 	}
 

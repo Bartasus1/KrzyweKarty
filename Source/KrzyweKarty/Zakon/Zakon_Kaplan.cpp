@@ -20,7 +20,7 @@ bool AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 
 bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < 5)
+	if (GetMana() < GetAbilityManaCost())
 		return false;
 
 	if (IsFromSameFraction(TargetCharacter))
@@ -34,19 +34,20 @@ bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 		IncreaseMana(4);
 	}
 
-	DecreaseMana(5);
+	DecreaseManaForAbility();
 	return true;
 }
 
 bool AZakon_Kaplan::ActiveAbility2(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < 5 || TargetCharacter == nullptr)
+	if (GetMana() < GetAbilityManaCost() || TargetCharacter == nullptr)
 		return false;
 
 	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsFromSameFraction(TargetCharacter))
 	{
 		DealDamage(TargetCharacter, 17);
-		DecreaseMana(5);
+		
+		DecreaseManaForAbility(1);
 		return true;
 	}
 

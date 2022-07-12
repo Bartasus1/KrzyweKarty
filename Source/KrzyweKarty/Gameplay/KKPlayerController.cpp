@@ -19,6 +19,7 @@ AKKPlayerController::AKKPlayerController()
 	
 }
 
+
 void AKKPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -58,7 +59,7 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AKKPlayerController, TargetedCharacter);
 
 	DOREPLIFETIME(AKKPlayerController, PlayerID);
-	DOREPLIFETIME(AKKPlayerController, CanMove);
+	DOREPLIFETIME(AKKPlayerController, IsMyTurn);
 }
 
 AKKCharacter* AKKPlayerController::TraceForCharacter()
@@ -92,6 +93,7 @@ void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCha
 void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
 	TargetedCharacter = TracedCharacter;
+	ShowTargetStats(TracedCharacter);
 }
 
 void AKKPlayerController::Server_AttackCharacter_Implementation()
@@ -166,6 +168,16 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCharacter)
 {
 	if (UCharacterStatsWidget* Widget = WidgetManager->SelectedCharacterWidget)
+	{
+		Widget->RemoveFromParent();
+		Widget->ShowStats(CardCharacter);
+		Widget->AddToViewport();
+	}
+}
+
+void AKKPlayerController::ShowTargetStats_Implementation(AKKCharacter* CardCharacter)
+{
+	if (UCharacterStatsWidget* Widget = WidgetManager->TargetCharacterWidget)
 	{
 		Widget->RemoveFromParent();
 		Widget->ShowStats(CardCharacter);

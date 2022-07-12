@@ -42,7 +42,7 @@ protected:
 	UTextBlock* CharacterStrengthText;
 
 public:
-	const FText FormatText = FText::FromString("{0}: {1} / {2}");
+	const FText FormatText = FText::FromString("{0} / {1}");
 
 	UFUNCTION(BlueprintPure)
 	FText HealthText();
