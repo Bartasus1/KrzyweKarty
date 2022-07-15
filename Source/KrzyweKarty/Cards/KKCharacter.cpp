@@ -140,7 +140,7 @@ void AKKCharacter::BeginPlay()
 	InitializeStats();
 	
 	TextRenderName->SetText(GetCharacterName());
-	ClientPlayer = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	ClientPlayer = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
 void AKKCharacter::Tick(float DeltaSeconds)

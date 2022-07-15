@@ -93,7 +93,11 @@ void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCha
 void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
 {
 	TargetedCharacter = TracedCharacter;
-	ShowTargetStats(TracedCharacter);
+	
+	if(TargetedCharacter != nullptr)
+	{
+		ShowTargetStats(TracedCharacter);
+	}
 }
 
 void AKKPlayerController::Server_AttackCharacter_Implementation()

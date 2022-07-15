@@ -32,6 +32,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName} --> {AbilityDescription}"))
 	TArray<FAbilityDescription> PassiveAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
+	USkeletalMesh* SkeletalMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
+	UAnimMontage* CharacterSpawnAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
+	UAnimMontage* CharacterAttackAnimation;
 	
 	
 	UFUNCTION(BlueprintPure)

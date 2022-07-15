@@ -76,7 +76,7 @@ public:
 	virtual bool CanBeAttacked(EAttackType AttackType) { return (OwnedTileID != -1); }
 private:
 	UPROPERTY()
-	AKKPlayerController* ClientPlayer;
+	APlayerController* ClientPlayer;
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
