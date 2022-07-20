@@ -6,7 +6,7 @@
 #include "CharacterStructs.h"
 #include "Engine/DataAsset.h"
 #include "CharacterDataAsset.generated.h"
-
+ 
 
 UCLASS(BlueprintType)
 class KRZYWEKARTY_API UCharacterDataAsset : public UDataAsset
