@@ -30,37 +30,50 @@ bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 {
-	if (GetMana() < GetAbilityManaCost() || !HasAuthority())
+	if (GetMana() < GetAbilityManaCost())
 		return false;
+	
+	for(AKKCharacter* Character : GetAffectedCharacters())
+	{
+		if(Character->CanBeAttacked(EAT_ActiveAbility) && !IsInTheSameTeam(Character))
+		{
+			DealDamage(Character, 5);
+		}
+	}
+	
+	DecreaseManaForFirstAbility();
+	
+	return true;
 
-	if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+}
+
+TArray<AKKCharacter*> AZakon_Lucznik::GetAffectedCharacters()
+{
+	TArray<AKKCharacter*> AffectedCharacters;
+	
+	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		AKKMap* Map = GameMode->GetMap();
 		int32 MapSize = Map->GetMapSize();
 
-		int32 MyRow = OwnedTileID / MapSize;
-		int32 MyCollumn = OwnedTileID % MapSize;
+		const int32 MyRow = OwnedTileID / MapSize;
+		const int32 MyColumn = OwnedTileID % MapSize;
 
-		int32 TargetRow = FMath::Clamp(MyRow + 2, 0, MapSize);
+		const int32 TargetRow = FMath::Clamp(MyRow + 2, 0, MapSize);
 
-		for (int32 i = MyCollumn - 1; i <= MyCollumn + 1; i++) // 3 collumn attack
+		for (int32 TargetColumn = MyColumn - 1; TargetColumn <= MyColumn + 1; TargetColumn++) // 3 collumn attack
 		{
-			int32 TargetTileID = FMath::Clamp((TargetRow * MapSize) + i, 0, 19);
+			const int32 TargetTileID = FMath::Clamp((TargetRow * MapSize) + TargetColumn, 0, 19);
 
-			if (TargetTileID / MapSize == TargetRow) //check if target is on the targetRow (might changed if we are close to map boundaries) 
+			if (TargetTileID / MapSize == TargetRow) //check if target is on the targetRow (might changed if we are close to map boundaries
 			{
-				AKKCharacter* Character = Map->Characters[TargetTileID];
-				
-				if(Character->CanBeAttacked(EAT_ActiveAbility) && !IsFromSameFraction(Character))
+				if(AKKCharacter* Character = Map->Characters[TargetTileID])
 				{
-					DealDamage(Character, 5);
+					AffectedCharacters.Add(Character);
 				}
 			}
 		}
-
-		DecreaseManaForAbility();
-		return true;
 	}
-
-	return false;
+	
+	return AffectedCharacters;
 }

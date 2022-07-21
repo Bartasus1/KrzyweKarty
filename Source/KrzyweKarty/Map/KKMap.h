@@ -52,5 +52,5 @@ private:
 	const uint8 MapSize = 4;
 
 public:
-	FORCEINLINE int8 GetMapSize() const { return MapSize; }
+	FORCEINLINE uint8 GetMapSize() const { return MapSize; }
 };

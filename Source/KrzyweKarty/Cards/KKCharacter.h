@@ -40,16 +40,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCharacterDataAsset* CharacterDataAsset;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
 	AKKPlayerController* OwningPlayer;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	int32 OwnedTileID = -1;
-
+	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
 
 protected:
+
+	UPROPERTY(Replicated, BlueprintReadWrite)
+	TArray<bool> PerformedMoves;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
@@ -69,7 +72,6 @@ protected:
 
 	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
 	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
-	bool IsFromSameFraction(AKKCharacter* TargetCharacter);
 
 public:
 	virtual int32 GetStrengthAtDistance(int32 Distance) { return GetStrength(); }
@@ -111,5 +113,11 @@ public:
 	FORCEINLINE int32 GetAbilityManaCost(int32 Ability = 0) const
 	{ check(&CharacterDataAsset->ActiveAbilities[Ability]) return CharacterDataAsset->ActiveAbilities[Ability].ManaCost; }
 
-	FORCEINLINE void DecreaseManaForAbility(int32 Ability = 0) { DecreaseMana(GetAbilityManaCost(Ability)); }
+	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetAbilityManaCost(0)); }
+	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetAbilityManaCost(1)); }
+	
+	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
+
+	FORCEINLINE void PerformMove(EMovementOrder Move) { PerformedMoves[Move] = true; }
+	FORCEINLINE void ResetMoves() { PerformedMoves.Reset(); PerformedMoves.Init(false, EMO_Count); }
 };

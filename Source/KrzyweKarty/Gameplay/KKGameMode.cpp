@@ -40,7 +40,7 @@ AActor* AKKGameMode::ChoosePlayerStart_Implementation(AController* Player)
 	{
 		if (APlayerStart* StartPoint = Cast<APlayerStart>(Point))
 		{
-			if (StartPoint->PlayerStartTag.ToString() == FString::FromInt(Players.Num() + 1))
+			if (StartPoint->PlayerStartTag.ToString() == FString::FromInt(Players.Num() + 1)) //happens before PostLogin()
 			{
 				return StartPoint;
 			}
@@ -55,45 +55,67 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
+		Character->PerformMove(EMO_SummonedCharacter);
+		CharactersUsedInRound.Add(Character);
 		IncreaseMovesCounter();
 	}
 }
 
-void AKKGameMode::MoveForward(AKKCharacter* Character, int32 PlayerID)
+void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID)
 {
-	if ((PlayerID == 1) ? Map->MoveForward(Character) : Map->MoveBackward(Character))
+	auto MoveFunction = &AKKMap::MoveForward;
+
+	switch (MovementDirection)
 	{
+		case EMD_Forward:
+			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveForward : &AKKMap::MoveBackward;
+			break;
+		case EMD_Backward:
+			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveBackward : &AKKMap::MoveForward;
+			break;
+		case EMD_Right:
+			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveRight : &AKKMap::MoveLeft;
+			break;
+		case EMD_Left:
+			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveLeft : &AKKMap::MoveRight;
+			break;
+		default:
+			break;
+	}
+	
+	if((Map->*MoveFunction)(Character))
+	{
+		Character->PerformMove(EMO_MovedCharacter);
+		CharactersUsedInRound.Add(Character);
 		IncreaseMovesCounter();
 	}
 }
 
-void AKKGameMode::MoveBackward(AKKCharacter* Character, int32 PlayerID)
+void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if ((PlayerID == 1) ? Map->MoveBackward(Character) : Map->MoveForward(Character))
+	if(Character->DefaultAttack(TargetCharacter))
 	{
+		Character->PerformMove(EMO_PerformedAttack);
+		CharactersUsedInRound.Add(Character);
 		IncreaseMovesCounter();
 	}
 }
 
-void AKKGameMode::MoveRight(AKKCharacter* Character, int32 PlayerID)
+void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if ((PlayerID == 1) ? Map->MoveRight(Character) : Map->MoveLeft(Character))
+	if(Character->ActiveAbility(TargetCharacter))
 	{
+		Character->PerformMove(EMO_PerformedAttack);
+		CharactersUsedInRound.Add(Character);
 		IncreaseMovesCounter();
 	}
 }
 
-void AKKGameMode::MoveLeft(AKKCharacter* Character, int32 PlayerID)
-{
-	if ((PlayerID == 1) ? Map->MoveLeft(Character) : Map->MoveRight(Character))
-	{
-		IncreaseMovesCounter();
-	}
-}
 
 void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 {
 	AKKPlayerController* Winner = Players[PlayerID - 1];
+	//todo
 }
 
 void AKKGameMode::BeginPlay()
@@ -124,5 +146,10 @@ void AKKGameMode::ChangeTurn()
 	Players[1]->IsMyTurn = !FirstPlayerTurn;
 
 	FirstPlayerTurn = !FirstPlayerTurn;
+
+	for(AKKCharacter* Character : CharactersUsedInRound)
+	{
+		Character->ResetMoves();
+	}
 }
 

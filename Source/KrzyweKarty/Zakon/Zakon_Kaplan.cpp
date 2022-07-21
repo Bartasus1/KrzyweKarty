@@ -23,7 +23,7 @@ bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 	if (GetMana() < GetAbilityManaCost())
 		return false;
 
-	if (IsFromSameFraction(TargetCharacter))
+	if (IsInTheSameTeam(TargetCharacter))
 	{
 		TargetCharacter->IncreaseHealth(3);
 		TargetCharacter->IncreaseMana(4);
@@ -34,7 +34,7 @@ bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 		IncreaseMana(4);
 	}
 
-	DecreaseManaForAbility();
+	DecreaseManaForFirstAbility();
 	return true;
 }
 
@@ -43,11 +43,11 @@ bool AZakon_Kaplan::ActiveAbility2(AKKCharacter* TargetCharacter)
 	if (GetMana() < GetAbilityManaCost() || TargetCharacter == nullptr)
 		return false;
 
-	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsFromSameFraction(TargetCharacter))
+	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsInTheSameTeam(TargetCharacter))
 	{
 		DealDamage(TargetCharacter, 17);
 		
-		DecreaseManaForAbility(1);
+		DecreaseManaForSecondAbility();
 		return true;
 	}
 

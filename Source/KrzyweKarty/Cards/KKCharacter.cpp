@@ -34,7 +34,8 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-	
+
+	PerformedMoves.Init(false, EMO_Count);
 }
 
 void AKKCharacter::InitializeStats()
@@ -53,10 +54,11 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	if (GetDistanceTo(TargetCharacter) > CharacterStats.MaxAttackRange || !IsInLineWith(TargetCharacter))
 		return false;
 
-	if (TargetCharacter->CanBeAttacked(EAT_DefaultAttack) && !IsFromSameFraction(TargetCharacter))
+	if (TargetCharacter->CanBeAttacked(EAT_DefaultAttack) && !IsInTheSameTeam(TargetCharacter))
 	{
 		const int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
 		DealDamage(TargetCharacter, Damage);
+		PerformMove(EMO_PerformedAttack);
 		return true;
 	}
 
@@ -103,6 +105,8 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 		{
 			return 0;
 		}
+
+		return  MAX_int32;
 	}
 
 	FVector2D PositionOne = FVector2D(OwnedTileID / 4, OwnedTileID % 4);
@@ -121,14 +125,6 @@ bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
 	bool InLineY = (OwnedTileID % 4) == (TargetTileID % 4);
 
 	return (InLineX || InLineY);
-}
-
-bool AKKCharacter::IsFromSameFraction(AKKCharacter* TargetCharacter)
-{
-	check(CharacterDataAsset);
-	check(TargetCharacter->CharacterDataAsset);
-	
-	return (TargetCharacter->OwningPlayer == OwningPlayer);
 }
 
 
@@ -161,6 +157,7 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
 	DOREPLIFETIME(AKKCharacter, OwningPlayer);
 	DOREPLIFETIME(AKKCharacter, OwnedTileID);
+	DOREPLIFETIME(AKKCharacter, PerformedMoves);
 }
 
 /*

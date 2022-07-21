@@ -15,7 +15,7 @@ bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 	if (TargetCharacter == nullptr || !IsInLineWith(TargetCharacter))
 		return false;
 
-	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsFromSameFraction(TargetCharacter))
+	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsInTheSameTeam(TargetCharacter))
 	{
 		switch (GetDistanceTo(TargetCharacter))
 		{
@@ -32,7 +32,7 @@ bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 			break;
 		}
 
-		DecreaseManaForAbility();
+		DecreaseManaForFirstAbility();
 		return true;
 	}
 

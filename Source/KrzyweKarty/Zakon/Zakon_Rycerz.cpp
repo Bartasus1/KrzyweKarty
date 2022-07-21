@@ -13,7 +13,7 @@ bool AZakon_Rycerz::ActiveAbility(AKKCharacter* TargetCharacter)
 		return false;
 
 	IncreaseHealth(4);
-	DecreaseManaForAbility();
+	DecreaseManaForFirstAbility();
 
 	return true;
 }

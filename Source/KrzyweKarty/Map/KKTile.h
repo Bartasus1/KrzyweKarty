@@ -23,6 +23,9 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere)
 	int32 TileID;
 
+	void HighlightTile(FColor Color);
+	void StopTileHighlight();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

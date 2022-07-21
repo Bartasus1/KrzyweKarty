@@ -58,7 +58,7 @@ void AKKSpawnpoint::SpawnCards()
 
 void AKKSpawnpoint::AssignPlayerToCards()
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerID: %d, Accesed Index: %d"), ID, ID-1);
+	UE_LOG(LogTemp, Warning, TEXT("PlayerID: %d, Accessed Index: %d"), ID, ID-1);
 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		for (auto & Character : SpawnedCards)

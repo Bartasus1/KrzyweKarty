@@ -37,7 +37,7 @@ public:
 	USkeletalMesh* SkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
-	UAnimMontage* CharacterSpawnAnimation;
+	UAnimMontage* CharacterSummonAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
 	UAnimMontage* CharacterAttackAnimation;

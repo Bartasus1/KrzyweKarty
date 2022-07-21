@@ -75,6 +75,7 @@ AKKCharacter* AKKPlayerController::TraceForCharacter()
 
 	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(HitResult.GetActor()))
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *CardCharacter->GetCharacterName().ToString());
 		return CardCharacter;
 	}
 	return nullptr;
@@ -102,70 +103,48 @@ void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCha
 
 void AKKPlayerController::Server_AttackCharacter_Implementation()
 {
-	if (SelectedCharacter && TargetedCharacter)
+	if (!SelectedCharacter || !TargetedCharacter)
+		return;
+	
+	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		if(SelectedCharacter->DefaultAttack(TargetedCharacter))
-		{
-			if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-			{
-				GameMode->IncreaseMovesCounter();
-			}
-		}
+		GameMode->PerformCharacterAttack(SelectedCharacter, TargetedCharacter);
 	}
 }
 
 void AKKPlayerController::Server_ActiveAbility_Implementation()
 {
-	if (SelectedCharacter)
+	if (!SelectedCharacter)
+		return;
+	
+	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		if(SelectedCharacter->ActiveAbility(TargetedCharacter))
-		{
-			if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-			{
-				GameMode->IncreaseMovesCounter();
-			}
-		}
+		GameMode->PerformCharacterAbility(SelectedCharacter, TargetedCharacter);
 	}
 }
 
 void AKKPlayerController::Server_AddCharacterToMap_Implementation(int32 TileID)
 {
-	if (HasAuthority() && SelectedCharacter != nullptr)
+	if (!SelectedCharacter)
+		return;
+	
+	if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-		{
-			GameMode->AddCharacterToMap(SelectedCharacter, TileID, PlayerID);
-			OnCharacterSpawned.Broadcast();
-		}
+		GameMode->AddCharacterToMap(SelectedCharacter, TileID, PlayerID);
+		OnCharacterSpawned.Broadcast();
 	}
 }
 
 void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection MovementDirection)
 {
-	if (HasAuthority() && SelectedCharacter != nullptr)
+	if (!SelectedCharacter)
+		return;
+	
+	if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-		{
-			OnCharacterMoved.Broadcast(MovementDirection);
+		OnCharacterMoved.Broadcast(MovementDirection);
 
-			switch (MovementDirection)
-			{
-			case EMD_Forward:
-				GameMode->MoveForward(SelectedCharacter, PlayerID);
-				break;
-			case EMD_Backward:
-				GameMode->MoveBackward(SelectedCharacter, PlayerID);
-				break;
-			case EMD_Right:
-				GameMode->MoveRight(SelectedCharacter, PlayerID);
-				break;
-			case EMD_Left:
-				GameMode->MoveLeft(SelectedCharacter, PlayerID);
-				break;
-			default:
-				break;
-			}
-		}
+		GameMode->MoveCharacter(SelectedCharacter, MovementDirection, PlayerID);
 	}
 }
 

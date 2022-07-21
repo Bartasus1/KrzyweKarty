@@ -22,6 +22,17 @@ AKKTile::AKKTile()
 
 }
 
+void AKKTile::HighlightTile(FColor Color)
+{
+	BoxCollision->SetHiddenInGame(false);
+	BoxCollision->ShapeColor = Color;
+}
+
+void AKKTile::StopTileHighlight()
+{
+	BoxCollision->SetHiddenInGame(true);
+}
+
 // Called when the game starts or when spawned
 void AKKTile::BeginPlay()
 {

@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "KKPlayerController.h"
 #include "GameFramework/GameModeBase.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KKGameMode.generated.h"
 
 class AKKMap;
 class AKKCharacter;
-class AKKPlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerJoinedDelegate);
 
@@ -21,7 +22,7 @@ public:
 	AKKGameMode();
 
 	UPROPERTY(BlueprintAssignable)
-	FPlayerJoinedDelegate OnPlayerJoined;
+	FPlayerJoinedDelegate OnPlayerJoined; // assign cards to player on join
 	
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
@@ -29,11 +30,9 @@ protected:
 
 public:
 	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
-
-	void MoveForward(AKKCharacter* Character, int32 PlayerID);
-	void MoveBackward(AKKCharacter* Character, int32 PlayerID);
-	void MoveRight(AKKCharacter* Character, int32 PlayerID);
-	void MoveLeft(AKKCharacter* Character, int32 PlayerID);
+	void MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID);
+	void PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter);
+	void PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter);
 
 	void EndGameWithWinner(int32 PlayerID);
 	void IncreaseMovesCounter();
@@ -53,7 +52,11 @@ protected:
 	UPROPERTY(Transient)
 	TArray<AKKPlayerController*> Players;
 
+	UPROPERTY(Transient)
+	TArray<AKKCharacter*> CharactersUsedInRound;
+
 public:
 	FORCEINLINE AKKMap* GetMap() const { return Map; }
 	FORCEINLINE AKKPlayerController* GetPlayerController(int32 PlayerID) const { return Players.IsValidIndex(PlayerID) ? Players[PlayerID] : nullptr; }
 };
+
