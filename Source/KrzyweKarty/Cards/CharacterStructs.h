@@ -48,12 +48,3 @@ enum EAttackType
 	EAT_ActiveAbility,
 	EAT_PassiveAbility
 };
-
-UENUM(BlueprintType)
-enum EMovementOrder
-{
-	EMO_SummonedCharacter = 0	UMETA(DisplayName="Summoned Character"),
-	EMO_MovedCharacter			UMETA(DisplayName="Moved Character"),
-	EMO_PerformedAttack			UMETA(DisplayName="Performed Attack"),
-	EMO_Count					UMETA(Hidden)
-};

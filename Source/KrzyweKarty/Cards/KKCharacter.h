@@ -50,9 +50,6 @@ public:
 	FCharacterDiedDelegate OnCharacterDeath;
 
 protected:
-
-	UPROPERTY(Replicated, BlueprintReadWrite)
-	TArray<bool> PerformedMoves;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
@@ -117,7 +114,4 @@ public:
 	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetAbilityManaCost(1)); }
 	
 	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
-
-	FORCEINLINE void PerformMove(EMovementOrder Move) { PerformedMoves[Move] = true; }
-	FORCEINLINE void ResetMoves() { PerformedMoves.Reset(); PerformedMoves.Init(false, EMO_Count); }
 };

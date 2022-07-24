@@ -10,6 +10,7 @@
 
 class AKKMap;
 class AKKCharacter;
+class URoundManager;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerJoinedDelegate);
 
@@ -23,7 +24,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FPlayerJoinedDelegate OnPlayerJoined; // assign cards to player on join
-	
+
 protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
@@ -35,14 +36,17 @@ public:
 	void PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter);
 
 	void EndGameWithWinner(int32 PlayerID);
-	void IncreaseMovesCounter();
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
 	void ChangeTurn();
 
 private:
-	int8 MoveCounter = 0;
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
+	URoundManager* RoundManager;
+
 	bool FirstPlayerTurn = true;
 
 protected:
@@ -52,11 +56,7 @@ protected:
 	UPROPERTY(Transient)
 	TArray<AKKPlayerController*> Players;
 
-	UPROPERTY(Transient)
-	TArray<AKKCharacter*> CharactersUsedInRound;
-
 public:
 	FORCEINLINE AKKMap* GetMap() const { return Map; }
 	FORCEINLINE AKKPlayerController* GetPlayerController(int32 PlayerID) const { return Players.IsValidIndex(PlayerID) ? Players[PlayerID] : nullptr; }
 };
-

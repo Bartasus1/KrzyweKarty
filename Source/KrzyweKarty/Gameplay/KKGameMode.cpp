@@ -3,6 +3,7 @@
 
 #include "KKGameMode.h"
 #include "KKPlayerController.h"
+#include "RoundManager.h"
 #include "GameFramework/PlayerStart.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Map/KKMap.h"
@@ -10,6 +11,9 @@
 
 AKKGameMode::AKKGameMode()
 {
+	RoundManager = CreateDefaultSubobject<URoundManager>("RoundManager");
+
+	RoundManager->OnRoundEnd.AddUniqueDynamic(this, &AKKGameMode::ChangeTurn);
 }
 
 void AKKGameMode::PostLogin(APlayerController* NewPlayer)
@@ -19,7 +23,7 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 	if (AKKPlayerController* PlayerController = Cast<AKKPlayerController>(NewPlayer))
 	{
 		Players.Add(PlayerController);
-		
+
 		PlayerController->PlayerID = Players.Num();
 
 		OnPlayerJoined.Broadcast();
@@ -55,18 +59,18 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
-		Character->PerformMove(EMO_SummonedCharacter);
-		CharactersUsedInRound.Add(Character);
-		IncreaseMovesCounter();
+		RoundManager->AddCharacterToList(Character, EMP_SummonedCharacter);
 	}
 }
 
 void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID)
 {
-	auto MoveFunction = &AKKMap::MoveForward;
-
-	switch (MovementDirection)
+	if (RoundManager->CanUseCharacter(Character, EMP_MovedCharacter))
 	{
+		auto MoveFunction = &AKKMap::MoveForward;
+
+		switch (MovementDirection)
+		{
 		case EMD_Forward:
 			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveForward : &AKKMap::MoveBackward;
 			break;
@@ -81,33 +85,34 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection Move
 			break;
 		default:
 			break;
-	}
-	
-	if((Map->*MoveFunction)(Character))
-	{
-		Character->PerformMove(EMO_MovedCharacter);
-		CharactersUsedInRound.Add(Character);
-		IncreaseMovesCounter();
+		}
+
+		if ((Map->*MoveFunction)(Character))
+		{
+			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
+		}
 	}
 }
 
 void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if(Character->DefaultAttack(TargetCharacter))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackedCharacter))
 	{
-		Character->PerformMove(EMO_PerformedAttack);
-		CharactersUsedInRound.Add(Character);
-		IncreaseMovesCounter();
+		if (Character->DefaultAttack(TargetCharacter))
+		{
+			RoundManager->AddCharacterToList(Character, EMP_AttackedCharacter);
+		}
 	}
 }
 
 void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if(Character->ActiveAbility(TargetCharacter))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackedCharacter))
 	{
-		Character->PerformMove(EMO_PerformedAttack);
-		CharactersUsedInRound.Add(Character);
-		IncreaseMovesCounter();
+		if (Character->ActiveAbility(TargetCharacter))
+		{
+			RoundManager->AddCharacterToList(Character, EMP_AttackedCharacter);
+		}
 	}
 }
 
@@ -129,27 +134,10 @@ void AKKGameMode::BeginPlay()
 	}
 }
 
-void AKKGameMode::IncreaseMovesCounter()
-{
-	MoveCounter++;
-
-	if (MoveCounter >= 3)
-	{
-		MoveCounter = 0;
-		ChangeTurn();
-	}
-}
-
 void AKKGameMode::ChangeTurn()
 {
 	Players[0]->IsMyTurn = FirstPlayerTurn;
 	Players[1]->IsMyTurn = !FirstPlayerTurn;
 
 	FirstPlayerTurn = !FirstPlayerTurn;
-
-	for(AKKCharacter* Character : CharactersUsedInRound)
-	{
-		Character->ResetMoves();
-	}
 }
-

@@ -34,8 +34,7 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-
-	PerformedMoves.Init(false, EMO_Count);
+	
 }
 
 void AKKCharacter::InitializeStats()
@@ -58,7 +57,6 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	{
 		const int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
 		DealDamage(TargetCharacter, Damage);
-		PerformMove(EMO_PerformedAttack);
 		return true;
 	}
 
@@ -157,7 +155,6 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
 	DOREPLIFETIME(AKKCharacter, OwningPlayer);
 	DOREPLIFETIME(AKKCharacter, OwnedTileID);
-	DOREPLIFETIME(AKKCharacter, PerformedMoves);
 }
 
 /*
