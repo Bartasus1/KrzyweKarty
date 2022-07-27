@@ -12,31 +12,30 @@ bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 	if (GetMana() < GetAbilityManaCost())
 		return false;
 
-	if (TargetCharacter == nullptr || !IsInLineWith(TargetCharacter))
+	CharacterStats.MaxAttackRange = 3;
+
+	if (!DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility) || !IsInLineWith(TargetCharacter))
 		return false;
-
-	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsInTheSameTeam(TargetCharacter))
+	
+	switch (GetDistanceTo(TargetCharacter))
 	{
-		switch (GetDistanceTo(TargetCharacter))
-		{
-		case 3:
-			DealDamage(TargetCharacter, 7);
-			break;
-		case 2:
-			DealDamage(TargetCharacter, 9);
-			break;
-		case 1:
-			DealDamage(TargetCharacter, 9);
-			break;
-		default:
-			break;
-		}
-
-		DecreaseManaForFirstAbility();
-		return true;
+	case 3:
+		DealDamage(TargetCharacter, 7);
+		break;
+	case 2:
+		DealDamage(TargetCharacter, 9);
+		break;
+	case 1:
+		DealDamage(TargetCharacter, 9);
+		break;
+	default:
+		break;
 	}
 
-	return false;
+	CharacterStats.MaxAttackRange = CharacterDataAsset->CharacterStats.MaxAttackRange;
+
+	DecreaseManaForFirstAbility();
+	return true;
 }
 
 int32 AZakon_Halabardzista::GetStrengthAtDistance(int32 Distance)

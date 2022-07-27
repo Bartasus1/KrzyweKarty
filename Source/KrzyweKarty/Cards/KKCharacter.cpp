@@ -47,22 +47,17 @@ void AKKCharacter::InitializeStats()
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (TargetCharacter == nullptr && TargetCharacter == this)
+	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) || TargetCharacter == this)
 		return false;
 
-	if (GetDistanceTo(TargetCharacter) > CharacterStats.MaxAttackRange || !IsInLineWith(TargetCharacter))
+	if (!IsInLineWith(TargetCharacter))
 		return false;
 
-	if (TargetCharacter->CanBeAttacked(EAT_DefaultAttack) && !IsInTheSameTeam(TargetCharacter))
-	{
-		const int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
-		DealDamage(TargetCharacter, Damage);
-		return true;
-	}
 
-	return false;
+	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
+	DealDamage(TargetCharacter, Damage);
+	return true;
 }
-
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 {
@@ -96,10 +91,14 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 {
 	int32 TargetTileID = TargetCharacter->OwnedTileID;
+	int32 OwnerID = OwningPlayer->PlayerID;
 
 	if (TargetCharacter->Implements<UBaseInterface>())
 	{
-		if (OwnedTileID == 1 || OwnedTileID == 2 || OwnedTileID == 17 || OwnedTileID == 18) //todo: Eliminate bug with attacking enemy base from starting point 
+		int32 TileOneID = (OwnerID == 1) ? 17 : 1;
+		int32 TileTwoID = (OwnerID == 2) ? 18 : 2;
+		
+		if (OwnedTileID == TileOneID || OwnedTileID == TileTwoID )
 		{
 			return 0;
 		}
@@ -110,7 +109,7 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 	FVector2D PositionOne = FVector2D(OwnedTileID / 4, OwnedTileID % 4);
 	FVector2D PositionTwo = FVector2D(TargetTileID / 4, TargetTileID % 4);
 
-	UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
 
 	return FVector2D::Distance(PositionOne, PositionTwo);
 }
@@ -123,6 +122,17 @@ bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
 	bool InLineY = (OwnedTileID % 4) == (TargetTileID % 4);
 
 	return (InLineX || InLineY);
+}
+
+bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
+{
+	if(TargetCharacter == nullptr)
+		return false;
+
+	if(GetDistanceTo(TargetCharacter) > CharacterStats.MaxAttackRange)
+		return false;
+
+	return (TargetCharacter->CanBeAttacked(AttackType) && !IsInTheSameTeam(TargetCharacter));
 }
 
 

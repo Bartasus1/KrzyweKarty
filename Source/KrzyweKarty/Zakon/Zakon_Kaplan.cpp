@@ -40,10 +40,10 @@ bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 
 bool AZakon_Kaplan::ActiveAbility2(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < GetAbilityManaCost() || TargetCharacter == nullptr)
+	if (GetMana() < GetAbilityManaCost(2))
 		return false;
 
-	if (TargetCharacter->CanBeAttacked(EAT_ActiveAbility) && !IsInTheSameTeam(TargetCharacter))
+	if (DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility))
 	{
 		DealDamage(TargetCharacter, 17);
 		

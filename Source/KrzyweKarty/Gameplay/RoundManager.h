@@ -16,7 +16,7 @@ enum EMovementType
 {
 	EMP_SummonedCharacter	UMETA(DisplayName="Summoned Character"),
 	EMP_MovedCharacter		UMETA(DisplayName="Moved Character"),
-	EMP_AttackedCharacter	UMETA(DisplayName="Attacked Character")
+	EMP_AttackCharacter		UMETA(DisplayName="Attacked Character")
 };
 
 USTRUCT()
@@ -49,7 +49,7 @@ protected:
 	void ResetRound();
 
 	int32 MaxMoves = 3;
-	int32 MovesCounter = 0;
+	int32 MovesCounter = 0; //for cannons and other stuff - todo
 	TArray<FMovementInfo> CharactersUsedInRound;
 
 	virtual void BeginPlay() override;

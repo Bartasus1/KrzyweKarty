@@ -42,10 +42,10 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	AKKCharacter* TargetedCharacter;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(Replicated, BlueprintReadWrite)
 	int32 PlayerID = 1;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadWrite)
 	bool IsMyTurn = true;
 
 	UPROPERTY(BlueprintAssignable)
@@ -72,6 +72,10 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void Server_ActiveAbility();
+
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRep_TurnChanged();
 
 private:
 	UFUNCTION(Client, Reliable)

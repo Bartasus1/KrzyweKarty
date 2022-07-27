@@ -16,7 +16,10 @@ class KRZYWEKARTY_API AZakon_Kusznik : public AZakon
 public:
 	AZakon_Kusznik();
 
-	//virtual void ActiveAbility() override; //Przycelowanie
-	//virtual void ActiveAbility2() override; //Wyczerpanie
-	///virtual void PassiveAbility() override; //Wrzaca Krew
+	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
+	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
+
+private:
+	bool SecondAbilityInUse = false;
 };

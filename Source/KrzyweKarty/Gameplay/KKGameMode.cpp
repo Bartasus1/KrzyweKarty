@@ -96,26 +96,25 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection Move
 
 void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackedCharacter))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter))
 	{
 		if (Character->DefaultAttack(TargetCharacter))
 		{
-			RoundManager->AddCharacterToList(Character, EMP_AttackedCharacter);
+			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
 		}
 	}
 }
 
 void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackedCharacter))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter))
 	{
 		if (Character->ActiveAbility(TargetCharacter))
 		{
-			RoundManager->AddCharacterToList(Character, EMP_AttackedCharacter);
+			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
 		}
 	}
 }
-
 
 void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 {
@@ -138,6 +137,9 @@ void AKKGameMode::ChangeTurn()
 {
 	Players[0]->IsMyTurn = FirstPlayerTurn;
 	Players[1]->IsMyTurn = !FirstPlayerTurn;
+
+	Players[0]->OnRep_TurnChanged();
+	Players[1]->OnRep_TurnChanged();
 
 	FirstPlayerTurn = !FirstPlayerTurn;
 }

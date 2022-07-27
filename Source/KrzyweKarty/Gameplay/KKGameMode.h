@@ -44,7 +44,7 @@ protected:
 	void ChangeTurn();
 
 private:
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	URoundManager* RoundManager;
 
 	bool FirstPlayerTurn = true;
