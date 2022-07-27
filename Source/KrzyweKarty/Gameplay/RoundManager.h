@@ -8,6 +8,9 @@
 
 class AKKCharacter;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRoundEndDelegate);
+
+
 UENUM(BlueprintType)
 enum EMovementType
 {
@@ -28,9 +31,7 @@ struct FMovementInfo
 	TEnumAsByte<EMovementType> MovementType;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRoundEndDelegate);
-
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(Within="KKGameMode" ,ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class KRZYWEKARTY_API URoundManager : public UActorComponent
 {
 	GENERATED_BODY()
@@ -40,14 +41,15 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FRoundEndDelegate OnRoundEnd;
-
+	
 	void AddCharacterToList(AKKCharacter* Character, EMovementType MovementType);
-	void ResetRound();
-
 	bool CanUseCharacter(AKKCharacter* Character, EMovementType MovementType);
 
-
 protected:
+	void ResetRound();
+
+	int32 MaxMoves = 3;
+	int32 MovesCounter = 0;
 	TArray<FMovementInfo> CharactersUsedInRound;
 
 	virtual void BeginPlay() override;

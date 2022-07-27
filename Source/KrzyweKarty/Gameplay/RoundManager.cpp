@@ -22,7 +22,7 @@ void URoundManager::AddCharacterToList(AKKCharacter* Character, EMovementType Mo
 {
 	CharactersUsedInRound.Add({Character, MovementType});
 
-	if (CharactersUsedInRound.Num() >= 3)
+	if (CharactersUsedInRound.Num() >= MaxMoves)
 	{
 		ResetRound();
 	}
@@ -36,11 +36,14 @@ void URoundManager::ResetRound()
 
 bool URoundManager::CanUseCharacter(AKKCharacter* Character, EMovementType MovementType)
 {
-	for (auto& MovementPoint : CharactersUsedInRound)
+	for(auto& Move : CharactersUsedInRound)
 	{
-		if (MovementPoint.Character == Character && MovementPoint.MovementType == MovementType)
+		if(Move.Character == Character)
 		{
-			return false;
+			if(Move.MovementType >= MovementType)
+			{
+				return false;
+			}
 		}
 	}
 
