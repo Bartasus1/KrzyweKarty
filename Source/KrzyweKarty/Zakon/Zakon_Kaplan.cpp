@@ -20,18 +20,13 @@ bool AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 
 bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < GetAbilityManaCost())
+	if (GetMana() < GetFirstAbilityManaCost())
 		return false;
 
 	if (IsInTheSameTeam(TargetCharacter))
 	{
 		TargetCharacter->IncreaseHealth(3);
 		TargetCharacter->IncreaseMana(4);
-	}
-	else
-	{
-		IncreaseHealth(3);
-		IncreaseMana(4);
 	}
 
 	DecreaseManaForFirstAbility();
@@ -40,7 +35,7 @@ bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
 
 bool AZakon_Kaplan::ActiveAbility2(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < GetAbilityManaCost(2))
+	if (GetMana() < GetSecondAbilityManaCost())
 		return false;
 
 	if (DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility))

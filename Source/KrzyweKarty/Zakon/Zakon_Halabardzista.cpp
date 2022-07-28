@@ -9,12 +9,12 @@ AZakon_Halabardzista::AZakon_Halabardzista()
 
 bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 {
-	if (GetMana() < GetAbilityManaCost())
+	if (GetMana() < GetFirstAbilityManaCost())
 		return false;
 
 	CharacterStats.MaxAttackRange = 3;
 
-	if (!DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility) || !IsInLineWith(TargetCharacter))
+	if (!DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility))
 		return false;
 	
 	switch (GetDistanceTo(TargetCharacter))

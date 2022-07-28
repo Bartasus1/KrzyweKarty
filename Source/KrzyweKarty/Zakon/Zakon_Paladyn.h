@@ -4,20 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Zakon.h"
+#include "KrzyweKarty/Interfaces/AreaModifierInterface.h"
 #include "Zakon_Paladyn.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class KRZYWEKARTY_API AZakon_Paladyn : public AZakon
+class KRZYWEKARTY_API AZakon_Paladyn : public AZakon, public IAreaModifierInterface
 {
 	GENERATED_BODY()
 public:
 	AZakon_Paladyn();
 
-	//virtual void ActiveAbility() override; //Boska Moc
-	//virtual void ActiveAbility2() override; //Z drogi!
-	//virtual void PassiveAbility() override; //Ochrona
-	//virtual void PassiveAbility2() override; //�wieta Tarcza
+	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
+	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
+
+	virtual bool CanBeAttacked(EAttackType AttackType) override;
+protected:
+	virtual TArray<AKKCharacter*> GetAffectedCharacters() override;
 };

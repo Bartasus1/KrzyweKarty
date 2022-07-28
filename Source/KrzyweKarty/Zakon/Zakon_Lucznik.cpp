@@ -30,12 +30,12 @@ bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 {
-	if (GetMana() < GetAbilityManaCost())
+	if (GetMana() < GetFirstAbilityManaCost())
 		return false;
 	
 	for(AKKCharacter* Character : GetAffectedCharacters())
 	{
-		if(Character->CanBeAttacked(EAT_ActiveAbility) && !IsInTheSameTeam(Character))
+		if(MinAttackConditions(Character, EAT_ActiveAbility))
 		{
 			DealDamage(Character, 5);
 		}

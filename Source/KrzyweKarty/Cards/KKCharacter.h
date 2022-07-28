@@ -70,6 +70,7 @@ protected:
 	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
 	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
 	bool DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType);
+	bool MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType);
 
 public:
 	virtual int32 GetStrengthAtDistance(int32 Distance) { return GetStrength(); }
@@ -108,11 +109,13 @@ public:
 	FORCEINLINE void IncreaseMana(int32 InMana = 1)			{ CharacterStats.Mana += FMath::Clamp(InMana, 0, GetDefaultMana() - GetMana()); }
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	{ CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
 
-	FORCEINLINE int32 GetAbilityManaCost(int32 Ability = 1) const
-	{ check(&CharacterDataAsset->ActiveAbilities[Ability - 1]) return CharacterDataAsset->ActiveAbilities[Ability - 1].ManaCost; }
+	FORCEINLINE int32 GetFirstAbilityManaCost() const
+	{ check(&CharacterDataAsset->ActiveAbilities[0]) return CharacterDataAsset->ActiveAbilities[0].ManaCost; }
+	FORCEINLINE int32 GetSecondAbilityManaCost() const
+	{ check(&CharacterDataAsset->ActiveAbilities[1]) return CharacterDataAsset->ActiveAbilities[1].ManaCost; }
 
-	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetAbilityManaCost(1)); }
-	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetAbilityManaCost(2)); }
+	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetFirstAbilityManaCost()); }
+	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetSecondAbilityManaCost()); }
 	
 	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
 };

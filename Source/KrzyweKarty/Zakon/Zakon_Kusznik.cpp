@@ -19,6 +19,7 @@ bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 			SecondAbilityInUse = false;
 			return true;
 		}
+		return false;
 	}
 	
 	if(Super::DefaultAttack(TargetCharacter))
@@ -32,10 +33,10 @@ bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 bool AZakon_Kusznik::ActiveAbility(AKKCharacter* TargetCharacter)
 {
-	if(GetMana() < GetAbilityManaCost())
+	if(GetMana() < GetFirstAbilityManaCost())
 		return false;
 
-	if(!DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility) || !IsInLineWith(TargetCharacter))
+	if(!DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility))
 		return false;
 
 	DealDamage(TargetCharacter, 15);
@@ -47,12 +48,12 @@ bool AZakon_Kusznik::ActiveAbility(AKKCharacter* TargetCharacter)
 
 bool AZakon_Kusznik::ActiveAbility2(AKKCharacter* TargetCharacter)
 {
-	if(GetHealth() < GetAbilityManaCost(2))
+	if(GetHealth() < GetSecondAbilityManaCost())
 		return false;
 
 	IncreaseMana(2);
 	SecondAbilityInUse = true;
-	DecreaseHealth(GetAbilityManaCost(2));
+	DecreaseHealth(GetSecondAbilityManaCost());
 	return true;
 }
 

@@ -49,11 +49,7 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) || TargetCharacter == this)
 		return false;
-
-	if (!IsInLineWith(TargetCharacter))
-		return false;
-
-
+	
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
 	DealDamage(TargetCharacter, Damage);
 	return true;
@@ -126,12 +122,20 @@ bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
 
 bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
 {
+	if(MinAttackConditions(TargetCharacter, AttackType))
+	{
+		if(GetDistanceTo(TargetCharacter) <= CharacterStats.MaxAttackRange && IsInLineWith(TargetCharacter))
+			return true;
+	}
+	
+	return false;
+}
+
+bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
+{
 	if(TargetCharacter == nullptr)
 		return false;
-
-	if(GetDistanceTo(TargetCharacter) > CharacterStats.MaxAttackRange)
-		return false;
-
+	
 	return (TargetCharacter->CanBeAttacked(AttackType) && !IsInTheSameTeam(TargetCharacter));
 }
 
