@@ -35,6 +35,11 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
 	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> PlatformMesh(TEXT("/Game/Map/Meshes/Platform"));
+	if(PlatformMesh.Succeeded())
+	{
+		Platform->SetStaticMesh(PlatformMesh.Object);
+	}
 }
 
 void AKKCharacter::InitializeStats()
@@ -42,12 +47,14 @@ void AKKCharacter::InitializeStats()
 	check(CharacterDataAsset);
 	
 	CharacterStats = CharacterDataAsset->CharacterStats;
+	
+	Platform->SetMaterial(0, CharacterDataAsset->CharacterPlatformMaterial);
+	CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
 }
-
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) || TargetCharacter == this)
+	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack))
 		return false;
 	
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
@@ -133,7 +140,7 @@ bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttac
 
 bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
 {
-	if(TargetCharacter == nullptr)
+	if(TargetCharacter == nullptr || TargetCharacter == this)
 		return false;
 	
 	return (TargetCharacter->CanBeAttacked(AttackType) && !IsInTheSameTeam(TargetCharacter));

@@ -25,6 +25,9 @@ public:
 	UTexture2D* CharacterCardTexture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMaterial* CharacterPlatformMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FCharacterStats CharacterStats;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName}  ( {ManaCost} PM )  --> {AbilityDescription}"))
