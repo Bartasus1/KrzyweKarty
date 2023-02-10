@@ -16,15 +16,18 @@ AKKGameMode::AKKGameMode()
 	RoundManager->OnRoundEnd.AddUniqueDynamic(this, &AKKGameMode::ChangeTurn);
 }
 
-void AKKGameMode::PostLogin(APlayerController* NewPlayer)
+APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	Super::PostLogin(NewPlayer);
-
-	if (AKKPlayerController* PlayerController = Cast<AKKPlayerController>(NewPlayer))
+	
+	const FString PlayerStartTag = FString::FromInt(Players.Num() + 1); // 1 and 2 instead of 0 and 1
+	
+	APlayerController* PlayerController =  Super::Login(NewPlayer, InRemoteRole, PlayerStartTag, Options, UniqueId, ErrorMessage);
+	
+	if (AKKPlayerController* KKPlayerController = Cast<AKKPlayerController>(PlayerController))
 	{
-		Players.Add(PlayerController);
+		Players.Add(KKPlayerController);
 
-		PlayerController->PlayerID = Players.Num();
+		KKPlayerController->PlayerID = Players.Num();
 
 		OnPlayerJoined.Broadcast();
 
@@ -33,24 +36,8 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 			ChangeTurn();
 		}
 	}
-}
 
-AActor* AKKGameMode::ChoosePlayerStart_Implementation(AController* Player)
-{
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
-
-	for (AActor* Point : FoundActors)
-	{
-		if (APlayerStart* StartPoint = Cast<APlayerStart>(Point))
-		{
-			if (StartPoint->PlayerStartTag.ToString() == FString::FromInt(Players.Num() + 1)) //happens before PostLogin()
-			{
-				return StartPoint;
-			}
-		}
-	}
-	return nullptr;
+	return PlayerController;
 }
 
 void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)

@@ -26,8 +26,7 @@ public:
 	FPlayerJoinedDelegate OnPlayerJoined; // assign cards to player on join
 
 protected:
-	virtual void PostLogin(APlayerController* NewPlayer) override;
-	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	virtual APlayerController* Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
 
 public:
 	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
