@@ -24,16 +24,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* CharacterCardTexture;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UMaterial* CharacterPlatformMaterial;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ShowOnlyInnerProperties))
 	FCharacterStats CharacterStats;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName}  ( {ManaCost} PM )  --> {AbilityDescription}"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName}  ( {ManaCost} PM )  --> {AbilityDescription}"), Category="Abilities")
 	TArray<FAbilityDescription> ActiveAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName} --> {AbilityDescription}"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName} --> {AbilityDescription}"), Category="Abilities")
 	TArray<FAbilityDescription> PassiveAbilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")

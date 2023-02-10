@@ -25,6 +25,9 @@ void AKKPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	SetInputMode(FInputModeGameAndUI());
+
+	PlayerCameraManager->ViewPitchMin = -80;
+	PlayerCameraManager->ViewPitchMax = 10;
 	
 }
 
@@ -33,6 +36,7 @@ void AKKPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	InputComponent->BindAxis("Turn", this, &APlayerController::AddYawInput);
+	InputComponent->BindAxis("LookUp", this, &AKKPlayerController::AddPitchInput);
 
 	InputComponent->BindAction("SelectCharacter", IE_Pressed, this, &AKKPlayerController::SelectCharacter);
 	InputComponent->BindAction("TargetCharacter", IE_Pressed, this, &AKKPlayerController::TargetCharacter);

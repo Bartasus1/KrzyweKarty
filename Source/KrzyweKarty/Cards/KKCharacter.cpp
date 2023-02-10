@@ -53,7 +53,9 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 		TextRenderName->SetText(CharacterDataAsset->CharacterName);
 		
-		Platform->SetMaterial(0, CharacterDataAsset->CharacterPlatformMaterial);
+		UMaterialInstanceDynamic* DynamicMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
+		DynamicMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
+		
 		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
 	}
 	

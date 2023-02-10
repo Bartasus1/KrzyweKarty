@@ -16,6 +16,7 @@ AKKPlayer::AKKPlayer()
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
 	bUseControllerRotationYaw = true;
+	bUseControllerRotationPitch = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");

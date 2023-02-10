@@ -20,6 +20,7 @@ void URoundManager::AddCharacterToList(AKKCharacter* Character, EMovementType Mo
 {
 	CharactersUsedInRound.Add({Character, MovementType});
 
+	// todo: End round if player cannot move (too little characters)
 	if (CharactersUsedInRound.Num() >= MaxMoves)
 	{
 		ResetRound();

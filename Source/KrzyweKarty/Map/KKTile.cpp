@@ -37,6 +37,8 @@ void AKKTile::StopTileHighlight()
 void AKKTile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HighlightTile(FColor::Red);
 	
 }
 
