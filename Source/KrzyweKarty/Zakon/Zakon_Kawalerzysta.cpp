@@ -5,7 +5,7 @@
 
 AZakon_Kawalerzysta::AZakon_Kawalerzysta()
 {
-
+	// Kawalerzysta
 }
 
 bool AZakon_Kawalerzysta::ActiveAbility(AKKCharacter* TargetCharacter)
