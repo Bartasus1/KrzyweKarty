@@ -62,6 +62,11 @@ Build/*/**
 # Don't ignore icon files in Build
 !Build/**/*.ico
 
+#Don't ignore Plugin's Config, Content & Source
+!Plugins/**/Config
+!Plugins/**/Content
+!Plugins/**/Source
+
 # Built data for maps
 *_BuiltData.uasset
 
