@@ -1,0 +1,22 @@
+﻿# OnlineSubsystemSteam English translation.
+# Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: OnlineSubsystemSteam\n"
+"POT-Creation-Date: 2017-04-06 04:28\n"
+"PO-Revision-Date: 2017-04-06 04:28\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Key:	OnlineServiceName
+#. SourceLocation:	Plugins/Online/OnlineSubsystemSteam/Source/Private/OnlineSubsystemSteam.cpp:774
+#: Plugins/Online/OnlineSubsystemSteam/Source/Private/OnlineSubsystemSteam.cpp:774
+msgctxt "OnlineSubsystemSteam,OnlineServiceName"
+msgid "Steam"
+msgstr "스팀"
+
