@@ -42,14 +42,21 @@ AKKCharacter::AKKCharacter()
 	}
 }
 
-void AKKCharacter::InitializeStats()
+
+void AKKCharacter::OnConstruction(const FTransform& Transform)
 {
-	check(CharacterDataAsset);
+	Super::OnConstruction(Transform);
+
+	if(CharacterDataAsset != nullptr)
+	{
+		CharacterStats = CharacterDataAsset->CharacterStats;
+
+		TextRenderName->SetText(CharacterDataAsset->CharacterName);
+		
+		Platform->SetMaterial(0, CharacterDataAsset->CharacterPlatformMaterial);
+		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
+	}
 	
-	CharacterStats = CharacterDataAsset->CharacterStats;
-	
-	Platform->SetMaterial(0, CharacterDataAsset->CharacterPlatformMaterial);
-	CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
 }
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
@@ -106,7 +113,7 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 			return 0;
 		}
 
-		return  MAX_int32;
+		return MAX_int32;
 	}
 
 	FVector2D PositionOne = FVector2D(OwnedTileID / 4, OwnedTileID % 4);
@@ -151,10 +158,7 @@ bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackTyp
 void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	InitializeStats();
 	
-	TextRenderName->SetText(GetCharacterName());
 	ClientPlayer = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 }
 
