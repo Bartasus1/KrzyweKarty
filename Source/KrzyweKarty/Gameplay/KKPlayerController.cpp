@@ -26,7 +26,7 @@ void AKKPlayerController::BeginPlay()
 
 	SetInputMode(FInputModeGameAndUI());
 
-	PlayerCameraManager->ViewPitchMin = -80;
+	PlayerCameraManager->ViewPitchMin = -70;
 	PlayerCameraManager->ViewPitchMax = 10;
 	
 }

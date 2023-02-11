@@ -36,9 +36,13 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetWorldSize(18.f);
 	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> PlatformMesh(TEXT("/Game/Map/Meshes/Platform"));
-	if(PlatformMesh.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UMaterial> TextRenderMaterial (TEXT("Material'/Game/Cards/Materials/M_CharacterNameMaterial.M_CharacterNameMaterial'"));
+	if(PlatformMesh.Succeeded() && TextRenderMaterial.Succeeded())
 	{
 		Platform->SetStaticMesh(PlatformMesh.Object);
+		Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+
+		TextRenderName->SetTextMaterial(TextRenderMaterial.Object);
 	}
 }
 
@@ -160,19 +164,13 @@ bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackTyp
 void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	ClientPlayer = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
 }
 
 void AKKCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	if (ClientPlayer)
-	{
-		TextRenderName->SetWorldRotation(ClientPlayer->GetControlRotation());
-		TextRenderName->AddRelativeRotation(FRotator(0, 180, 0));
-	}
+	
 }
 
 void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

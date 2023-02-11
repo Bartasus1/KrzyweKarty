@@ -76,10 +76,6 @@ public:
 	virtual int32 GetStrengthAtDistance(int32 Distance) { return GetStrength(); }
 	virtual bool CanBeAttacked(EAttackType AttackType) { return (OwnedTileID != -1); }
 	
-private:
-	UPROPERTY()
-	APlayerController* ClientPlayer;
-	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
