@@ -51,6 +51,8 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
+	TextRenderName->SetWorldRotation(FRotator(0.f)); // rotation is handled in text render material
+
 	if(CharacterDataAsset != nullptr)
 	{
 		CharacterStats = CharacterDataAsset->CharacterStats;
