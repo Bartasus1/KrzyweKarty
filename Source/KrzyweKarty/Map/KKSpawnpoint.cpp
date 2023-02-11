@@ -50,6 +50,8 @@ void AKKSpawnpoint::SpawnCards()
 		AKKCharacter* SpawnedCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[i]->ClassToSpawn,
 		                                                                      StartLocation, GetActorRotation());
 
+		SpawnedCharacter->CharacterID = i + 1;
+
 		SpawnedCards.Add(SpawnedCharacter);
 
 		StartLocation.Y += Spacing;

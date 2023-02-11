@@ -31,6 +31,16 @@ void AKKPlayerController::BeginPlay()
 	
 }
 
+void AKKPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if(AKKCharacter* TracedCharacter = TraceForCharacter())
+	{
+		ShowCharacterStats(TracedCharacter);
+	}
+}
+
 void AKKPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

@@ -45,6 +45,9 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	int32 OwnedTileID = -1;
+
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	int32 CharacterID = 0;
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
