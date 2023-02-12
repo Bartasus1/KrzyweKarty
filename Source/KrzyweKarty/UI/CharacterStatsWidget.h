@@ -11,6 +11,7 @@
  */
 class AKKCharacter;
 class UTextBlock;
+class UImage;
 
 UCLASS()
 class KRZYWEKARTY_API UCharacterStatsWidget : public UUserWidget
@@ -41,8 +42,17 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UTextBlock* CharacterStrengthText;
 
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UImage* DefenceImage;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UImage* HealthImage;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UImage* ManaImage;
+
 public:
-	const FText FormatText = FText::FromString("{0} / {1}");
+	const FText FormatText = FText::FromString("{0}");
 
 	UFUNCTION(BlueprintPure)
 	FText HealthText();

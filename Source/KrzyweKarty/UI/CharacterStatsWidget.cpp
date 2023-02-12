@@ -3,6 +3,7 @@
 
 #include "CharacterStatsWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 
 void UCharacterStatsWidget::ShowStats(AKKCharacter* NewCharacter)
@@ -24,24 +25,33 @@ FText UCharacterStatsWidget::HealthText()
 {
 	if (!Character)
 		return FText();
+	
+	HealthImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Character->GetHealth() / static_cast<float>(Character->GetDefaultHealth()));
+	
 
-	return FText::FormatOrdered(FormatText, Character->GetHealth(), Character->GetDefaultHealth());
+	return FText::FormatOrdered(FormatText, Character->GetHealth());
 }
 
 FText UCharacterStatsWidget::ManaText()
 {
 	if (!Character)
 		return FText();
+	
+    ManaImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Character->GetMana() / static_cast<float>(Character->GetDefaultMana()));
 
-	return FText::FormatOrdered(FormatText, Character->GetMana(), Character->GetDefaultMana());
+	
+	return FText::FormatOrdered(FormatText, Character->GetMana());
 }
 
 FText UCharacterStatsWidget::DefenceText()
 {
 	if (!Character)
 		return FText();
-
-	return FText::FormatOrdered(FormatText, Character->GetDefence(), Character->GetDefaultDefence());
+	
+	DefenceImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Character->GetDefence() / static_cast<float>(Character->GetDefaultDefence()));
+	
+	
+	return FText::FormatOrdered(FormatText, Character->GetDefence());
 }
 
 FText UCharacterStatsWidget::StrengthText()
@@ -49,7 +59,7 @@ FText UCharacterStatsWidget::StrengthText()
 	if (!Character)
 		return FText();
 
-	return FText::FormatOrdered(FormatText, Character->GetStrength(), Character->GetDefaultStrength());
+	return FText::FormatOrdered(FormatText, Character->GetStrength());
 }
 
 void UCharacterStatsWidget::RemoveCharacter()
