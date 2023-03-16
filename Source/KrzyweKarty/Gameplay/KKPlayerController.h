@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Net/UnrealNetwork.h"
 #include "KKPlayerController.generated.h"
 
 /**
@@ -45,8 +44,8 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	int32 PlayerID = 1;
 
-	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadWrite)
-	bool IsMyTurn = true;
+	UPROPERTY(Replicated, BlueprintReadWrite)
+	bool bIsMyTurn = true;
 
 	UPROPERTY(BlueprintAssignable)
 	FCharacterMoveDelegate OnCharacterMoved;
@@ -74,8 +73,7 @@ protected:
 	void Server_ActiveAbility();
 
 public:
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnRep_TurnChanged();
+	void OnTurnChanged();
 
 private:
 	UFUNCTION(Client, Reliable)
@@ -83,9 +81,7 @@ private:
 
 	UFUNCTION(Client, Reliable)
 	void ShowTargetStats(AKKCharacter* CardCharacter);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
-	UWidgetManagerComponent* WidgetManager;
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
@@ -96,16 +92,16 @@ private: // Input functions
 	FORCEINLINE void SelectCharacter()	{ Server_TraceForSelectedCharacter(TraceForCharacter()); }
 	FORCEINLINE void TargetCharacter()	{ Server_TraceForTargetedCharacter(TraceForCharacter()); }
 
-	FORCEINLINE void AttackCharacter()	{ if (IsMyTurn) Server_AttackCharacter(); }
-	FORCEINLINE void ActiveAbility1()	{ if (IsMyTurn) Server_ActiveAbility(); }
+	FORCEINLINE void AttackCharacter()	{ if (bIsMyTurn) Server_AttackCharacter(); }
+	FORCEINLINE void ActiveAbility1()	{ if (bIsMyTurn) Server_ActiveAbility(); }
 
-	FORCEINLINE void AddOnPosition0() { if (IsMyTurn) Server_AddCharacterToMap(0); }
-	FORCEINLINE void AddOnPosition1() { if (IsMyTurn) Server_AddCharacterToMap(1); }
-	FORCEINLINE void AddOnPosition2() { if (IsMyTurn) Server_AddCharacterToMap(2); }
-	FORCEINLINE void AddOnPosition3() { if (IsMyTurn) Server_AddCharacterToMap(3); }
+	FORCEINLINE void AddOnPosition0() { if (bIsMyTurn) Server_AddCharacterToMap(0); }
+	FORCEINLINE void AddOnPosition1() { if (bIsMyTurn) Server_AddCharacterToMap(1); }
+	FORCEINLINE void AddOnPosition2() { if (bIsMyTurn) Server_AddCharacterToMap(2); }
+	FORCEINLINE void AddOnPosition3() { if (bIsMyTurn) Server_AddCharacterToMap(3); }
 
-	FORCEINLINE void MoveForward()	{ if (IsMyTurn) Server_MoveCharacter(EMD_Forward); }
-	FORCEINLINE void MoveBackward() { if (IsMyTurn) Server_MoveCharacter(EMD_Backward); }
-	FORCEINLINE void MoveRight()	{ if (IsMyTurn) Server_MoveCharacter(EMD_Right); }
-	FORCEINLINE void MoveLeft()		{ if (IsMyTurn) Server_MoveCharacter(EMD_Left); }
+	FORCEINLINE void MoveForward()	{ if (bIsMyTurn) Server_MoveCharacter(EMD_Forward); }
+	FORCEINLINE void MoveBackward() { if (bIsMyTurn) Server_MoveCharacter(EMD_Backward); }
+	FORCEINLINE void MoveRight()	{ if (bIsMyTurn) Server_MoveCharacter(EMD_Right); }
+	FORCEINLINE void MoveLeft()		{ if (bIsMyTurn) Server_MoveCharacter(EMD_Left); }
 };

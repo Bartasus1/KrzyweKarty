@@ -2,18 +2,24 @@
 
 
 #include "KKGameMode.h"
+#include "KKPlayer.h"
 #include "KKPlayerController.h"
 #include "RoundManager.h"
-#include "GameFramework/PlayerStart.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "KrzyweKarty/UI/PlayerHUD.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "Kismet/GameplayStatics.h"
+
 
 AKKGameMode::AKKGameMode()
 {
 	RoundManager = CreateDefaultSubobject<URoundManager>("RoundManager");
 
 	RoundManager->OnRoundEnd.AddUniqueDynamic(this, &AKKGameMode::ChangeTurn);
+
+	PlayerControllerClass = AKKPlayerController::StaticClass();
+	DefaultPawnClass = AKKPlayer::StaticClass();
+	HUDClass = APlayerHUD::StaticClass();
 }
 
 APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
@@ -122,11 +128,11 @@ void AKKGameMode::BeginPlay()
 
 void AKKGameMode::ChangeTurn()
 {
-	Players[0]->IsMyTurn = FirstPlayerTurn;
-	Players[1]->IsMyTurn = !FirstPlayerTurn;
+	Players[0]->bIsMyTurn = FirstPlayerTurn;
+	Players[1]->bIsMyTurn = !FirstPlayerTurn;
 
-	Players[0]->OnRep_TurnChanged();
-	Players[1]->OnRep_TurnChanged();
+	Players[0]->OnTurnChanged();
+	Players[1]->OnTurnChanged();
 
 	FirstPlayerTurn = !FirstPlayerTurn;
 }

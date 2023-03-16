@@ -5,8 +5,7 @@
 #include "KKGameMode.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/UI/CharacterStatsWidget.h"
-#include "KrzyweKarty/UI/WidgetManagerComponent.h"
-
+#include "KrzyweKarty/UI/PlayerHUD.h"
 
 AKKPlayerController::AKKPlayerController()
 {
@@ -14,11 +13,17 @@ AKKPlayerController::AKKPlayerController()
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
-
-	WidgetManager = CreateDefaultSubobject<UWidgetManagerComponent>("WidgetManager");
 	
 }
 
+
+void AKKPlayerController::OnTurnChanged()
+{
+	if(IsLocalPlayerController())
+	{
+		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
+	}
+}
 
 void AKKPlayerController::BeginPlay()
 {
@@ -73,7 +78,7 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AKKPlayerController, TargetedCharacter);
 
 	DOREPLIFETIME(AKKPlayerController, PlayerID);
-	DOREPLIFETIME(AKKPlayerController, IsMyTurn);
+	DOREPLIFETIME(AKKPlayerController, bIsMyTurn);
 }
 
 AKKCharacter* AKKPlayerController::TraceForCharacter()
@@ -164,7 +169,7 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 
 void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCharacter)
 {
-	if (UCharacterStatsWidget* Widget = WidgetManager->SelectedCharacterWidget)
+	if (UCharacterStatsWidget* Widget = GetHUD<APlayerHUD>()->SelectedCharacterWidget)
 	{
 		Widget->RemoveFromParent();
 		Widget->ShowStats(CardCharacter);
@@ -174,7 +179,7 @@ void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCh
 
 void AKKPlayerController::ShowTargetStats_Implementation(AKKCharacter* CardCharacter)
 {
-	if (UCharacterStatsWidget* Widget = WidgetManager->TargetCharacterWidget)
+	if (UCharacterStatsWidget* Widget = GetHUD<APlayerHUD>()->TargetCharacterWidget)
 	{
 		Widget->RemoveFromParent();
 		Widget->ShowStats(CardCharacter);

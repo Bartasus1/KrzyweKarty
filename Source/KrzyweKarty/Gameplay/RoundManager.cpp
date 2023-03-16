@@ -2,7 +2,8 @@
 
 
 #include "RoundManager.h"
-#include "Net/UnrealNetwork.h"
+#include "GenericPlatform/GenericPlatformOutputDevices.h"
+#include "Misc/OutputDeviceMemory.h"
 
 
 // Sets default values for this component's properties
@@ -19,6 +20,7 @@ URoundManager::URoundManager()
 void URoundManager::AddCharacterToList(AKKCharacter* Character, EMovementType MovementType)
 {
 	CharactersUsedInRound.Add({Character, MovementType});
+	
 
 	// todo: End round if player cannot move (too little characters)
 	if (CharactersUsedInRound.Num() >= MaxMoves)

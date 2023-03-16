@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "KKPlayerController.h"
 #include "GameFramework/GameModeBase.h"
-#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KKGameMode.generated.h"
 
+class UActionLog;
 class AKKMap;
 class AKKCharacter;
 class URoundManager;
