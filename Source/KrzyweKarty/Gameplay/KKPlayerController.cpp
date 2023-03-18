@@ -17,13 +17,6 @@ AKKPlayerController::AKKPlayerController()
 }
 
 
-void AKKPlayerController::OnTurnChanged()
-{
-	if(IsLocalPlayerController())
-	{
-		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
-	}
-}
 
 void AKKPlayerController::BeginPlay()
 {
@@ -169,20 +162,18 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 
 void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCharacter)
 {
-	if (UCharacterStatsWidget* Widget = GetHUD<APlayerHUD>()->SelectedCharacterWidget)
-	{
-		Widget->RemoveFromParent();
-		Widget->ShowStats(CardCharacter);
-		Widget->AddToViewport();
-	}
+	GetHUD<APlayerHUD>()->ShowCharacterStats(CardCharacter, true);
 }
 
 void AKKPlayerController::ShowTargetStats_Implementation(AKKCharacter* CardCharacter)
 {
-	if (UCharacterStatsWidget* Widget = GetHUD<APlayerHUD>()->TargetCharacterWidget)
-	{
-		Widget->RemoveFromParent();
-		Widget->ShowStats(CardCharacter);
-		Widget->AddToViewport();
-	}
+	GetHUD<APlayerHUD>()->ShowCharacterStats(CardCharacter, false);
 }
+
+// void AKKPlayerController::OnRep_TurnChanged()
+// {
+// 	GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Red, FString((HasAuthority()) ? "Server " : "Client ")  + FString::FromInt(PlayerID) + FString(GetHUD() ? " : HUD available" : " : HUD is null"));
+// 	if(GetHUD())
+// 		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
+// }
+

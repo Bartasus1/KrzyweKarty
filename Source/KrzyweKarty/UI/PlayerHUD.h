@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "PlayerHUD.generated.h"
 
+class AKKCharacter;
 class UCharacterStatsWidget;
 
 UCLASS()
@@ -28,8 +29,10 @@ public:
 
 
 	
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnTurnChange(bool bIsMyTurn);
+
+	void ShowCharacterStats(AKKCharacter* Character, bool bIsCurrentCharacter);
 
 protected:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))

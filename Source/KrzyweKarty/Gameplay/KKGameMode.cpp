@@ -131,8 +131,7 @@ void AKKGameMode::ChangeTurn()
 	Players[0]->bIsMyTurn = FirstPlayerTurn;
 	Players[1]->bIsMyTurn = !FirstPlayerTurn;
 
-	Players[0]->OnTurnChanged();
-	Players[1]->OnTurnChanged();
+	Players[0]->OnRep_TurnChanged();
 
 	FirstPlayerTurn = !FirstPlayerTurn;
 }

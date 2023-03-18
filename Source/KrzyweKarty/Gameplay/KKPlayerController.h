@@ -44,7 +44,7 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	int32 PlayerID = 1;
 
-	UPROPERTY(Replicated, BlueprintReadWrite)
+	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadOnly)
 	bool bIsMyTurn = true;
 
 	UPROPERTY(BlueprintAssignable)
@@ -73,7 +73,9 @@ protected:
 	void Server_ActiveAbility();
 
 public:
-	void OnTurnChanged();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRep_TurnChanged();
+	
 
 private:
 	UFUNCTION(Client, Reliable)
