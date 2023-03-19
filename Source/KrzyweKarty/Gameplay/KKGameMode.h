@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "KKPlayerController.h"
 #include "GameFramework/GameModeBase.h"
+#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KKGameMode.generated.h"
 
 class UActionLog;
@@ -48,6 +49,8 @@ private:
 	URoundManager* RoundManager;
 
 	bool FirstPlayerTurn = true;
+
+	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 protected:
 	UPROPERTY(Transient)

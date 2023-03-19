@@ -2,9 +2,12 @@
 
 
 #include "KKGameMode.h"
+
+#include "KKGameState.h"
 #include "KKPlayer.h"
 #include "KKPlayerController.h"
 #include "RoundManager.h"
+#include "GameFramework/PlayerState.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
 #include "KrzyweKarty/Map/KKMap.h"
@@ -17,6 +20,7 @@ AKKGameMode::AKKGameMode()
 
 	RoundManager->OnRoundEnd.AddUniqueDynamic(this, &AKKGameMode::ChangeTurn);
 
+	GameStateClass = AKKGameState::StaticClass();
 	PlayerControllerClass = AKKPlayerController::StaticClass();
 	DefaultPawnClass = AKKPlayer::StaticClass();
 	HUDClass = APlayerHUD::StaticClass();
@@ -58,6 +62,7 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
 		RoundManager->AddCharacterToList(Character, EMP_SummonedCharacter);
+		AddActionLog(Character, nullptr, FText::FromString(" dodany do mapy"));
 	}
 }
 
@@ -85,9 +90,12 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection Move
 			break;
 		}
 
+		
+		
 		if ((Map->*MoveFunction)(Character))
 		{
 			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
+			AddActionLog(Character, nullptr, FText::FromString("ruszyl sie " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
 		}
 	}
 }
@@ -99,6 +107,7 @@ void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* 
 		if (Character->DefaultAttack(TargetCharacter))
 		{
 			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
+			AddActionLog(Character, TargetCharacter, FText::FromString("zaatakowal"));
 		}
 	}
 }
@@ -110,6 +119,7 @@ void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter*
 		if (Character->ActiveAbility(TargetCharacter))
 		{
 			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
+			AddActionLog(Character, Character, FText::FromString("uzyl umiejetnosci " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
 		}
 	}
 }
@@ -139,4 +149,16 @@ void AKKGameMode::ChangeTurn()
 	Players[0]->OnRep_TurnChanged();
 
 	FirstPlayerTurn = !FirstPlayerTurn;
+}
+
+void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action)
+{
+	if(AKKPlayerController* PlayerController = Character->OwningPlayer)
+	{
+		FString PlayerName = PlayerController->PlayerState->GetPlayerName();
+
+		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1} {2} {3}") , FText::FromString(PlayerName), Character->GetCharacterName(), Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
+
+		GetGameState<AKKGameState>()->AddActionLog(Log);
+	}
 }

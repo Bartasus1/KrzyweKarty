@@ -16,10 +16,10 @@ class UWidgetManagerComponent;
 UENUM()
 enum EMovementDirection
 {
-	EMD_Forward,
-	EMD_Backward,
-	EMD_Right,
-	EMD_Left
+	EMD_Forward		UMETA(DisplayName = "Forward"),
+	EMD_Backward	UMETA(DisplayName = "Backward"),
+	EMD_Right		UMETA(DisplayName = "Right"),
+	EMD_Left		UMETA(DisplayName = "Left")
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterSpawnedDelegate);
