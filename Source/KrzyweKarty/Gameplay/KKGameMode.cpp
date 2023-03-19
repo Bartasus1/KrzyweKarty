@@ -36,14 +36,19 @@ APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole,
 		KKPlayerController->PlayerID = Players.Num();
 
 		OnPlayerJoined.Broadcast();
-
-		if (Players.Num() == 2)
-		{
-			ChangeTurn();
-		}
 	}
 
 	return PlayerController;
+}
+
+void AKKGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	if (Players.Num() == 2)
+	{
+		ChangeTurn();
+	}
 }
 
 void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)

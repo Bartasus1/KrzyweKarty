@@ -170,10 +170,11 @@ void AKKPlayerController::ShowTargetStats_Implementation(AKKCharacter* CardChara
 	GetHUD<APlayerHUD>()->ShowCharacterStats(CardCharacter, false);
 }
 
-// void AKKPlayerController::OnRep_TurnChanged()
-// {
-// 	GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Red, FString((HasAuthority()) ? "Server " : "Client ")  + FString::FromInt(PlayerID) + FString(GetHUD() ? " : HUD available" : " : HUD is null"));
-// 	if(GetHUD())
-// 		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
-// }
+void AKKPlayerController::OnRep_TurnChanged()
+{
+	if(GetHUD())
+	{
+		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
+	}
+}
 

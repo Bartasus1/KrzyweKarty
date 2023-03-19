@@ -27,6 +27,7 @@ public:
 
 protected:
 	virtual APlayerController* Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 public:
 	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);

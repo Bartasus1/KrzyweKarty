@@ -73,7 +73,7 @@ protected:
 	void Server_ActiveAbility();
 
 public:
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION()
 	void OnRep_TurnChanged();
 	
 
