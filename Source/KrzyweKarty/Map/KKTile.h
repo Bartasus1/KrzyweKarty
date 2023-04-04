@@ -8,6 +8,8 @@
 
 class UBoxComponent;
 
+#define PlatformChannel ECC_GameTraceChannel2
+
 UCLASS()
 class KRZYWEKARTY_API AKKTile : public AActor
 {

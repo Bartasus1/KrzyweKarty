@@ -3,10 +3,6 @@
 
 #include "Zakon_Rycerz.h"
 
-AZakon_Rycerz::AZakon_Rycerz()
-{
-}
-
 bool AZakon_Rycerz::ActiveAbility(AKKCharacter* TargetCharacter)
 {
 	if (GetMana() < GetFirstAbilityManaCost())

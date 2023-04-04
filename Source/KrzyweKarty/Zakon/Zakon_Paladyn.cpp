@@ -6,11 +6,6 @@
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
-AZakon_Paladyn::AZakon_Paladyn()
-{
-
-}
-
 bool AZakon_Paladyn::ActiveAbility(AKKCharacter* TargetCharacter)
 {
 	if(GetMana() < GetFirstAbilityManaCost())

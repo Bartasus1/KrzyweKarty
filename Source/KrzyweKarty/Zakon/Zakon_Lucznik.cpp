@@ -6,10 +6,6 @@
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
-AZakon_Lucznik::AZakon_Lucznik()
-{
-}
-
 bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	const bool SuccessfulAttack = Super::DefaultAttack(TargetCharacter);

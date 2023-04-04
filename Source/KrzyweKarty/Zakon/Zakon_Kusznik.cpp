@@ -3,11 +3,6 @@
 
 #include "Zakon_Kusznik.h"
 
-AZakon_Kusznik::AZakon_Kusznik()
-{
-
-}
-
 bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	if(SecondAbilityInUse)

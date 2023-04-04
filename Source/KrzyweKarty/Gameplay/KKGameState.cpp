@@ -2,6 +2,7 @@
 
 
 #include "KKGameState.h"
+#include "Net/UnrealNetwork.h"
 
 TArray<FText>& AKKGameState::GetActionLogs()
 {
@@ -13,7 +14,7 @@ void AKKGameState::OnRep_ActionLogs()
 	ActionAdded.Broadcast();
 }
 
-void AKKGameState::AddActionLog(FText NewAction)
+void AKKGameState::AddActionLog_Implementation(const FText& NewAction)
 {
 	ActionLogs.Add(NewAction);
 	OnRep_ActionLogs();

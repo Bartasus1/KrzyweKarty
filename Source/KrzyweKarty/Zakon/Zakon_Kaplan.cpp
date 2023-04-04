@@ -3,10 +3,6 @@
 
 #include "Zakon_Kaplan.h"
 
-AZakon_Kaplan::AZakon_Kaplan()
-{
-}
-
 bool AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	if (Super::DefaultAttack(TargetCharacter))

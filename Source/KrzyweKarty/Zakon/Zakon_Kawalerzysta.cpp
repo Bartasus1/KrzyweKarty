@@ -3,11 +3,6 @@
 
 #include "Zakon_Kawalerzysta.h"
 
-AZakon_Kawalerzysta::AZakon_Kawalerzysta()
-{
-	// Kawalerzysta Upgrade
-}
-
 bool AZakon_Kawalerzysta::ActiveAbility(AKKCharacter* TargetCharacter)
 {
 	return Super::ActiveAbility(TargetCharacter);

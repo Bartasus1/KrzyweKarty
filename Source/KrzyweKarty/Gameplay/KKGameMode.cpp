@@ -130,6 +130,7 @@ void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 	//todo
 }
 
+
 void AKKGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -157,8 +158,23 @@ void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetChar
 	{
 		FString PlayerName = PlayerController->PlayerState->GetPlayerName();
 
-		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1} {2} {3}") , FText::FromString(PlayerName), Character->GetCharacterName(), Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
+		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1}({2}) {3} {4}") , FText::FromString(PlayerName), Character->GetCharacterName(), Character->CharacterID , Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
 
 		GetGameState<AKKGameState>()->AddActionLog(Log);
+	}
+}
+
+void AKKGameMode::LogAction(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action) //static function, to call from anywhere
+{
+	if(AKKGameState* GameState =  Cast<AKKGameState>(UGameplayStatics::GetGameState(Character)))
+	{
+		if(AKKPlayerController* PlayerController = Character->OwningPlayer)
+		{
+			FString PlayerName = PlayerController->PlayerState->GetPlayerName();
+
+			FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1}({2}) {3} {4}") , FText::FromString(PlayerName), Character->GetCharacterName(), Character->CharacterID , Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
+
+			GameState->AddActionLog(Log);
+		}
 	}
 }

@@ -14,7 +14,7 @@ class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 
-
+#define CharacterChannel ECC_GameTraceChannel1
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 UCLASS(Abstract)
@@ -56,6 +56,9 @@ protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
+
+	UFUNCTION(Client, Reliable)
+	void CharacterDied();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 

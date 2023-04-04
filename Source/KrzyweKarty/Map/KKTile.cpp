@@ -18,7 +18,7 @@ AKKTile::AKKTile()
 	
 	BoxCollision->SetBoxExtent(FVector(50.f, 40.f, 3.f));
 	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	BoxCollision->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+	BoxCollision->SetCollisionResponseToChannel(PlatformChannel, ECR_Block);
 
 }
 

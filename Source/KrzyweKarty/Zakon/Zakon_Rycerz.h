@@ -15,8 +15,6 @@ class KRZYWEKARTY_API AZakon_Rycerz : public AZakon
 	GENERATED_BODY()
 
 public:
-	AZakon_Rycerz();
-
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
 
 protected:

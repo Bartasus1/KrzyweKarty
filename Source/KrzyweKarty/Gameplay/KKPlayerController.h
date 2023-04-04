@@ -4,22 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "KrzyweKarty/Map/KKTile.h"
 #include "KKPlayerController.generated.h"
 
 /**
  * 
  */
 class AKKCharacter;
-class UWidgetManagerComponent;
+class AKKTile;
 
 
 UENUM()
 enum EMovementDirection
 {
-	EMD_Forward		UMETA(DisplayName = "Forward"),
-	EMD_Backward	UMETA(DisplayName = "Backward"),
-	EMD_Right		UMETA(DisplayName = "Right"),
-	EMD_Left		UMETA(DisplayName = "Left")
+	EMD_Forward		UMETA(DisplayName = "naprzod"),
+	EMD_Backward	UMETA(DisplayName = "wstecz"),
+	EMD_Right		UMETA(DisplayName = "w prawo"),
+	EMD_Left		UMETA(DisplayName = "w lewo")
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterSpawnedDelegate);
@@ -32,9 +33,7 @@ class KRZYWEKARTY_API AKKPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	AKKPlayerController();
-
-	AKKCharacter* TraceForCharacter();
-
+	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	AKKCharacter* SelectedCharacter;
 
@@ -53,6 +52,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FCharacterSpawnedDelegate OnCharacterSpawned;
 
+public:
+	
+	FHitResult CastLineTrace(ECollisionChannel CollisionChannel) const;
+	AKKCharacter* TraceForCharacter() const;
+	AKKTile* TraceForPlatform() const;
+	
 protected:
 	UFUNCTION(Server, Reliable)
 	void Server_TraceForSelectedCharacter(AKKCharacter* TracedCharacter);
@@ -83,6 +88,7 @@ private:
 
 	UFUNCTION(Client, Reliable)
 	void ShowTargetStats(AKKCharacter* CardCharacter);
+
 	
 protected:
 	virtual void BeginPlay() override;

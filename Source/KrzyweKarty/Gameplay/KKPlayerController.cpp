@@ -3,8 +3,9 @@
 
 #include "KKPlayerController.h"
 #include "KKGameMode.h"
+#include "Components/ListView.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
-#include "KrzyweKarty/UI/CharacterStatsWidget.h"
+#include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
 
 AKKPlayerController::AKKPlayerController()
@@ -15,8 +16,6 @@ AKKPlayerController::AKKPlayerController()
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 	
 }
-
-
 
 void AKKPlayerController::BeginPlay()
 {
@@ -74,23 +73,29 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AKKPlayerController, bIsMyTurn);
 }
 
-AKKCharacter* AKKPlayerController::TraceForCharacter()
+FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel) const
 {
 	float Range = 1500;
-	FVector Start, Direction;
-	DeprojectMousePositionToWorld(Start, Direction);
+ 	FVector Start, Direction;
+ 	DeprojectMousePositionToWorld(Start, Direction);
+ 
+ 	FHitResult HitResult;
+ 	FVector End = Start + (Direction * Range);
+ 
+ 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, CollisionChannel);
+	
+	return HitResult;
+}
 
-	FHitResult HitResult;
-	FVector End = Start + (Direction * Range);
 
-	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Camera);
+AKKCharacter* AKKPlayerController::TraceForCharacter() const
+{
+	return Cast<AKKCharacter>(CastLineTrace(CharacterChannel).GetActor());
+}
 
-	if (AKKCharacter* CardCharacter = Cast<AKKCharacter>(HitResult.GetActor()))
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *CardCharacter->GetCharacterName().ToString());
-		return CardCharacter;
-	}
-	return nullptr;
+AKKTile* AKKPlayerController::TraceForPlatform() const
+{
+	return Cast<AKKTile>(CastLineTrace(PlatformChannel).GetActor());
 }
 
 void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
@@ -177,4 +182,3 @@ void AKKPlayerController::OnRep_TurnChanged()
 		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
 	}
 }
-

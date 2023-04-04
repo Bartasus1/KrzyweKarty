@@ -15,7 +15,6 @@ class KRZYWEKARTY_API AZakon_Halabardzista : public AZakon
 	GENERATED_BODY()
 	
 public:
-	AZakon_Halabardzista();
 
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override; 
 

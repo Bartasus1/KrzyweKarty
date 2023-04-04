@@ -15,8 +15,6 @@ class KRZYWEKARTY_API AZakon_Lucznik : public AZakon, public  IAreaModifierInter
 {
 	GENERATED_BODY()
 public:
-	AZakon_Lucznik();
-
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
 
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
