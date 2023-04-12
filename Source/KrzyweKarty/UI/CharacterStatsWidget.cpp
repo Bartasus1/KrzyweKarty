@@ -6,7 +6,7 @@
 #include "Components/Image.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 
-void UCharacterStatsWidget::ShowStats(AKKCharacter* NewCharacter)
+void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
 	
 	Character = NewCharacter;

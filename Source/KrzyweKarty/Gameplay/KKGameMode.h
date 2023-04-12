@@ -38,8 +38,6 @@ public:
 
 	void EndGameWithWinner(int32 PlayerID);
 
-	static void LogAction(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -55,7 +53,7 @@ private:
 	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 protected:
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, EditAnywhere)
 	AKKMap* Map;
 
 	UPROPERTY(Transient)

@@ -186,7 +186,8 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
-	DOREPLIFETIME(AKKCharacter, OwnedTileID);	
+	DOREPLIFETIME(AKKCharacter, OwnedTileID);
+	DOREPLIFETIME(AKKCharacter, CharacterActions);	
 	DOREPLIFETIME_CONDITION(AKKCharacter, OwningPlayer, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(AKKCharacter, CharacterID, COND_InitialOnly);
 }

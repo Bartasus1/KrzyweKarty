@@ -17,10 +17,10 @@ class AKKTile;
 UENUM()
 enum EMovementDirection
 {
-	EMD_Forward		UMETA(DisplayName = "naprzod"),
-	EMD_Backward	UMETA(DisplayName = "wstecz"),
-	EMD_Right		UMETA(DisplayName = "w prawo"),
-	EMD_Left		UMETA(DisplayName = "w lewo")
+	EMD_Forward	=   4	UMETA(DisplayName = "Forward"),
+	EMD_Backward = -4	UMETA(DisplayName = "Backward"),
+	EMD_Right =     1	UMETA(DisplayName = "Right"),
+	EMD_Left =     -1	UMETA(DisplayName = "Left")
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterSpawnedDelegate);

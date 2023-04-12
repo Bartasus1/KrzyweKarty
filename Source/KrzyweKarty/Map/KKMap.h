@@ -7,10 +7,31 @@
 #include "Net/UnrealNetwork.h"
 #include "KKMap.generated.h"
 
+enum EMovementDirection : int;
 class UStaticMeshComponent;
 class AKKCharacter;
 class AKKTile;
 
+USTRUCT(BlueprintType)
+struct FMapCell
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AKKTile* Tile;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	AKKCharacter* Character;
+};
+
+USTRUCT(BlueprintType)
+struct FMapRow
+{
+	GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<FMapCell> MapRows;
+};
 
 UCLASS()
 class KRZYWEKARTY_API AKKMap : public AActor
@@ -21,22 +42,25 @@ public:
 	// Sets default values for this actor's properties
 	AKKMap();
 
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
-	TArray<AKKTile*> Tiles;
-
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
-	TArray<AKKCharacter*> Characters;
+	TArray<FMapRow> MapArray;
 
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
-
-	bool MoveForward(AKKCharacter* Character);
-	bool MoveBackward(AKKCharacter* Character);
-	bool MoveRight(AKKCharacter* Character);
-	bool MoveLeft(AKKCharacter* Character);
+	bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
+	
+	// bool MoveForward(AKKCharacter* Character);
+	// bool MoveBackward(AKKCharacter* Character);
+	// bool MoveRight(AKKCharacter* Character);
+	// bool MoveLeft(AKKCharacter* Character);
+	
+	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<TPair<int32, int32>> Tiles);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))
 	UStaticMeshComponent* MapMesh;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
+	TSubclassOf<AKKTile> TileClass;
 
 	virtual void BeginPlay() override;
 
@@ -44,8 +68,7 @@ protected:
 
 private:
 	void SetupMap();
-	bool CanMoveCharacter(int32 TileID, int32 NextTileID);
-	bool AssignCharacterToTile(AKKCharacter* Character, int32 TileID);
+	bool IsIndexValid(int32 X, int32 Y);
 
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
@@ -53,4 +76,8 @@ private:
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }
+
+private:
+	FORCEINLINE int32 GetX(int32 TileID) const { return TileID / MapSize; }
+	FORCEINLINE int32 GetY(int32 TileID) const { return TileID % MapSize; }
 };

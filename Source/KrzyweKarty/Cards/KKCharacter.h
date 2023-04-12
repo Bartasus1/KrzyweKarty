@@ -17,6 +17,7 @@ class UTextRenderComponent;
 #define CharacterChannel ECC_GameTraceChannel1
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
+
 UCLASS(Abstract)
 class KRZYWEKARTY_API AKKCharacter : public AActor
 {
@@ -51,11 +52,15 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
-
+	
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	TArray<FCharacterActionsBase> CharacterActions = { SpawnAction };
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
+
+
 
 	UFUNCTION(Client, Reliable)
 	void CharacterDied();

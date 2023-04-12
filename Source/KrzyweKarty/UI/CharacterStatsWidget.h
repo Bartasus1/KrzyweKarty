@@ -19,6 +19,7 @@ class KRZYWEKARTY_API UCharacterStatsWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintNativeEvent)
 	void ShowStats(AKKCharacter* NewCharacter);
 
 protected:

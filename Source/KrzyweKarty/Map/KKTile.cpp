@@ -4,6 +4,7 @@
 #include "KKTile.h"
 
 #include "Components/BoxComponent.h"
+#include "KrzyweKarty/KKGameStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -20,6 +21,11 @@ AKKTile::AKKTile()
 	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxCollision->SetCollisionResponseToChannel(PlatformChannel, ECR_Block);
 
+	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>("TextRender");
+	TextRenderComponent->SetupAttachment(BoxCollision);
+	
+	TextRenderComponent->SetRelativeLocation(FVector(0, 0, 50));
+
 }
 
 void AKKTile::HighlightTile(FColor Color)
@@ -33,12 +39,25 @@ void AKKTile::StopTileHighlight()
 	BoxCollision->SetHiddenInGame(true);
 }
 
+int32 AKKTile::GetX()
+{
+	return TileID / UKKGameStatics::GetMapSize(this);
+}
+
+int32 AKKTile::GetY()
+{
+	return TileID % UKKGameStatics::GetMapSize(this);
+}
+
 // Called when the game starts or when spawned
 void AKKTile::BeginPlay()
 {
 	Super::BeginPlay();
 
 	HighlightTile(FColor::Red);
+	
+	TextRenderComponent->SetText(FText::FromString(FString::FromInt(TileID)));
+	
 	
 }
 
