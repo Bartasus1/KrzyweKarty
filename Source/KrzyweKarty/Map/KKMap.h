@@ -79,7 +79,7 @@ private:
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }
-	bool IsCharacterOnMap(AKKCharacter* Character) { return Characters.Find(Character); }
+	bool IsCharacterOnMap(AKKCharacter* Character) { return Characters.Contains(Character); }
 
 private:
 	FORCEINLINE int32 GetX(int32 TileID) const { return TileID / MapSize; }

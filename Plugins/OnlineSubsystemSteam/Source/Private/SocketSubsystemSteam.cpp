@@ -3,11 +3,11 @@
 #include "SocketSubsystemSteam.h"
 #include "Misc/ConfigCacheIni.h"
 #include "SocketsSteam.h"
-#include "IPAddressSteam.h"
-#include "OnlineSubsystemSteam.h"
 #include "OnlineSessionInterfaceSteam.h"
 #include "SocketSubsystemModule.h"
 #include "SteamNetConnection.h"
+#include <steam/isteamgameserver.h>
+#include <steam/isteamuser.h>
 
 FSocketSubsystemSteam* FSocketSubsystemSteam::SocketSingleton = nullptr;
 
@@ -262,13 +262,19 @@ void FSocketSubsystemSteam::RegisterConnection(USteamNetConnection* Connection)
 	FWeakObjectPtr ObjectPtr = Connection;
 	SteamConnections.Add(ObjectPtr);
 
-	if (Connection->GetRemoteAddr().IsValid() && Connection->Socket)
+	if (FSocket* CurSocket = Connection->GetSocket())
 	{
-		FSocketSteam* SteamSocket = (FSocketSteam*)Connection->Socket;
-		TSharedPtr<const FInternetAddrSteam> SteamAddr = StaticCastSharedPtr<const FInternetAddrSteam>(Connection->GetRemoteAddr());
+		TSharedPtr<const FInternetAddr> CurRemoteAddr = Connection->GetRemoteAddr();
 
-		UE_LOG_ONLINE(Log, TEXT("Adding user %s from RegisterConnection"), *SteamAddr->ToString(true));
-		P2PTouch(SteamSocket->SteamNetworkingPtr, *SteamAddr->SteamId, SteamAddr->SteamChannel);
+		if (CurRemoteAddr.IsValid())
+		{
+			FSocketSteam* SteamSocket = (FSocketSteam*)CurSocket;
+			TSharedPtr<const FInternetAddrSteam> SteamAddr = StaticCastSharedPtr<const FInternetAddrSteam>(CurRemoteAddr);
+
+			UE_LOG_ONLINE(Log, TEXT("Adding user %s from RegisterConnection"), *SteamAddr->ToString(true));
+
+			P2PTouch(SteamSocket->SteamNetworkingPtr, *SteamAddr->SteamId, SteamAddr->SteamChannel);
+		}
 	}
 }
 
@@ -727,7 +733,7 @@ bool FSocketSubsystemSteam::Tick(float DeltaTime)
 	return true;
 }
 
-bool FSocketSubsystemSteam::Exec(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar)
+bool FSocketSubsystemSteam::Exec_Dev(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar)
 {
 #if !UE_BUILD_SHIPPING
 	if (FParse::Command(&Cmd, TEXT("dumpsteamsessions")))

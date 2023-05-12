@@ -58,7 +58,7 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementD
 
 TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<TPair<int32, int32>> RelativeTiles)
 {
-	TArray<AKKCharacter*> Characters;
+	TArray<AKKCharacter*> FoundCharacters;
 
 	const int32 X = GetX(Character->OwnedTileID);
 	const int32 Y = GetY(Character->OwnedTileID);
@@ -78,12 +78,12 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 				// int32 id = NextY + NextX * MapSize;
 				// UE_LOG(LogTemp, Warning, TEXT("TILE_ID: %d"), id);
 				
-				Characters.Add(MapArray[NextX].MapRows[NextY].Character);
+				FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
 			}
 		}
 	}
 
-	return Characters;
+	return FoundCharacters;
 }
 
 void AKKMap::BeginPlay()

@@ -2,8 +2,7 @@
 
 #include "OnlineEncryptedAppTicketInterfaceSteam.h"
 #include "OnlineAsyncTaskManagerSteam.h"
-#include "OnlineSubsystem.h"
-#include "OnlineSubsystemSteamTypes.h"
+#include "OnlineSubsystemSteam.h"
 #include "SteamUtilities.h"
 
 enum class ESteamEncryptedAppTicketState
@@ -232,7 +231,7 @@ bool FOnlineEncryptedAppTicketSteam::GetEncryptedAppTicket(TArray<uint8>& OutEnc
 	return false;
 }
 
-bool FOnlineEncryptedAppTicketSteam::Exec(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar)
+bool FOnlineEncryptedAppTicketSteam::Exec_Dev(UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar)
 {
 #if !UE_BUILD_SHIPPING
 	if (FParse::Command(&Cmd, TEXT("RequestEncryptedAppTicket")))

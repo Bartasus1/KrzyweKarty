@@ -3,15 +3,15 @@
 #include "OnlineSessionAsyncServerSteam.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerState.h"
-#include "Misc/CoreMisc.h"
 #include "Misc/ConfigCacheIni.h"
+#include "Online/OnlineSessionNames.h"
 #include "OnlineSubsystemUtils.h"
 #include "SocketSubsystem.h"
 #include "IPAddressSteam.h"
 #include "SteamSessionKeys.h"
 #include "SteamUtilities.h"
-#include "OnlineSubsystemSteam.h"
 #include "OnlineAuthInterfaceSteam.h"
+#include <steam/steamuniverse.h>
 
 
 /** Turn on Steam filter generation output */
@@ -424,9 +424,9 @@ void FOnlineAsyncTaskSteamCreateServer::Tick()
 			}
 
 			// Setup advertisement and force the initial update
-			SteamGameServerPtr->SetHeartbeatInterval(-1);
-			SteamGameServerPtr->EnableHeartbeats(true);
-			SteamGameServerPtr->ForceHeartbeat();
+			//SteamGameServerPtr->SetHeartbeatInterval(-1);      // deprecated in 1.53
+			SteamGameServerPtr->SetAdvertiseServerActive(true);  // renamed EnableHeartbeats to SetAdvertiseServerActive in 1.53
+			// SteamGameServerPtr->ForceHeartbeat();             // deprecated in 1.53
 
 			bInit = true;
 		}
@@ -614,7 +614,7 @@ void FOnlineAsyncTaskSteamLogoffServer::Tick()
 	{
 		// @TODO ONLINE Listen Servers need to unset rich presence
 		//SteamFriends()->SetRichPresence("connect", ""); for master server sessions
-		SteamGameServer()->EnableHeartbeats(false);
+		SteamGameServer()->SetAdvertiseServerActive(false);  // renamed EnableHeartbeats to SetAdvertiseServerActive in 1.53
 		SteamGameServer()->LogOff();
 		bInit = true;
 	}

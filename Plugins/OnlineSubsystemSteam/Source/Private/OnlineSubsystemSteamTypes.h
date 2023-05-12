@@ -2,10 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Online/CoreOnline.h"
-#include "OnlineSubsystemTypes.h"
-#include "OnlineSubsystemSteamPrivate.h"
+#include "OnlineSubsystemNames.h"
+#include "OnlineSubsystemSteamPrivate.h" // IWYU pragma: keep
 #include "IPAddress.h"
 #include "OnlineSubsystemSteamPackage.h"
 
@@ -168,10 +166,9 @@ public:
 		return FUniqueNetIdSteam(SteamID).ToDebugString();
 	}
 
-	/** Needed for TMap::GetTypeHash() */
-	friend uint32 GetTypeHash(const FUniqueNetIdSteam& A)
+	virtual uint32 GetTypeHash() const override
 	{
-		return GetTypeHash(A.UniqueNetId);
+		return ::GetTypeHash(UniqueNetId);
 	}
 
 	/** global static instance of invalid (zero) id */
