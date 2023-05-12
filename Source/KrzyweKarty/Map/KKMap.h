@@ -45,6 +45,9 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
 	TArray<FMapRow> MapArray;
 
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
+	TArray<AKKCharacter*> Characters;
+
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
 	bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 	
@@ -76,6 +79,7 @@ private:
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }
+	bool IsCharacterOnMap(AKKCharacter* Character) { return Characters.Find(Character); }
 
 private:
 	FORCEINLINE int32 GetX(int32 TileID) const { return TileID / MapSize; }

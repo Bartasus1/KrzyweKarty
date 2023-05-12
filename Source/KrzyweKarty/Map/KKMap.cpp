@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KKMap.h"
-#include "KKMap.h"
-#include "KKMap.h"
 #include "KKTile.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
@@ -23,9 +21,10 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 	int32 X = GetX(TileID);
 	int32 Y = GetY(TileID);
 	
-	if (Character->OwnedTileID < 0 && MapArray[X].MapRows[Y].Character == nullptr)
+	if (Character->OwnedTileID < 0 && MapArray[X].MapRows[Y].Character == nullptr && !IsCharacterOnMap(Character))
 	{
 		MapArray[X].MapRows[Y].Character = Character;
+		Characters.Add(Character);
 		
 		Character->OwnedTileID = TileID;
 		Character->SetActorLocation(MapArray[X].MapRows[Y].Tile->GetActorLocation());
@@ -44,7 +43,7 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementD
 	const int32 NewX = NewTileID / MapSize;
 	const int32 NewY = NewTileID % MapSize;
 
-	if(IsIndexValid(NewX, NewY) && MapArray[NewX].MapRows[NewY].Character == nullptr)
+	if(IsIndexValid(NewX, NewY) && MapArray[NewX].MapRows[NewY].Character == nullptr && IsCharacterOnMap(Character))
 	{
 		MapArray[X].MapRows[Y].Character = nullptr;
 		MapArray[NewX].MapRows[NewY].Character = Character;
@@ -134,5 +133,6 @@ void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(AKKMap, MapArray);
+	DOREPLIFETIME(AKKMap, Characters);
 }
 

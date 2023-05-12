@@ -76,7 +76,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack))
+	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !CharacterActions.Find(AttackAction))
 		return false;
 	
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
