@@ -15,8 +15,6 @@ class KRZYWEKARTY_API AZakon_Paladyn : public AZakon, public IAreaModifierInterf
 {
 	GENERATED_BODY()
 public:
-	AZakon_Paladyn();
-
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
 	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
 

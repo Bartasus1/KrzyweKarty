@@ -61,8 +61,11 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
+		Character->CharacterActions.Remove(SpawnAction);
+		Character->CharacterActions.Append({MoveAction, AttackAction, FirstAbilityAction});
+		
 		RoundManager->AddCharacterToList(Character, EMP_SummonedCharacter);
-		AddActionLog(Character, nullptr, FText::FromString(" dodany do mapy"));
+		AddActionLog(Character, nullptr, FText::FromString(" has been added to the map"));
 	}
 }
 
@@ -70,56 +73,46 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection Move
 {
 	if (RoundManager->CanUseCharacter(Character, EMP_MovedCharacter))
 	{
-		auto MoveFunction = &AKKMap::MoveForward;
-
-		switch (MovementDirection)
+		if(PlayerID != 1)
 		{
-		case EMD_Forward:
-			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveForward : &AKKMap::MoveBackward;
-			break;
-		case EMD_Backward:
-			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveBackward : &AKKMap::MoveForward;
-			break;
-		case EMD_Right:
-			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveRight : &AKKMap::MoveLeft;
-			break;
-		case EMD_Left:
-			MoveFunction = (PlayerID == 1) ? &AKKMap::MoveLeft : &AKKMap::MoveRight;
-			break;
-		default:
-			break;
+			MovementDirection = (MovementDirection == EMD_Forward) ? EMD_Backward : MovementDirection;
+			MovementDirection = (MovementDirection == EMD_Right) ? EMD_Left : MovementDirection;
 		}
-
 		
-		
-		if ((Map->*MoveFunction)(Character))
+		if (Map->MoveCharacter(Character, MovementDirection))
 		{
+			Character->CharacterActions.Remove(MoveAction);
+			
 			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
-			AddActionLog(Character, nullptr, FText::FromString("ruszyl sie " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
+			AddActionLog(Character, nullptr, FText::FromString("moved " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
 		}
 	}
 }
 
 void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Map->IsCharacterOnMap(Character))
 	{
 		if (Character->DefaultAttack(TargetCharacter))
 		{
+			Character->CharacterActions.Remove(AttackAction);
+			
 			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
-			AddActionLog(Character, TargetCharacter, FText::FromString("zaatakowal"));
+			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
 		}
 	}
 }
 
 void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Map->IsCharacterOnMap(Character))
 	{
 		if (Character->ActiveAbility(TargetCharacter))
 		{
+			Character->CharacterActions.Remove(FirstAbilityAction);
+			
 			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
-			AddActionLog(Character, Character, FText::FromString("uzyl umiejetnosci " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
+			AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
 		}
 	}
 }
@@ -129,6 +122,7 @@ void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 	AKKPlayerController* Winner = Players[PlayerID - 1];
 	//todo
 }
+
 
 void AKKGameMode::BeginPlay()
 {
@@ -149,6 +143,11 @@ void AKKGameMode::ChangeTurn()
 	Players[0]->OnRep_TurnChanged();
 
 	FirstPlayerTurn = !FirstPlayerTurn;
+
+	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
+	{
+		MovementInfo.Character->CharacterActions = TArray{MoveAction, AttackAction, FirstAbilityAction};
+	}
 }
 
 void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action)
@@ -157,7 +156,7 @@ void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetChar
 	{
 		FString PlayerName = PlayerController->PlayerState->GetPlayerName();
 
-		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1} {2} {3}") , FText::FromString(PlayerName), Character->GetCharacterName(), Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
+		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1}({2}) {3} {4}") , FText::FromString(PlayerName), Character->GetCharacterName(), Character->CharacterID , Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
 
 		GetGameState<AKKGameState>()->AddActionLog(Log);
 	}

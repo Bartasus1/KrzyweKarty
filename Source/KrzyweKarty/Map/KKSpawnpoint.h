@@ -39,11 +39,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void SpawnCards();
-
+	
 	UFUNCTION()
 	void AssignPlayerToCards();
+
+	void SpawnCards();
 
 public:
 	// Called every frame

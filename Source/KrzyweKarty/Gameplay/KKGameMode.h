@@ -53,7 +53,7 @@ private:
 	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 protected:
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, EditAnywhere)
 	AKKMap* Map;
 
 	UPROPERTY(Transient)

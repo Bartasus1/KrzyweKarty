@@ -34,6 +34,8 @@ struct FMovementInfo
 UCLASS(Within="KKGameMode" ,ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class KRZYWEKARTY_API URoundManager : public UActorComponent
 {
+	friend class AKKGameMode;
+	
 	GENERATED_BODY()
 
 public:

@@ -6,11 +6,6 @@
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
-AZakon_Paladyn::AZakon_Paladyn()
-{
-
-}
-
 bool AZakon_Paladyn::ActiveAbility(AKKCharacter* TargetCharacter)
 {
 	if(GetMana() < GetFirstAbilityManaCost())
@@ -18,6 +13,10 @@ bool AZakon_Paladyn::ActiveAbility(AKKCharacter* TargetCharacter)
 	
 	for(AKKCharacter* Character : GetAffectedCharacters())
 	{
+		if(!Character)
+			continue;
+
+		
 		if(IsInTheSameTeam(Character))
 		{
 			Character->IncreaseHealth(4);
@@ -40,7 +39,7 @@ bool AZakon_Paladyn::ActiveAbility2(AKKCharacter* TargetCharacter)
 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		AKKMap* Map = GameMode->GetMap();
-		if(!Map->MoveLeft(TargetCharacter) || !Map->MoveRight(TargetCharacter))
+		if(!Map->MoveCharacter(TargetCharacter, EMD_Left) || !Map->MoveCharacter(TargetCharacter, EMD_Right))
 		{
 			DealDamage(TargetCharacter, 24);
 			DecreaseManaForSecondAbility();
@@ -64,27 +63,17 @@ bool AZakon_Paladyn::CanBeAttacked(EAttackType AttackType)
 TArray<AKKCharacter*> AZakon_Paladyn::GetAffectedCharacters()
 {
 	TArray<AKKCharacter*> AffectedCharacters;
-	TArray AffectedTiles = {
-		OwnedTileID - 4,
-		OwnedTileID + 4,
-		(OwnedTileID % 4 != 3) ? OwnedTileID + 4 + 1 : -1, //to the right
-		(OwnedTileID % 4 != 0) ? OwnedTileID + 4 - 1 : -1, //to the left
-		OwnedTileID + 4 + 4
-	};
-
+	
 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
-		TArray<AKKCharacter*> Characters = GameMode->GetMap()->Characters;
-		for(int32 TileID : AffectedTiles)
+		AffectedCharacters = GameMode->GetMap()->GetCharactersAtTiles(this,
 		{
-			if(Characters.IsValidIndex(TileID))
-			{
-				if(Characters[TileID] != nullptr)
-				{
-					AffectedCharacters.Add(Characters[TileID]);
-				}
-			}
-		}
+			{-1, 0},
+			{1, -1},
+			{1, 0},
+			{1, 1},
+			{2,0}
+		});
 	}
 
 	return AffectedCharacters;

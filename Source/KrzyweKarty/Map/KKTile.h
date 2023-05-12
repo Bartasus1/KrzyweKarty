@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
 #include "KKTile.generated.h"
 
 class UBoxComponent;
+
+#define PlatformChannel ECC_GameTraceChannel2
 
 UCLASS()
 class KRZYWEKARTY_API AKKTile : public AActor
@@ -23,8 +26,14 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere)
 	int32 TileID;
 
+	UPROPERTY(EditAnywhere)
+	UTextRenderComponent* TextRenderComponent;
+
 	void HighlightTile(FColor Color);
 	void StopTileHighlight();
+
+	int32 GetX();
+	int32 GetY();
 
 protected:
 	// Called when the game starts or when spawned

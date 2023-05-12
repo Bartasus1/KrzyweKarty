@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "Net/UnrealNetwork.h"
 #include "KKGameState.generated.h"
 
 /**
@@ -19,21 +18,22 @@ class KRZYWEKARTY_API AKKGameState : public AGameStateBase
 	GENERATED_BODY()
 public:
 
+	UPROPERTY(BlueprintAssignable)
+	FOnActionLogAdded ActionAdded;
+	
 	UFUNCTION(BlueprintCallable)
 	TArray<FText>& GetActionLogs();
-
+	
 	UFUNCTION()
 	void OnRep_ActionLogs();
 
-	UPROPERTY(BlueprintAssignable)
-	FOnActionLogAdded ActionAdded;
+	UFUNCTION(Server, Reliable)
+	void AddActionLog(const FText& NewAction);
 
-	
-	void AddActionLog(FText NewAction);
-	
+protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	UPROPERTY(ReplicatedUsing="OnRep_ActionLogs", BlueprintReadWrite)
+	UPROPERTY(ReplicatedUsing="OnRep_ActionLogs")
 	TArray<FText> ActionLogs;
 	
 };

@@ -3,10 +3,6 @@
 
 #include "Zakon_Halabardzista.h"
 
-AZakon_Halabardzista::AZakon_Halabardzista()
-{
-}
-
 bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 {
 	if (GetMana() < GetFirstAbilityManaCost())

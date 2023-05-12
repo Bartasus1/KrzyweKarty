@@ -36,7 +36,6 @@ void AKKSpawnpoint::SpawnCards()
 	constexpr int MaxRowCharacters = 6;
 
 	TArray<FSpawnSet*> SpawnClasses;
-
 	SpawnTable->GetAllRows("", SpawnClasses);
 
 	for (int i = 0; i < SpawnClasses.Num(); i++)
@@ -47,13 +46,11 @@ void AKKSpawnpoint::SpawnCards()
 			StartLocation.Y = GetActorLocation().Y + Spacing;
 		}
 
-		AKKCharacter* SpawnedCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[i]->ClassToSpawn,
-		                                                                      StartLocation, GetActorRotation());
-
+		AKKCharacter* SpawnedCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[i]->ClassToSpawn, StartLocation, GetActorRotation());
 		SpawnedCharacter->CharacterID = i + 1;
 
 		SpawnedCards.Add(SpawnedCharacter);
-
+		
 		StartLocation.Y += Spacing;
 	}
 }

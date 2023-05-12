@@ -6,12 +6,11 @@
 #include "Components/Image.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 
-void UCharacterStatsWidget::ShowStats(AKKCharacter* NewCharacter)
+void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
-	Character = NewCharacter;
-
-	CharacterNameText->SetText(Character->GetCharacterName());
 	
+	Character = NewCharacter;
+	CharacterNameText->SetText(Character->GetCharacterName());
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
 }
 

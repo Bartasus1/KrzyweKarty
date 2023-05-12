@@ -24,10 +24,12 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetupAttachment(Platform);
 	TextRenderName->SetupAttachment(Platform);
 
+	
+
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
 	CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CharacterMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+	CharacterMesh->SetCollisionResponseToChannel(CharacterChannel, ECR_Block);
 	CharacterMesh->SetCastShadow(false);
 
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
@@ -35,17 +37,22 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
 	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> PlatformMesh(TEXT("/Game/Map/Meshes/Platform"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> TextRenderMaterial (TEXT("Material'/Game/Cards/Materials/M_CharacterNameMaterial.M_CharacterNameMaterial'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> PlatformMesh(TEXT("/Game/Map/Meshes/Platform"));
+	ConstructorHelpers::FObjectFinder<UMaterial> TextRenderMaterial (TEXT("Material'/Game/Cards/Materials/M_CharacterNameMaterial.M_CharacterNameMaterial'"));
 	if(PlatformMesh.Succeeded() && TextRenderMaterial.Succeeded())
 	{
 		Platform->SetStaticMesh(PlatformMesh.Object);
 		Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+		Platform->SetCollisionResponseToChannel(CharacterChannel, ECR_Block);
 
 		TextRenderName->SetTextMaterial(TextRenderMaterial.Object);
 	}
 }
 
+void AKKCharacter::CharacterDied_Implementation()
+{
+	OnCharacterDeath.Broadcast();
+}
 
 void AKKCharacter::OnConstruction(const FTransform& Transform)
 {
@@ -59,8 +66,8 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 		TextRenderName->SetText(CharacterDataAsset->CharacterName);
 		
-		UMaterialInstanceDynamic* DynamicMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
-		DynamicMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
+		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
+		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
 		
 		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
 	}
@@ -69,7 +76,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack))
+	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !CharacterActions.Find(AttackAction))
 		return false;
 	
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
@@ -79,8 +86,6 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 {
-	TargetCharacter->OnCharacterDeath.Broadcast();
-
 	if (HasAuthority() && TargetCharacter->Implements<UBaseInterface>())
 	{
 		if (AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
@@ -95,12 +100,13 @@ void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 {
 	const int32 NewHealth = TargetCharacter->GetHealth() - (Damage - TargetCharacter->GetDefence());
-
+	
 	TargetCharacter->SetHealth(NewHealth);
 	TargetCharacter->DecreaseDefence();
 
 	if (TargetCharacter->GetHealth() <= 0)
 	{
+		CharacterDied();
 		KillCharacter(TargetCharacter);
 	}
 }
@@ -180,7 +186,8 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
-	DOREPLIFETIME(AKKCharacter, OwnedTileID);	
+	DOREPLIFETIME(AKKCharacter, OwnedTileID);
+	DOREPLIFETIME(AKKCharacter, CharacterActions);	
 	DOREPLIFETIME_CONDITION(AKKCharacter, OwningPlayer, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(AKKCharacter, CharacterID, COND_InitialOnly);
 }

@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "CharacterStructs.generated.h"
 
 USTRUCT(BlueprintType)
@@ -48,3 +49,25 @@ enum EAttackType
 	EAT_ActiveAbility,
 	EAT_PassiveAbility
 };
+
+USTRUCT(BlueprintType)
+struct FCharacterActionsBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FKey ActionKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText ActionNameText;
+
+	friend bool operator==(const FCharacterActionsBase& First, const FCharacterActionsBase& Second)
+	{
+		return First.ActionKey.GetFName() == Second.ActionKey.GetFName();
+	}
+};
+
+static inline FCharacterActionsBase SpawnAction = {EKeys::N, FText::FromString("Add to Map")};
+static inline FCharacterActionsBase AttackAction = {EKeys::X, FText::FromString("Attack")};
+static inline FCharacterActionsBase FirstAbilityAction = {EKeys::J, FText::FromString("First Ability")};
+static inline FCharacterActionsBase MoveAction = {EKeys::M, FText::FromString("Move")};
