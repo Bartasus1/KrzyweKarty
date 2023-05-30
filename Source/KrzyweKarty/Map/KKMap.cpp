@@ -18,16 +18,10 @@ AKKMap::AKKMap()
 
 bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 {
-	int32 X = GetX(TileID);
-	int32 Y = GetY(TileID);
 	
-	if (Character->OwnedTileID < 0 && MapArray[X].MapRows[Y].Character == nullptr && !IsCharacterOnMap(Character))
+	if (GetCellAtIndex(TileID) && GetCellAtIndex(TileID)->Character == nullptr && !Character->IsCharacterOnMap())
 	{
-		MapArray[X].MapRows[Y].Character = Character;
-		Characters.Add(Character);
-		
-		Character->OwnedTileID = TileID;
-		Character->SetActorLocation(MapArray[X].MapRows[Y].Tile->GetActorLocation());
+		AssignCharacterToTile(Character, TileID);
 		return true;
 	}
 
@@ -36,20 +30,13 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 
 bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection)
 {
-	const int32 X = GetX(Character->OwnedTileID);
-	const int32 Y = GetY(Character->OwnedTileID);
-
 	const int32 NewTileID = Character->OwnedTileID + MovementDirection;
-	const int32 NewX = NewTileID / MapSize;
-	const int32 NewY = NewTileID % MapSize;
-
-	if(IsIndexValid(NewX, NewY) && MapArray[NewX].MapRows[NewY].Character == nullptr && IsCharacterOnMap(Character))
+	
+	if(GetCellAtIndex(NewTileID) && GetCellAtIndex(NewTileID)->Character == nullptr && Character->IsCharacterOnMap())
 	{
-		MapArray[X].MapRows[Y].Character = nullptr;
-		MapArray[NewX].MapRows[NewY].Character = Character;
-		
-		Character->OwnedTileID = NewTileID;
-		Character->SetActorLocation(MapArray[NewX].MapRows[NewY].Tile->GetActorLocation());
+		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
+		AssignCharacterToTile(Character, NewTileID);
+
 		return true;
 	}
 
@@ -68,10 +55,11 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 	for(const auto& Tile : RelativeTiles)
 	{
 		const int32 NextX = X + (Direction * Tile.Key);
+		const int32 NextY = Y + (Direction * Tile.Value);
 		
 		if(MapArray.IsValidIndex(NextX))
 		{
-			const int32 NextY = Y + (Direction * Tile.Value);
+			
 			
 			if(MapArray[NextX].MapRows.IsValidIndex(NextY))
 			{
@@ -105,7 +93,7 @@ void AKKMap::SetupMap()
 	
 	for (int i = 0; i < 5; i++)
 	{
-		MapArray.Add(FMapRow()); // 5 rows with 4 cols
+		MapArray.Add(FMapRow());
 		
 		for (int j = 0; j < 4; j++)
 		{
@@ -114,25 +102,38 @@ void AKKMap::SetupMap()
 			TileLocation.Y += j * SpacingY;
 			
 			AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, TileLocation, GetActorRotation());
-			Tile->TileID = j + i * MapSize;
+			Tile->TileID = GetID(i , j);
 
 			MapArray[i].MapRows.Add({Tile, nullptr});
 		}
 	}
-
 }
 
-bool AKKMap::IsIndexValid(int32 X, int32 Y)
+void AKKMap::AssignCharacterToTile(AKKCharacter* Character, int32 TileID)
 {
-	return MapArray.IsValidIndex(X) && MapArray[X].MapRows.IsValidIndex(Y);
+	GetCellAtIndex(TileID)->Character = Character;
+		
+	Character->OwnedTileID = TileID;
+	Character->SetActorLocation(GetCellAtIndex(TileID)->Tile->GetActorLocation());
 }
 
+FMapCell* AKKMap::GetCellAtIndex(int32 TileID)
+{
+	const int32 X = GetX(TileID);
+	const int32 Y = GetY(TileID);
+	
+	if(IsValidIndex(X, Y))
+	{
+		return &MapArray[X].MapRows[Y];
+	}
+	
+	return nullptr;
+}
 
 void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(AKKMap, MapArray);
-	DOREPLIFETIME(AKKMap, Characters);
 }
 

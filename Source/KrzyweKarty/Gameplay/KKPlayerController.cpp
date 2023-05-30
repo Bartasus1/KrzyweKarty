@@ -37,29 +37,29 @@ void AKKPlayerController::Tick(float DeltaSeconds)
 	}
 }
 
-void AKKPlayerController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	InputComponent->BindAxis("Turn", this, &APlayerController::AddYawInput);
-	InputComponent->BindAxis("LookUp", this, &AKKPlayerController::AddPitchInput);
-
-	InputComponent->BindAction("SelectCharacter", IE_Pressed, this, &AKKPlayerController::SelectCharacter);
-	InputComponent->BindAction("TargetCharacter", IE_Pressed, this, &AKKPlayerController::TargetCharacter);
-
-	InputComponent->BindAction("Attack", IE_Pressed, this, &AKKPlayerController::AttackCharacter);
-	InputComponent->BindAction("ActiveAbility1", IE_Pressed, this, &AKKPlayerController::ActiveAbility1);
-
-	InputComponent->BindAction("AddOnPosition0", IE_Pressed, this, &AKKPlayerController::AddOnPosition0);
-	InputComponent->BindAction("AddOnPosition1", IE_Pressed, this, &AKKPlayerController::AddOnPosition1);
-	InputComponent->BindAction("AddOnPosition2", IE_Pressed, this, &AKKPlayerController::AddOnPosition2);
-	InputComponent->BindAction("AddOnPosition3", IE_Pressed, this, &AKKPlayerController::AddOnPosition3);
-
-	InputComponent->BindAction("MoveCardForward", IE_Pressed, this, &AKKPlayerController::MoveForward);
-	InputComponent->BindAction("MoveCardBackward", IE_Pressed, this, &AKKPlayerController::MoveBackward);
-	InputComponent->BindAction("MoveCardRight", IE_Pressed, this, &AKKPlayerController::MoveRight);
-	InputComponent->BindAction("MoveCardLeft", IE_Pressed, this, &AKKPlayerController::MoveLeft);
-}
+// void AKKPlayerController::SetupInputComponent()
+// {
+// 	Super::SetupInputComponent();
+//
+// 	InputComponent->BindAxis("Turn", this, &APlayerController::AddYawInput);
+// 	InputComponent->BindAxis("LookUp", this, &AKKPlayerController::AddPitchInput);
+//
+// 	InputComponent->BindAction("SelectCharacter", IE_Pressed, this, &AKKPlayerController::SelectCharacter);
+// 	InputComponent->BindAction("TargetCharacter", IE_Pressed, this, &AKKPlayerController::TargetCharacter);
+//
+// 	InputComponent->BindAction("Attack", IE_Pressed, this, &AKKPlayerController::AttackCharacter);
+// 	InputComponent->BindAction("ActiveAbility1", IE_Pressed, this, &AKKPlayerController::ActiveAbility1);
+//
+// 	InputComponent->BindAction("AddOnPosition0", IE_Pressed, this, &AKKPlayerController::AddOnPosition0);
+// 	InputComponent->BindAction("AddOnPosition1", IE_Pressed, this, &AKKPlayerController::AddOnPosition1);
+// 	InputComponent->BindAction("AddOnPosition2", IE_Pressed, this, &AKKPlayerController::AddOnPosition2);
+// 	InputComponent->BindAction("AddOnPosition3", IE_Pressed, this, &AKKPlayerController::AddOnPosition3);
+//
+// 	InputComponent->BindAction("MoveCardForward", IE_Pressed, this, &AKKPlayerController::MoveForward);
+// 	InputComponent->BindAction("MoveCardBackward", IE_Pressed, this, &AKKPlayerController::MoveBackward);
+// 	InputComponent->BindAction("MoveCardRight", IE_Pressed, this, &AKKPlayerController::MoveRight);
+// 	InputComponent->BindAction("MoveCardLeft", IE_Pressed, this, &AKKPlayerController::MoveLeft);
+// }
 
 void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

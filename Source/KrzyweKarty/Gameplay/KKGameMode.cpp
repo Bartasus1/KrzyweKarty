@@ -91,7 +91,7 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection Move
 
 void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Map->IsCharacterOnMap(Character))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Character->IsCharacterOnMap())
 	{
 		if (Character->DefaultAttack(TargetCharacter))
 		{
@@ -105,7 +105,7 @@ void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* 
 
 void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Map->IsCharacterOnMap(Character))
+	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Character->IsCharacterOnMap())
 	{
 		if (Character->ActiveAbility(TargetCharacter))
 		{

@@ -44,17 +44,9 @@ public:
 
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
 	TArray<FMapRow> MapArray;
-
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
-	TArray<AKKCharacter*> Characters;
-
+	
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
 	bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
-	
-	// bool MoveForward(AKKCharacter* Character);
-	// bool MoveBackward(AKKCharacter* Character);
-	// bool MoveRight(AKKCharacter* Character);
-	// bool MoveLeft(AKKCharacter* Character);
 	
 	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<TPair<int32, int32>> Tiles);
 
@@ -71,17 +63,20 @@ protected:
 
 private:
 	void SetupMap();
-	bool IsIndexValid(int32 X, int32 Y);
-
+	void AssignCharacterToTile(AKKCharacter* Character, int32 TileID);
+	
+	FMapCell* GetCellAtIndex(int32 TileID);
+	
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
 	const uint8 MapSize = 4;
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }
-	bool IsCharacterOnMap(AKKCharacter* Character) { return Characters.Contains(Character); }
 
 private:
 	FORCEINLINE int32 GetX(int32 TileID) const { return TileID / MapSize; }
 	FORCEINLINE int32 GetY(int32 TileID) const { return TileID % MapSize; }
+	FORCEINLINE int32 GetID(int32 X, int32 Y) const { return Y + (X * MapSize); }
+	FORCEINLINE bool IsValidIndex(int32 X, int32 Y) { return MapArray.IsValidIndex(X) && MapArray[X].MapRows.IsValidIndex(Y); }
 };

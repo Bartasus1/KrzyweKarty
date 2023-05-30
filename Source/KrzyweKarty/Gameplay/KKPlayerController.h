@@ -93,7 +93,7 @@ private:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	virtual void SetupInputComponent() override;
+	//virtual void SetupInputComponent() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private: // Input functions

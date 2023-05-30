@@ -32,8 +32,6 @@ public:
 	void HighlightTile(FColor Color);
 	void StopTileHighlight();
 
-	int32 GetX();
-	int32 GetY();
 
 protected:
 	// Called when the game starts or when spawned

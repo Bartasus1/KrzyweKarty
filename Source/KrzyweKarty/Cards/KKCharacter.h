@@ -127,4 +127,5 @@ public:
 	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetSecondAbilityManaCost()); }
 	
 	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
+	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }
 };

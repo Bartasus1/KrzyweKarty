@@ -39,16 +39,6 @@ void AKKTile::StopTileHighlight()
 	BoxCollision->SetHiddenInGame(true);
 }
 
-int32 AKKTile::GetX()
-{
-	return TileID / UKKGameStatics::GetMapSize(this);
-}
-
-int32 AKKTile::GetY()
-{
-	return TileID % UKKGameStatics::GetMapSize(this);
-}
-
 // Called when the game starts or when spawned
 void AKKTile::BeginPlay()
 {
