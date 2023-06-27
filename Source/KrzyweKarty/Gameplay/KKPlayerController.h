@@ -4,15 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "KrzyweKarty/Map/KKTile.h"
 #include "KKPlayerController.generated.h"
 
-/**
- * 
- */
+
 class AKKCharacter;
 class AKKTile;
+class ISelectableInterface;
 
+#define SelectableTraceChannel ECC_GameTraceChannel1
 
 UENUM()
 enum EMovementDirection
@@ -34,10 +33,10 @@ class KRZYWEKARTY_API AKKPlayerController : public APlayerController
 public:
 	AKKPlayerController();
 	
-	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	AKKCharacter* SelectedCharacter;
 
-	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	AKKCharacter* TargetedCharacter;
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
@@ -54,27 +53,29 @@ public:
 
 public:
 	
+	UFUNCTION(BlueprintCallable)
 	FHitResult CastLineTrace(ECollisionChannel CollisionChannel) const;
-	AKKCharacter* TraceForCharacter() const;
-	AKKTile* TraceForPlatform() const;
-	
+
+	UFUNCTION(BlueprintCallable)
+	TScriptInterface<ISelectableInterface> TraceForSelectable() const;
+
 protected:
-	UFUNCTION(Server, Reliable)
-	void Server_TraceForSelectedCharacter(AKKCharacter* TracedCharacter);
+	// UFUNCTION(Server, Reliable, BlueprintCallable)
+	// void Server_TraceForSelectedCharacter(AKKCharacter* TracedCharacter);
+	//
+	// UFUNCTION(Server, Reliable, BlueprintCallable)
+	// void Server_TraceForTargetedCharacter(AKKCharacter* TracedCharacter);
 
-	UFUNCTION(Server, Reliable)
-	void Server_TraceForTargetedCharacter(AKKCharacter* TracedCharacter);
-
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_AddCharacterToMap(int32 TileID);
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_MoveCharacter(EMovementDirection MovementDirection);
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_AttackCharacter();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_ActiveAbility();
 
 public:
@@ -83,10 +84,10 @@ public:
 	
 
 private:
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Client, Unreliable, BlueprintCallable)
 	void ShowCharacterStats(AKKCharacter* CardCharacter);
 
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Client, Unreliable, BlueprintCallable)
 	void ShowTargetStats(AKKCharacter* CardCharacter);
 
 	
@@ -97,8 +98,6 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private: // Input functions
-	FORCEINLINE void SelectCharacter()	{ Server_TraceForSelectedCharacter(TraceForCharacter()); }
-	FORCEINLINE void TargetCharacter()	{ Server_TraceForTargetedCharacter(TraceForCharacter()); }
 
 	FORCEINLINE void AttackCharacter()	{ if (bIsMyTurn) Server_AttackCharacter(); }
 	FORCEINLINE void ActiveAbility1()	{ if (bIsMyTurn) Server_ActiveAbility(); }

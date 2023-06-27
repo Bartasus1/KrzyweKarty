@@ -48,6 +48,7 @@ void AKKSpawnpoint::SpawnCards()
 
 		AKKCharacter* SpawnedCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[i]->ClassToSpawn, StartLocation, GetActorRotation());
 		SpawnedCharacter->CharacterID = i + 1;
+		SpawnedCharacter->Direction = (ID == 1) ? 1 : -1;
 
 		SpawnedCards.Add(SpawnedCharacter);
 		

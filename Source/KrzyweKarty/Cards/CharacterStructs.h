@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Engine/DataTable.h"
+#include "EnhancedInput/Public/InputMappingContext.h"
 
 #include "CharacterStructs.generated.h"
 
@@ -49,6 +51,17 @@ enum EAttackType
 	EAT_ActiveAbility,
 	EAT_PassiveAbility
 };
+
+USTRUCT()
+struct FCharacterAction : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputMappingContext* MappingContext;
+	
+};
+
 
 USTRUCT(BlueprintType)
 struct FCharacterActionsBase

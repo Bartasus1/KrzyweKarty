@@ -4,8 +4,9 @@
 #include "KKPlayerController.h"
 #include "KKGameMode.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
-#include "KrzyweKarty/Map/KKTile.h"
+#include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
+#include "Net/UnrealNetwork.h"
 
 AKKPlayerController::AKKPlayerController()
 {
@@ -31,7 +32,7 @@ void AKKPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(AKKCharacter* TracedCharacter = TraceForCharacter())
+	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
 	{
 		ShowCharacterStats(TracedCharacter);
 	}
@@ -65,8 +66,8 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AKKPlayerController, SelectedCharacter);
-	DOREPLIFETIME(AKKPlayerController, TargetedCharacter);
+	//DOREPLIFETIME(AKKPlayerController, SelectedCharacter);
+	//DOREPLIFETIME(AKKPlayerController, TargetedCharacter);
 
 	DOREPLIFETIME(AKKPlayerController, PlayerID);
 	DOREPLIFETIME(AKKPlayerController, bIsMyTurn);
@@ -86,36 +87,30 @@ FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel
 	return HitResult;
 }
 
-
-AKKCharacter* AKKPlayerController::TraceForCharacter() const
+TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable() const
 {
-	return Cast<AKKCharacter>(CastLineTrace(CharacterChannel).GetActor());
+	return CastLineTrace(SelectableTraceChannel).GetActor();
 }
 
-AKKTile* AKKPlayerController::TraceForPlatform() const
-{
-	return Cast<AKKTile>(CastLineTrace(PlatformChannel).GetActor());
-}
-
-void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
-{
-	if (TracedCharacter != nullptr && TracedCharacter->OwningPlayer == this)
-	{
-		SelectedCharacter = TracedCharacter;
-
-		ShowCharacterStats(SelectedCharacter);
-	}
-}
-
-void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
-{
-	TargetedCharacter = TracedCharacter;
-	
-	if(TargetedCharacter != nullptr)
-	{
-		ShowTargetStats(TracedCharacter);
-	}
-}
+// void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
+// {
+// 	if (TracedCharacter != nullptr && TracedCharacter->OwningPlayer == this)
+// 	{
+// 		SelectedCharacter = TracedCharacter;
+//
+// 		ShowCharacterStats(SelectedCharacter);
+// 	}
+// }
+//
+// void AKKPlayerController::Server_TraceForTargetedCharacter_Implementation(AKKCharacter* TracedCharacter)
+// {
+// 	TargetedCharacter = TracedCharacter;
+// 	
+// 	if(TargetedCharacter != nullptr)
+// 	{
+// 		ShowTargetStats(TracedCharacter);
+// 	}
+// }
 
 void AKKPlayerController::Server_AttackCharacter_Implementation()
 {

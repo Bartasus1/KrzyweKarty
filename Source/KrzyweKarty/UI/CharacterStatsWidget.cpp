@@ -8,6 +8,10 @@
 
 void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
+	if(Character)
+	{
+		Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+	}
 	
 	Character = NewCharacter;
 	CharacterNameText->SetText(Character->GetCharacterName());

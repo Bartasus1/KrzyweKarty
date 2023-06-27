@@ -3,7 +3,7 @@
 
 #include "KKCharacter.h"
 #include "Components/TextRenderComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "KrzyweKarty/Map/KKMap.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Interfaces/BaseInterface.h"
@@ -29,7 +29,7 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
 	CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CharacterMesh->SetCollisionResponseToChannel(CharacterChannel, ECR_Block);
+	CharacterMesh->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 	CharacterMesh->SetCastShadow(false);
 
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
@@ -43,7 +43,7 @@ AKKCharacter::AKKCharacter()
 	{
 		Platform->SetStaticMesh(PlatformMesh.Object);
 		Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-		Platform->SetCollisionResponseToChannel(CharacterChannel, ECR_Block);
+		Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 
 		TextRenderName->SetTextMaterial(TextRenderMaterial.Object);
 	}
@@ -52,6 +52,21 @@ AKKCharacter::AKKCharacter()
 void AKKCharacter::CharacterDied_Implementation()
 {
 	OnCharacterDeath.Broadcast();
+}
+
+int32 AKKCharacter::GetTilePositionID()
+{
+	return OwnedTileID;
+}
+
+TArray<FDirection> AKKCharacter::GetLegalMovesTiles()
+{
+	return {
+		{-1, 0},
+		{1, 0},
+		{0 , -1},
+		{0, 1}
+	};
 }
 
 void AKKCharacter::OnConstruction(const FTransform& Transform)
@@ -187,6 +202,7 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
 	DOREPLIFETIME(AKKCharacter, OwnedTileID);
+	DOREPLIFETIME(AKKCharacter, Direction);
 	DOREPLIFETIME(AKKCharacter, CharacterActions);	
 	DOREPLIFETIME_CONDITION(AKKCharacter, OwningPlayer, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(AKKCharacter, CharacterID, COND_InitialOnly);

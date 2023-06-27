@@ -5,22 +5,24 @@
 #include "CoreMinimal.h"
 #include "CharacterDataAsset.h"
 #include "GameFramework/Actor.h"
-#include "Net/UnrealNetwork.h"
+#include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKCharacter.generated.h"
 
+struct FDirection;
 class AKKPlayerController;
 class UCharacterDataAsset;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 
-#define CharacterChannel ECC_GameTraceChannel1
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 
 UCLASS(Abstract)
-class KRZYWEKARTY_API AKKCharacter : public AActor
+class KRZYWEKARTY_API AKKCharacter : public AActor, public ISelectableInterface
 {
+
+private:
 	GENERATED_BODY()
 
 public:
@@ -48,6 +50,9 @@ public:
 	int32 OwnedTileID = -1;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	int32 Direction = 1;
+
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	int32 CharacterID = 0;
 	
 	UPROPERTY(BlueprintAssignable)
@@ -60,7 +65,11 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
 
+	UFUNCTION(BlueprintCallable)
+	virtual int32 GetTilePositionID() override;
 
+	UFUNCTION(BlueprintCallable)
+	virtual TArray<FDirection> GetLegalMovesTiles(); 
 
 	UFUNCTION(Client, Reliable)
 	void CharacterDied();

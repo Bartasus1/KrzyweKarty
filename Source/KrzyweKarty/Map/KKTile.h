@@ -5,14 +5,22 @@
 #include "CoreMinimal.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Actor.h"
+#include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKTile.generated.h"
 
 class UBoxComponent;
 
-#define PlatformChannel ECC_GameTraceChannel2
+UENUM(BlueprintType)
+enum ETileColor
+{
+	None,
+	Red,
+	Blue,
+	Yellow
+};
 
 UCLASS()
-class KRZYWEKARTY_API AKKTile : public AActor
+class KRZYWEKARTY_API AKKTile : public AActor, public ISelectableInterface
 {
 	GENERATED_BODY()
 	
@@ -23,14 +31,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBoxComponent* BoxCollision;
 
-	UPROPERTY(Replicated, VisibleAnywhere)
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
 	int32 TileID;
 
 	UPROPERTY(EditAnywhere)
 	UTextRenderComponent* TextRenderComponent;
 
-	void HighlightTile(FColor Color);
-	void StopTileHighlight();
+	UFUNCTION(BlueprintCallable)
+	virtual int32 GetTilePositionID() override;
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void Client_SetTileColor(ETileColor TileColor);
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetTileColor(ETileColor TileColor);
 
 
 protected:

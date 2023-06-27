@@ -33,6 +33,19 @@ struct FMapRow
 	TArray<FMapCell> MapRows;
 };
 
+USTRUCT(BlueprintType)
+struct FDirection
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 X;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 Y;
+	
+};
+
 UCLASS()
 class KRZYWEKARTY_API AKKMap : public AActor
 {
@@ -48,7 +61,16 @@ public:
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
 	bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 	
-	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<TPair<int32, int32>> Tiles);
+	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKTile*> GetTiles(TArray<int32> TilesID);
+
+	UFUNCTION(BlueprintCallable)
+	void ClearTilesHighlights();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))
@@ -63,7 +85,7 @@ protected:
 
 private:
 	void SetupMap();
-	void AssignCharacterToTile(AKKCharacter* Character, int32 TileID);
+	void AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell);
 	
 	FMapCell* GetCellAtIndex(int32 TileID);
 	

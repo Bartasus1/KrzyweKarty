@@ -31,7 +31,9 @@ protected:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 public:
+	UFUNCTION(BlueprintCallable)
 	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
+	
 	void MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID);
 	void PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter);
 	void PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter);
@@ -41,7 +43,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ChangeTurn();
 
 private:
@@ -53,7 +55,7 @@ private:
 	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 protected:
-	UPROPERTY(Transient, EditAnywhere)
+	UPROPERTY(Transient, EditAnywhere, BlueprintReadOnly)
 	AKKMap* Map;
 
 	UPROPERTY(Transient)

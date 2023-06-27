@@ -4,7 +4,7 @@
 #include "KKTile.h"
 
 #include "Components/BoxComponent.h"
-#include "KrzyweKarty/KKGameStatics.h"
+#include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -19,7 +19,7 @@ AKKTile::AKKTile()
 	
 	BoxCollision->SetBoxExtent(FVector(50.f, 40.f, 3.f));
 	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	BoxCollision->SetCollisionResponseToChannel(PlatformChannel, ECR_Block);
+	BoxCollision->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>("TextRender");
 	TextRenderComponent->SetupAttachment(BoxCollision);
@@ -28,15 +28,14 @@ AKKTile::AKKTile()
 
 }
 
-void AKKTile::HighlightTile(FColor Color)
+int32 AKKTile::GetTilePositionID()
 {
-	BoxCollision->SetHiddenInGame(false);
-	BoxCollision->ShapeColor = Color;
+	return TileID;
 }
 
-void AKKTile::StopTileHighlight()
+void AKKTile::Client_SetTileColor_Implementation(ETileColor TileColor)
 {
-	BoxCollision->SetHiddenInGame(true);
+	SetTileColor(TileColor);
 }
 
 // Called when the game starts or when spawned
@@ -44,11 +43,7 @@ void AKKTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	HighlightTile(FColor::Red);
-	
 	TextRenderComponent->SetText(FText::FromString(FString::FromInt(TileID)));
-	
-	
 }
 
 void AKKTile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

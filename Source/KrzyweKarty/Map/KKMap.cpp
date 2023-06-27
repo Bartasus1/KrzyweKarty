@@ -18,10 +18,11 @@ AKKMap::AKKMap()
 
 bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 {
+	FMapCell* Destination = GetCellAtIndex(TileID);
 	
-	if (GetCellAtIndex(TileID) && GetCellAtIndex(TileID)->Character == nullptr && !Character->IsCharacterOnMap())
+	if (Destination && Destination->Character == nullptr && !Character->IsCharacterOnMap())
 	{
-		AssignCharacterToTile(Character, TileID);
+		AssignCharacterToTile(Character, Destination);
 		return true;
 	}
 
@@ -30,12 +31,12 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 
 bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection)
 {
-	const int32 NewTileID = Character->OwnedTileID + MovementDirection;
+	FMapCell* Destination = GetCellAtIndex(Character->OwnedTileID + MovementDirection);
 	
-	if(GetCellAtIndex(NewTileID) && GetCellAtIndex(NewTileID)->Character == nullptr && Character->IsCharacterOnMap())
+	if(Destination && Destination->Character == nullptr && Character->IsCharacterOnMap())
 	{
 		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
-		AssignCharacterToTile(Character, NewTileID);
+		AssignCharacterToTile(Character, Destination);
 
 		return true;
 	}
@@ -43,7 +44,7 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementD
 	return false;
 }
 
-TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<TPair<int32, int32>> RelativeTiles)
+TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles)
 {
 	TArray<AKKCharacter*> FoundCharacters;
 
@@ -52,26 +53,67 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 
 	const int32 Direction = (Character->OwningPlayer->PlayerID == 1) ? 1 : -1;
 	
-	for(const auto& Tile : RelativeTiles)
+	for(const auto& Tile : Tiles)
 	{
-		const int32 NextX = X + (Direction * Tile.Key);
-		const int32 NextY = Y + (Direction * Tile.Value);
+		const int32 NextX = X + (Direction * Tile.X);
+		const int32 NextY = Y + (Direction * Tile.Y);
 		
 		if(MapArray.IsValidIndex(NextX))
 		{
-			
-			
 			if(MapArray[NextX].MapRows.IsValidIndex(NextY))
 			{
-				// int32 id = NextY + NextX * MapSize;
-				// UE_LOG(LogTemp, Warning, TEXT("TILE_ID: %d"), id);
-				
 				FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
 			}
 		}
 	}
 
 	return FoundCharacters;
+}
+
+TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles)
+{
+	TArray<AKKTile*> FoundTiles;
+
+	const int32 X = GetX(Character->OwnedTileID);
+	const int32 Y = GetY(Character->OwnedTileID);
+
+	const int32 Direction = Character->Direction;
+	
+	for(const auto& Tile : Tiles)
+	{
+		const int32 NextX = X + (Direction * Tile.X);
+		const int32 NextY = Y + (Direction * Tile.Y);
+		
+		if(MapArray.IsValidIndex(NextX))
+		{
+			if(MapArray[NextX].MapRows.IsValidIndex(NextY))
+			{
+				FoundTiles.Add(MapArray[NextX].MapRows[NextY].Tile);
+			}
+		}
+	}
+
+	return FoundTiles;
+}
+
+TArray<AKKTile*> AKKMap::GetTiles(TArray<int32> TilesID)
+{
+	TArray<AKKTile*> FoundTiles;
+
+	for(const auto& TileID : TilesID)
+	{
+		FoundTiles.Add(GetCellAtIndex(TileID)->Tile);
+	}
+
+	return FoundTiles;
+}
+
+void AKKMap::ClearTilesHighlights()
+{
+	for(int i = 0; i < 20; i++)
+	{
+		GetCellAtIndex(i)->Tile->Client_SetTileColor(None);
+	}
 }
 
 void AKKMap::BeginPlay()
@@ -103,18 +145,20 @@ void AKKMap::SetupMap()
 			
 			AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, TileLocation, GetActorRotation());
 			Tile->TileID = GetID(i , j);
+			Tile->TextRenderComponent->SetText(FText::FromString(FString::FromInt(Tile->TileID)));
 
 			MapArray[i].MapRows.Add({Tile, nullptr});
 		}
 	}
 }
 
-void AKKMap::AssignCharacterToTile(AKKCharacter* Character, int32 TileID)
+
+void AKKMap::AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell)
 {
-	GetCellAtIndex(TileID)->Character = Character;
-		
-	Character->OwnedTileID = TileID;
-	Character->SetActorLocation(GetCellAtIndex(TileID)->Tile->GetActorLocation());
+	MapCell->Character = Character;
+	
+	Character->OwnedTileID = MapCell->Tile->TileID;
+	Character->SetActorLocation(MapCell->Tile->GetActorLocation());
 }
 
 FMapCell* AKKMap::GetCellAtIndex(int32 TileID)
