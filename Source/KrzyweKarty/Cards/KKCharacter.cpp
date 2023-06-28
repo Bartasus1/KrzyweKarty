@@ -59,13 +59,30 @@ int32 AKKCharacter::GetTilePositionID()
 	return OwnedTileID;
 }
 
-TArray<FDirection> AKKCharacter::GetLegalMovesTiles()
+TArray<int32> AKKCharacter::GetPossibleSpawnTiles()
+{
+	TArray<int32> PossibleSpawnTiles = { 0, 1, 2 ,3};
+	
+	return PossibleSpawnTiles;
+}
+
+TArray<FDirection> AKKCharacter::GetPossibleMoveTiles()
 {
 	return {
 		{-1, 0},
 		{1, 0},
 		{0 , -1},
 		{0, 1}
+	};
+}
+
+TArray<FDirection> AKKCharacter::GetPossibleAttackTiles()
+{
+	return {
+			{-1, 0},
+			{1, 0},
+			{0 , -1},
+			{0, 1}
 	};
 }
 

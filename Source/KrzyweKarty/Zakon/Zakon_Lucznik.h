@@ -18,6 +18,8 @@ public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
 
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
+
+	virtual TArray<FDirection> GetPossibleAttackTiles() override;
 	
 protected:
 	virtual TArray<AKKCharacter*> GetAffectedCharacters() override;

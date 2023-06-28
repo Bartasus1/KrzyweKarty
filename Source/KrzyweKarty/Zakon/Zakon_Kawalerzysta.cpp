@@ -14,7 +14,7 @@ bool AZakon_Kawalerzysta::ActiveAbility2(AKKCharacter* TargetCharacter)
 	return Super::ActiveAbility2(TargetCharacter);
 }
 
-TArray<FDirection> AZakon_Kawalerzysta::GetLegalMovesTiles()
+TArray<FDirection> AZakon_Kawalerzysta::GetPossibleMoveTiles()
 {
 	return{
 		{-1, 0},

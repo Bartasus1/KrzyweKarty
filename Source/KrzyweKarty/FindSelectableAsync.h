@@ -4,29 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "FindPlatform.generated.h"
+#include "FindSelectableAsync.generated.h"
 
 
+class ISelectableInterface;
 class UInputAction;
 class UInputMappingContext;
-class AKKTile;
 class AKKPlayerController;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFoundPlatform, AKKTile*, Tile);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFoundSelectable, TScriptInterface<ISelectableInterface>, Selectable);
 
 UCLASS()
-class KRZYWEKARTY_API UFindPlatform : public UBlueprintAsyncActionBase
+class KRZYWEKARTY_API UFindSelectableAsync : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"))
-	static UFindPlatform* FindPlatform(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction);
+	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction);
 
 	virtual void Activate() override;
 
 	UPROPERTY(BlueprintAssignable)
-	FFoundPlatform PlatformFound;
+	FFoundSelectable SelectableFound;
 
 private:
 
@@ -39,7 +39,7 @@ private:
 	UInputAction* ClickAction;
 
 	UFUNCTION()
-	void LookForPlatform();
+	void FindSelectable();
 	
 	
 };

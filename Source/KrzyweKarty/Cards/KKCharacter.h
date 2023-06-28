@@ -69,7 +69,13 @@ protected:
 	virtual int32 GetTilePositionID() override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual TArray<FDirection> GetLegalMovesTiles(); 
+	virtual TArray<int32> GetPossibleSpawnTiles();
+	
+	UFUNCTION(BlueprintCallable)
+	virtual TArray<FDirection> GetPossibleMoveTiles();
+
+	UFUNCTION(BlueprintCallable)
+	virtual TArray<FDirection> GetPossibleAttackTiles();
 
 	UFUNCTION(Client, Reliable)
 	void CharacterDied();
@@ -134,7 +140,11 @@ public:
 
 	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetFirstAbilityManaCost()); }
 	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetSecondAbilityManaCost()); }
-	
+
+
+	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
+
+	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }
 };

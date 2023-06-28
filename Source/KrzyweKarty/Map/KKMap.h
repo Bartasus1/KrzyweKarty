@@ -59,18 +59,33 @@ public:
 	TArray<FMapRow> MapArray;
 	
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
+	bool MoveCharacter(AKKCharacter* Character, int32 TileID);
 	bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 	
+	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles, bool bFilterOutCharacters);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKTile*> GetTilesWithCharacters(AKKCharacter* Character, TArray<FDirection> Tiles);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTiles(TArray<int32> TilesID);
 
 	UFUNCTION(BlueprintCallable)
 	void ClearTilesHighlights();
+
+	UFUNCTION(BlueprintCallable)
+	AKKTile* GetTileAtIndex(int32 TileID);
+
+	UFUNCTION(BlueprintCallable)
+	AKKCharacter* GetCharacterAtIndex(int32 TileID);
+	
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))

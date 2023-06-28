@@ -69,6 +69,17 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 	}
 }
 
+void AKKGameMode::MoveCharacter(AKKCharacter* Character, int32 TileID)
+{
+	if (Map->MoveCharacter(Character, TileID))
+	{
+		Character->CharacterActions.Remove(MoveAction);
+			
+		RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
+		AddActionLog(Character, nullptr, FText::FromString("moved"));
+	}
+}
+
 void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID)
 {
 	if (RoundManager->CanUseCharacter(Character, EMP_MovedCharacter))

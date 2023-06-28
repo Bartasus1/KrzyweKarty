@@ -33,9 +33,15 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	void AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID);
+
+	UFUNCTION(BlueprintCallable)
+	void MoveCharacter(AKKCharacter* Character, int32 TileID);
 	
 	void MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID);
+
+	UFUNCTION(BlueprintCallable)
 	void PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter);
+	
 	void PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter);
 
 	void EndGameWithWinner(int32 PlayerID);

@@ -29,6 +29,17 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 	return false;
 }
 
+bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
+{
+	FMapCell* Destination = GetCellAtIndex(TileID);
+
+	GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
+	AssignCharacterToTile(Character, Destination);
+
+	return true;
+	
+}
+
 bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection)
 {
 	FMapCell* Destination = GetCellAtIndex(Character->OwnedTileID + MovementDirection);
@@ -46,6 +57,8 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementD
 
 TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles)
 {
+	check(Character);
+	
 	TArray<AKKCharacter*> FoundCharacters;
 
 	const int32 X = GetX(Character->OwnedTileID);
@@ -70,8 +83,10 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 	return FoundCharacters;
 }
 
-TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles)
+TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles, bool bFilterOutCharacters)
 {
+	check(Character);
+	
 	TArray<AKKTile*> FoundTiles;
 
 	const int32 X = GetX(Character->OwnedTileID);
@@ -79,14 +94,62 @@ TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDi
 
 	const int32 Direction = Character->Direction;
 	
-	for(const auto& Tile : Tiles)
+	for(const FDirection& Tile : Tiles)
 	{
 		const int32 NextX = X + (Direction * Tile.X);
 		const int32 NextY = Y + (Direction * Tile.Y);
 		
-		if(MapArray.IsValidIndex(NextX))
+		if(IsValidIndex(NextX, NextY))
 		{
-			if(MapArray[NextX].MapRows.IsValidIndex(NextY))
+			if(bFilterOutCharacters && MapArray[NextX].MapRows[NextY].Character != nullptr)
+				continue;
+			
+			FoundTiles.Add(MapArray[NextX].MapRows[NextY].Tile);
+		}
+	}
+
+	return FoundTiles;
+}
+
+TArray<AKKTile*> AKKMap::GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID)
+{
+	check(Character);
+	
+	TArray<AKKTile*> FoundTiles;
+	
+	for(const auto& TileID : TilesID)
+	{
+		FMapCell* MapCell = GetCellAtIndex((Character->Direction == 1) ? TileID : 19 - TileID);
+
+		if(MapCell->Character == nullptr)
+		{
+			FoundTiles.Add(MapCell->Tile);
+		}
+	}
+	
+
+	return FoundTiles;
+}
+
+TArray<AKKTile*> AKKMap::GetTilesWithCharacters(AKKCharacter* Character, TArray<FDirection> Tiles)
+{
+	check(Character);
+	
+	TArray<AKKTile*> FoundTiles;
+
+	const int32 X = GetX(Character->OwnedTileID);
+	const int32 Y = GetY(Character->OwnedTileID);
+
+	const int32 Direction = Character->Direction;
+	
+	for(const FDirection& Tile : Tiles)
+	{
+		const int32 NextX = X + (Direction * Tile.X);
+		const int32 NextY = Y + (Direction * Tile.Y);
+		
+		if(IsValidIndex(NextX, NextY))
+		{
+			if(MapArray[NextX].MapRows[NextY].Character != nullptr)
 			{
 				FoundTiles.Add(MapArray[NextX].MapRows[NextY].Tile);
 			}
@@ -100,9 +163,19 @@ TArray<AKKTile*> AKKMap::GetTiles(TArray<int32> TilesID)
 {
 	TArray<AKKTile*> FoundTiles;
 
-	for(const auto& TileID : TilesID)
+	if(TilesID.Num() == 0)
 	{
-		FoundTiles.Add(GetCellAtIndex(TileID)->Tile);
+		for(int i = 0; i < 20; i++)
+		{
+			FoundTiles.Add(GetCellAtIndex(i)->Tile);
+		}
+	}
+	else
+	{
+		for(const auto& TileID : TilesID)
+        {
+        	FoundTiles.Add(GetCellAtIndex(TileID)->Tile);
+        }
 	}
 
 	return FoundTiles;
@@ -114,6 +187,16 @@ void AKKMap::ClearTilesHighlights()
 	{
 		GetCellAtIndex(i)->Tile->Client_SetTileColor(None);
 	}
+}
+
+AKKTile* AKKMap::GetTileAtIndex(int32 TileID)
+{
+	return GetCellAtIndex(TileID)->Tile;
+}
+
+AKKCharacter* AKKMap::GetCharacterAtIndex(int32 TileID)
+{
+	return GetCellAtIndex(TileID)->Character;
 }
 
 void AKKMap::BeginPlay()
