@@ -46,7 +46,12 @@ bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 TArray<FDirection> AZakon_Lucznik::GetPossibleAttackTiles()
 {
 	TArray<FDirection> DefaultAttackTiles = Super::GetPossibleAttackTiles();
-	DefaultAttackTiles.Append({{2,0}, {3,0}});
+	DefaultAttackTiles.Append({
+	{2,0}, {3,0},
+	{-2,0}, {-3,0},
+	{0,2}, {0,3},
+	{0,-2}, {0,-3}
+	});
 	
 	return DefaultAttackTiles;
 }

@@ -56,7 +56,12 @@ bool AZakon_Kusznik::ActiveAbility2(AKKCharacter* TargetCharacter)
 TArray<FDirection> AZakon_Kusznik::GetPossibleAttackTiles()
 {
 	TArray<FDirection> DefaultAttackTiles = Super::GetPossibleAttackTiles();
-	DefaultAttackTiles.Append({{2,0}, {3,0}});
+	DefaultAttackTiles.Append({
+	{2,0}, {3,0},
+	{-2,0}, {-3,0},
+	{0,2}, {0,3},
+	{0,-2}, {0,-3}
+	});
 	
 	return DefaultAttackTiles;
 }
