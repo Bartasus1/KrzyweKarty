@@ -13,6 +13,7 @@ class UInputMappingContext;
 class AKKPlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FFoundSelectable, TScriptInterface<ISelectableInterface>, Selectable);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFoundSelectableFail);
 
 UCLASS()
 class KRZYWEKARTY_API UFindSelectableAsync : public UBlueprintAsyncActionBase
@@ -21,12 +22,15 @@ class KRZYWEKARTY_API UFindSelectableAsync : public UBlueprintAsyncActionBase
 
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"))
-	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction);
+	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction, bool bTraceWithHigherPriority = true);
 
 	virtual void Activate() override;
 
 	UPROPERTY(BlueprintAssignable)
 	FFoundSelectable SelectableFound;
+	
+	UPROPERTY(BlueprintAssignable)
+	FFoundSelectableFail SelectableNotFound;
 
 private:
 
@@ -37,6 +41,9 @@ private:
 	UInputMappingContext* MappingContext;
 	UPROPERTY(EditAnywhere)
 	UInputAction* ClickAction;
+
+	UPROPERTY(EditAnywhere)
+	bool bTraceWithHigherPriority;
 
 	UFUNCTION()
 	void FindSelectable();

@@ -61,9 +61,7 @@ int32 AKKCharacter::GetTilePositionID()
 
 TArray<int32> AKKCharacter::GetPossibleSpawnTiles()
 {
-	TArray<int32> PossibleSpawnTiles = { 0, 1, 2 ,3};
-	
-	return PossibleSpawnTiles;
+	return { 0, 1, 2 ,3};
 }
 
 TArray<FDirection> AKKCharacter::GetPossibleMoveTiles()
@@ -102,6 +100,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
 		
 		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
+		CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
 	}
 	
 }
@@ -113,7 +112,17 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
 	DealDamage(TargetCharacter, Damage);
+
+	UAnimInstance * AnimInstance = CharacterMesh->GetAnimInstance();
+	AnimInstance->Montage_Play(CharacterDataAsset->AttackMontage);
+	
 	return true;
+}
+
+void AKKCharacter::CharacterSpawned()
+{
+	UAnimInstance * AnimInstance = CharacterMesh->GetAnimInstance();
+	AnimInstance->Montage_Play(CharacterDataAsset->SummonMontage);
 }
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const

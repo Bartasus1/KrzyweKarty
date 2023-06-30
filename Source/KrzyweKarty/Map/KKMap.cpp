@@ -185,7 +185,7 @@ void AKKMap::ClearTilesHighlights()
 {
 	for(int i = 0; i < 20; i++)
 	{
-		GetCellAtIndex(i)->Tile->Client_SetTileColor(None);
+		GetCellAtIndex(i)->Tile->SetTileColor(None);
 	}
 }
 

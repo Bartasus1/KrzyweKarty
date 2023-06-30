@@ -2,6 +2,7 @@
 
 
 #include "Zakon_Kusznik.h"
+#include "KrzyweKarty/Map/KKMap.h"
 
 bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
@@ -50,5 +51,13 @@ bool AZakon_Kusznik::ActiveAbility2(AKKCharacter* TargetCharacter)
 	SecondAbilityInUse = true;
 	DecreaseHealth(GetSecondAbilityManaCost());
 	return true;
+}
+
+TArray<FDirection> AZakon_Kusznik::GetPossibleAttackTiles()
+{
+	TArray<FDirection> DefaultAttackTiles = Super::GetPossibleAttackTiles();
+	DefaultAttackTiles.Append({{2,0}, {3,0}});
+	
+	return DefaultAttackTiles;
 }
 

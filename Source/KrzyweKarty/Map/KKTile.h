@@ -40,7 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;
 
-	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	UFUNCTION(Client, Reliable, BlueprintCallable)
 	void Client_SetTileColor(ETileColor TileColor);
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

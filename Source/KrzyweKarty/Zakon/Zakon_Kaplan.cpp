@@ -46,10 +46,3 @@ bool AZakon_Kaplan::ActiveAbility2(AKKCharacter* TargetCharacter)
 	return false;
 }
 
-TArray<FDirection> AZakon_Kaplan::GetPossibleAttackTiles()
-{
-	TArray<FDirection> DefaultAttackTiles;
-	DefaultAttackTiles.Append({{2,0}, {3,0}});
-	
-	return DefaultAttackTiles;
-}

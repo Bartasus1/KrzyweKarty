@@ -7,12 +7,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
-UFindSelectableAsync* UFindSelectableAsync::FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction)
+UFindSelectableAsync* UFindSelectableAsync::FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction, bool bTraceWithHigherPriority)
 {
 	UFindSelectableAsync* FindSelectableAsync = NewObject<UFindSelectableAsync>();
 	FindSelectableAsync->PlayerController = PlayerController;
 	FindSelectableAsync->MappingContext = MappingContext;
 	FindSelectableAsync->ClickAction = ClickAction;
+	FindSelectableAsync->bTraceWithHigherPriority = bTraceWithHigherPriority;
 
 	return FindSelectableAsync;
 }
@@ -32,11 +33,15 @@ void UFindSelectableAsync::Activate()
 
 void UFindSelectableAsync::FindSelectable()
 {
-	if(TScriptInterface<ISelectableInterface> SelectableInterface = PlayerController->TraceForSelectable())
+	if(TScriptInterface<ISelectableInterface> SelectableInterface = PlayerController->TraceForSelectable(bTraceWithHigherPriority))
 	{
 		SelectableFound.Broadcast(SelectableInterface);
 
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		Subsystem->RemoveMappingContext(MappingContext);
+	}
+	else
+	{
+		SelectableNotFound.Broadcast();
 	}
 }

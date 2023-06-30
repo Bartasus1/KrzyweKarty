@@ -2,6 +2,7 @@
 
 
 #include "Zakon_Halabardzista.h"
+#include "KrzyweKarty/Map/KKMap.h"
 
 bool AZakon_Halabardzista::ActiveAbility(AKKCharacter* TargetCharacter)
 {
@@ -42,4 +43,12 @@ int32 AZakon_Halabardzista::GetStrengthAtDistance(int32 Distance)
 	}
 
 	return GetStrength();
+}
+
+TArray<FDirection> AZakon_Halabardzista::GetPossibleAttackTiles()
+{
+	TArray<FDirection> DefaultAttackTiles = Super::GetPossibleAttackTiles();
+	DefaultAttackTiles.Append({{2,0}});
+	
+	return DefaultAttackTiles;
 }

@@ -19,5 +19,7 @@ public:
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override; 
 
 	virtual  int32 GetStrengthAtDistance(int32 Distance) override;
+
+	virtual TArray<FDirection> GetPossibleAttackTiles() override;
 	
 };

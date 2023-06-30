@@ -12,6 +12,7 @@ class AKKTile;
 class ISelectableInterface;
 
 #define SelectableTraceChannel ECC_GameTraceChannel1
+#define PriorityTraceChannel ECC_GameTraceChannel2
 
 UENUM()
 enum EMovementDirection
@@ -57,7 +58,7 @@ public:
 	FHitResult CastLineTrace(ECollisionChannel CollisionChannel) const;
 
 	UFUNCTION(BlueprintCallable)
-	TScriptInterface<ISelectableInterface> TraceForSelectable() const;
+	TScriptInterface<ISelectableInterface> TraceForSelectable(bool bHigherPriority = false) const;
 
 protected:
 	// UFUNCTION(Server, Reliable, BlueprintCallable)

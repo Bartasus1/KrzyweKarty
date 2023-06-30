@@ -88,6 +88,9 @@ public:
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
 	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
 
+	UFUNCTION(BlueprintCallable)
+	void CharacterSpawned();
+
 protected:
 	//Subclass Sandbox
 	void KillCharacter(AKKCharacter* TargetCharacter) const;

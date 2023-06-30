@@ -144,6 +144,8 @@ void AKKGameMode::BeginPlay()
 		Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
 		//todo: Use Delegate to determine if Map has been Spawned
 	}
+
+	GetGameState<AKKGameState>()->Map = Map;
 }
 
 void AKKGameMode::ChangeTurn()
@@ -154,6 +156,7 @@ void AKKGameMode::ChangeTurn()
 	Players[0]->OnRep_TurnChanged();
 
 	FirstPlayerTurn = !FirstPlayerTurn;
+	GetGameState<AKKGameState>()->bFirstPlayerTurn = FirstPlayerTurn;
 
 	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
 	{

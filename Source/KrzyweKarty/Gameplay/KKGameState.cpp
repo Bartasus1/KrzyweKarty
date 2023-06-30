@@ -24,5 +24,7 @@ void AKKGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AKKGameState, Map);
 	DOREPLIFETIME(AKKGameState, ActionLogs);
+	DOREPLIFETIME(AKKGameState, bFirstPlayerTurn);
 }

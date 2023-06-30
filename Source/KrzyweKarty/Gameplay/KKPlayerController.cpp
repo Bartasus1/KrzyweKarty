@@ -87,9 +87,9 @@ FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel
 	return HitResult;
 }
 
-TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable() const
+TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable(bool bHigherPriority) const
 {
-	return CastLineTrace(SelectableTraceChannel).GetActor();
+	return CastLineTrace((bHigherPriority ? PriorityTraceChannel : SelectableTraceChannel)).GetActor();
 }
 
 // void AKKPlayerController::Server_TraceForSelectedCharacter_Implementation(AKKCharacter* TracedCharacter)
