@@ -191,12 +191,12 @@ void AKKMap::ClearTilesHighlights()
 
 AKKTile* AKKMap::GetTileAtIndex(int32 TileID)
 {
-	return GetCellAtIndex(TileID)->Tile;
+	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Tile : nullptr;
 }
 
 AKKCharacter* AKKMap::GetCharacterAtIndex(int32 TileID)
 {
-	return GetCellAtIndex(TileID)->Character;
+	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Character : nullptr;
 }
 
 void AKKMap::BeginPlay()

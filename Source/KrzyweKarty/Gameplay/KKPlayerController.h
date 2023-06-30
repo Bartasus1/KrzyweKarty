@@ -85,10 +85,10 @@ public:
 	
 
 private:
-	UFUNCTION(Client, Unreliable, BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	void ShowCharacterStats(AKKCharacter* CardCharacter);
 
-	UFUNCTION(Client, Unreliable, BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	void ShowTargetStats(AKKCharacter* CardCharacter);
 
 	

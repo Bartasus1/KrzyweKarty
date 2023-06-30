@@ -17,9 +17,7 @@ void APlayerHUD::ShowCharacterStats(AKKCharacter* Character, bool bIsCurrentChar
 {
 	UCharacterStatsWidget* CharacterWidget = bIsCurrentCharacter ? SelectedCharacterWidget : TargetCharacterWidget;
 	
-	CharacterWidget->RemoveFromParent();
 	CharacterWidget->ShowStats(Character);
-	CharacterWidget->AddToViewport();
 }
 
 // Called when the game starts or when spawned

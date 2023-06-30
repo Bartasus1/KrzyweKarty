@@ -113,16 +113,16 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
 	DealDamage(TargetCharacter, Damage);
 
-	UAnimInstance * AnimInstance = CharacterMesh->GetAnimInstance();
-	AnimInstance->Montage_Play(CharacterDataAsset->AttackMontage);
+	PlayAnimMontage(CharacterDataAsset->AttackMontage);
 	
 	return true;
 }
 
-void AKKCharacter::CharacterSpawned()
+
+void AKKCharacter::PlayAnimMontage_Implementation(UAnimMontage* AnimMontage)
 {
 	UAnimInstance * AnimInstance = CharacterMesh->GetAnimInstance();
-	AnimInstance->Montage_Play(CharacterDataAsset->SummonMontage);
+	AnimInstance->Montage_Play(AnimMontage);
 }
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
@@ -135,6 +135,7 @@ void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 		}
 	}
 
+	TargetCharacter->CharacterDied();
 	TargetCharacter->Destroy();
 }
 
@@ -147,7 +148,6 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 
 	if (TargetCharacter->GetHealth() <= 0)
 	{
-		CharacterDied();
 		KillCharacter(TargetCharacter);
 	}
 }

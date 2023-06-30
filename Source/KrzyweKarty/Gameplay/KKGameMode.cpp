@@ -63,6 +63,7 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 	{
 		Character->CharacterActions.Remove(SpawnAction);
 		Character->CharacterActions.Append({MoveAction, AttackAction, FirstAbilityAction});
+		Character->PlayAnimMontage(Character->CharacterDataAsset->SummonMontage);
 		
 		RoundManager->AddCharacterToList(Character, EMP_SummonedCharacter);
 		AddActionLog(Character, nullptr, FText::FromString(" has been added to the map"));

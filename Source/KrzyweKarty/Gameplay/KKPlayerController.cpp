@@ -34,7 +34,7 @@ void AKKPlayerController::Tick(float DeltaSeconds)
 
 	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
 	{
-		ShowCharacterStats(TracedCharacter);
+		ShowTargetStats(TracedCharacter);
 	}
 }
 
@@ -159,12 +159,12 @@ void AKKPlayerController::Server_MoveCharacter_Implementation(EMovementDirection
 	}
 }
 
-void AKKPlayerController::ShowCharacterStats_Implementation(AKKCharacter* CardCharacter)
+void AKKPlayerController::ShowCharacterStats(AKKCharacter* CardCharacter)
 {
 	GetHUD<APlayerHUD>()->ShowCharacterStats(CardCharacter, true);
 }
 
-void AKKPlayerController::ShowTargetStats_Implementation(AKKCharacter* CardCharacter)
+void AKKPlayerController::ShowTargetStats(AKKCharacter* CardCharacter)
 {
 	GetHUD<APlayerHUD>()->ShowCharacterStats(CardCharacter, false);
 }

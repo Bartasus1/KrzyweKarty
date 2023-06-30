@@ -77,9 +77,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<FDirection> GetPossibleAttackTiles();
 
-	UFUNCTION(Client, Reliable)
-	void CharacterDied();
-
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
@@ -88,8 +85,12 @@ public:
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
 	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
 
-	UFUNCTION(BlueprintCallable)
-	void CharacterSpawned();
+	UFUNCTION(NetMulticast, Unreliable)
+	void PlayAnimMontage(UAnimMontage* AnimMontage);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void CharacterDied();
+
 
 protected:
 	//Subclass Sandbox

@@ -8,14 +8,24 @@
 
 void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
-	if(Character)
+	if(NewCharacter == nullptr)
 	{
-		Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+		RemoveFromParent();
+		return;
 	}
 	
-	Character = NewCharacter;
-	CharacterNameText->SetText(Character->GetCharacterName());
-	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+	if(Character != NewCharacter)
+	{
+		if(Character)
+			Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+		
+		Character = NewCharacter;
+		CharacterNameText->SetText(Character->GetCharacterName());
+		Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+		AddToViewport();
+	}
+	
+	
 }
 
 void UCharacterStatsWidget::NativeConstruct()
@@ -68,6 +78,5 @@ FText UCharacterStatsWidget::StrengthText()
 void UCharacterStatsWidget::RemoveCharacter()
 {
 	Character = nullptr;
-	CharacterNameText->SetText(FText());
 	RemoveFromParent();
 }
