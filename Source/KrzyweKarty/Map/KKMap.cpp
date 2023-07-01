@@ -40,20 +40,20 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
 	
 }
 
-bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection)
-{
-	FMapCell* Destination = GetCellAtIndex(Character->OwnedTileID + MovementDirection);
-	
-	if(Destination && Destination->Character == nullptr && Character->IsCharacterOnMap())
-	{
-		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
-		AssignCharacterToTile(Character, Destination);
-
-		return true;
-	}
-
-	return false;
-}
+// bool AKKMap::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection)
+// {
+// 	FMapCell* Destination = GetCellAtIndex(Character->OwnedTileID + MovementDirection);
+// 	
+// 	if(Destination && Destination->Character == nullptr && Character->IsCharacterOnMap())
+// 	{
+// 		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
+// 		AssignCharacterToTile(Character, Destination);
+//
+// 		return true;
+// 	}
+//
+// 	return false;
+// }
 
 TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles)
 {
@@ -71,13 +71,11 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 		const int32 NextX = X + (Direction * Tile.X);
 		const int32 NextY = Y + (Direction * Tile.Y);
 		
-		if(MapArray.IsValidIndex(NextX))
+		if(IsValidIndex(NextX, NextY) && MapArray[NextX].MapRows[NextY].Character != nullptr)
 		{
-			if(MapArray[NextX].MapRows.IsValidIndex(NextY))
-			{
-				FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
-			}
+			FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
 		}
+	
 	}
 
 	return FoundCharacters;
@@ -147,12 +145,9 @@ TArray<AKKTile*> AKKMap::GetTilesWithCharacters(AKKCharacter* Character, TArray<
 		const int32 NextX = X + (Direction * Tile.X);
 		const int32 NextY = Y + (Direction * Tile.Y);
 		
-		if(IsValidIndex(NextX, NextY))
+		if(IsValidIndex(NextX, NextY) && MapArray[NextX].MapRows[NextY].Character != nullptr)
 		{
-			if(MapArray[NextX].MapRows[NextY].Character != nullptr)
-			{
-				FoundTiles.Add(MapArray[NextX].MapRows[NextY].Tile);
-			}
+			FoundTiles.Add(MapArray[NextX].MapRows[NextY].Tile);
 		}
 	}
 
@@ -162,23 +157,60 @@ TArray<AKKTile*> AKKMap::GetTilesWithCharacters(AKKCharacter* Character, TArray<
 TArray<AKKTile*> AKKMap::GetTiles(TArray<int32> TilesID)
 {
 	TArray<AKKTile*> FoundTiles;
+	
+	for(const auto& TileID : TilesID)
+    {
+        FoundTiles.Add(GetCellAtIndex(TileID)->Tile);
+    }
+	
+	return FoundTiles;
+}
 
-	if(TilesID.Num() == 0)
+TArray<AKKTile*> AKKMap::GetAllTilesOnMap()
+{
+	TArray<AKKTile*> AllTiles;
+	for(int i = 0; i < TotalMapSize; i++)
 	{
-		for(int i = 0; i < 20; i++)
+		if(const FMapCell* MapCell = GetCellAtIndex(i))
 		{
-			FoundTiles.Add(GetCellAtIndex(i)->Tile);
+			AllTiles.Add(MapCell->Tile);
 		}
 	}
-	else
+
+	return AllTiles;
+}
+
+TArray<AKKCharacter*> AKKMap::GetAllCharactersOnMap()
+{
+	TArray<AKKCharacter*> AllCharacters;
+	for(int i = 0; i < TotalMapSize; i++)
 	{
-		for(const auto& TileID : TilesID)
-        {
-        	FoundTiles.Add(GetCellAtIndex(TileID)->Tile);
-        }
+		if(const FMapCell* MapCell = GetCellAtIndex(i))
+		{
+			if(MapCell->Character != nullptr)
+			{
+				AllCharacters.Add(MapCell->Character);
+			}
+		}
 	}
 
-	return FoundTiles;
+	return AllCharacters;
+}
+
+TArray<AKKCharacter*> AKKMap::GetAllyCharactersOnMap(AKKCharacter* Character)
+{
+	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
+	{
+		return Character->IsInTheSameTeam(AnotherCharacter);
+	});
+}
+
+TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
+{
+	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
+	{
+		return !(Character->IsInTheSameTeam(AnotherCharacter));
+	});
 }
 
 void AKKMap::ClearTilesHighlights()

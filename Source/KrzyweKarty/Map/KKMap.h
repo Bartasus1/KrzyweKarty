@@ -60,7 +60,7 @@ public:
 	
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID);
 	bool MoveCharacter(AKKCharacter* Character, int32 TileID);
-	bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
+	//bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 	
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles);
@@ -76,6 +76,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTiles(TArray<int32> TilesID);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKTile*> GetAllTilesOnMap();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKCharacter*> GetAllCharactersOnMap();
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKCharacter*> GetAllyCharactersOnMap(AKKCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
 
 	UFUNCTION(BlueprintCallable)
 	void ClearTilesHighlights();
@@ -107,6 +119,7 @@ private:
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
 	const uint8 MapSize = 4;
+	const uint8 TotalMapSize = 20;
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }

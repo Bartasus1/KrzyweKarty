@@ -43,5 +43,8 @@ void UFindSelectableAsync::FindSelectable()
 	else
 	{
 		SelectableNotFound.Broadcast();
+		
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		Subsystem->RemoveMappingContext(MappingContext);
 	}
 }
