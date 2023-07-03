@@ -31,20 +31,23 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UBoxComponent* BoxCollision;
 
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_TileID", VisibleAnywhere, BlueprintReadOnly)
 	int32 TileID;
+
+	UFUNCTION()
+	void OnRep_TileID();
+
+	UPROPERTY(BlueprintReadWrite)
+	TEnumAsByte<ETileColor> TileColor;
 
 	UPROPERTY(EditAnywhere)
 	UTextRenderComponent* TextRenderComponent;
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;
-
-	UFUNCTION(Client, Reliable, BlueprintCallable)
-	void Client_SetTileColor(ETileColor TileColor);
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetTileColor(ETileColor TileColor);
+	void SetTileColor(ETileColor NewTileColor);
 
 
 protected:

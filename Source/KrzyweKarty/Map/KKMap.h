@@ -115,11 +115,17 @@ private:
 	void AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell);
 	
 	FMapCell* GetCellAtIndex(int32 TileID);
+
+	void SetFractionBase(int32 ID, AKKCharacter* Base);
 	
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
 	const uint8 MapSize = 4;
 	const uint8 TotalMapSize = 20;
+	const uint8 BaseRow = 5;
+
+	
+	friend class AKKSpawnpoint;
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }

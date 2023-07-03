@@ -245,14 +245,15 @@ void AKKMap::SetupMap()
 {
 	check(TileClass);
 	
-	constexpr uint16 SpacingX = 125;
-	constexpr uint16 SpacingY = 100;
 	
-	for (int i = 0; i < 5; i++)
+	uint16 SpacingX = 125;
+	uint16 SpacingY = 100;
+	
+	for (int i = 0; i < BaseRow; i++)  // 5
 	{
 		MapArray.Add(FMapRow());
 		
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < BaseRow - 1; j++) // 4
 		{
 			FVector TileLocation = StartLocation;
 			TileLocation.X += i * SpacingX;
@@ -260,11 +261,27 @@ void AKKMap::SetupMap()
 			
 			AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, TileLocation, GetActorRotation());
 			Tile->TileID = GetID(i , j);
-			Tile->TextRenderComponent->SetText(FText::FromString(FString::FromInt(Tile->TileID)));
-
+			Tile->OnRep_TileID();
+			
 			MapArray[i].MapRows.Add({Tile, nullptr});
 		}
 	}
+
+	MapArray.Add(FMapRow());
+	
+	double BaseLocationX[2] = { -340.f, 340.f};
+	double BaseRotationYaw[2] = { 90.f, 270.f};
+	
+	for (int i = 0; i < 2; i++)
+	{
+		AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, {BaseLocationX[i], 0.f, 0.f}, {0.f, BaseRotationYaw[i], 0.f});
+		Tile->TileID = GetID(BaseRow , i);
+		Tile->OnRep_TileID();
+
+		MapArray[BaseRow].MapRows.Add({Tile, nullptr});
+	}
+
+	
 }
 
 
@@ -288,6 +305,17 @@ FMapCell* AKKMap::GetCellAtIndex(int32 TileID)
 	
 	return nullptr;
 }
+
+void AKKMap::SetFractionBase(int32 ID, AKKCharacter* Base)
+{
+	// ID comes in 1-2 range -> make it 0-1
+	if(FMapCell* MapCell = GetCellAtIndex(GetID(BaseRow, ID - 1)))
+	{
+		AssignCharacterToTile(Base, MapCell);
+		Base->SetActorRotation(MapCell->Tile->GetActorRotation());
+	}
+}
+
 
 void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

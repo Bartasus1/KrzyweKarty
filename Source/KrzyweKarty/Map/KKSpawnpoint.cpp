@@ -2,8 +2,12 @@
 
 
 #include "KKSpawnpoint.h"
+
+#include "KKMap.h"
+#include "Kismet/GameplayStatics.h"
 #include "KrzyweKarty/Cards//KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
+#include "KrzyweKarty/Gameplay/KKGameState.h"
 
 // Sets default values
 AKKSpawnpoint::AKKSpawnpoint()
@@ -20,7 +24,7 @@ void AKKSpawnpoint::BeginPlay()
 
 	if (HasAuthority())
 	{
-		SpawnCards();
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AKKSpawnpoint::SpawnCards);
 
 		if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
@@ -38,7 +42,7 @@ void AKKSpawnpoint::SpawnCards()
 	TArray<FSpawnSet*> SpawnClasses;
 	SpawnTable->GetAllRows("", SpawnClasses);
 
-	for (int i = 0; i < SpawnClasses.Num(); i++)
+	for (int i = 0; i < SpawnClasses.Num() - 1; i++)
 	{
 		if (i == MaxRowCharacters)
 		{
@@ -54,6 +58,12 @@ void AKKSpawnpoint::SpawnCards()
 		
 		StartLocation.Y += Spacing;
 	}
+
+	AKKGameState* GameState = Cast<AKKGameState>(UGameplayStatics::GetGameState(this));
+	AKKCharacter* BaseCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[SpawnClasses.Num() - 1]->ClassToSpawn, StartLocation, GetActorRotation());
+
+	GameState->Map->SetFractionBase(ID, BaseCharacter);
+	
 }
 
 void AKKSpawnpoint::AssignPlayerToCards()

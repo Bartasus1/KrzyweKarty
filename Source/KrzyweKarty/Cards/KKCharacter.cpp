@@ -98,9 +98,12 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 		
 		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
 		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
-		
-		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
-		CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
+
+		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
+		{
+			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
+			CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
+		}
 	}
 	
 }

@@ -28,22 +28,20 @@ AKKTile::AKKTile()
 
 }
 
+void AKKTile::OnRep_TileID()
+{
+	TextRenderComponent->SetText(FText::FromString(FString::FromInt(TileID)));
+}
+
 int32 AKKTile::GetTilePositionID()
 {
 	return TileID;
-}
-
-void AKKTile::Client_SetTileColor_Implementation(ETileColor TileColor)
-{
-	SetTileColor(TileColor);
 }
 
 // Called when the game starts or when spawned
 void AKKTile::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TextRenderComponent->SetText(FText::FromString(FString::FromInt(TileID)));
 }
 
 void AKKTile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
