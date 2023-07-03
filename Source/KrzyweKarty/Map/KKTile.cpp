@@ -48,7 +48,7 @@ void AKKTile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AKKTile, TileID);
+	DOREPLIFETIME_CONDITION(AKKTile, TileID, COND_InitialOnly);
 }
 
 

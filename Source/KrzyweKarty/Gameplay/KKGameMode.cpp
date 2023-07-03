@@ -29,7 +29,7 @@ AKKGameMode::AKKGameMode()
 APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
 	
-	const FString PlayerStartTag = FString::FromInt(Players.Num() + 1); // 1 and 2 instead of 0 and 1
+	const FString PlayerStartTag = FString::FromInt(Players.Num() + 1); // 1 and 2 instead of 0 and 1 -> happens before creating player controller
 	
 	APlayerController* PlayerController =  Super::Login(NewPlayer, InRemoteRole, PlayerStartTag, Options, UniqueId, ErrorMessage);
 	
@@ -61,8 +61,7 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
-		Character->CharacterActions.Remove(SpawnAction);
-		Character->CharacterActions.Append({MoveAction, AttackAction, FirstAbilityAction});
+		Character->CharacterActions.Append({EMP_MovedCharacter, EMP_AttackCharacter});
 		Character->PlayAnimMontage(Character->CharacterDataAsset->SummonMontage);
 		
 		RoundManager->AddCharacterToList(Character, EMP_SummonedCharacter);
@@ -74,7 +73,7 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, int32 TileID)
 {
 	if (Map->MoveCharacter(Character, TileID))
 	{
-		Character->CharacterActions.Remove(MoveAction);
+		Character->CharacterActions.Remove(EMP_MovedCharacter);
 			
 		RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
 		AddActionLog(Character, nullptr, FText::FromString("moved"));
@@ -93,7 +92,7 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection Move
 		
 		if (Map->MoveCharacter(Character, MovementDirection))
 		{
-			Character->CharacterActions.Remove(MoveAction);
+			Character->CharacterActions.Remove(EMP_MovedCharacter);
 			
 			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
 			AddActionLog(Character, nullptr, FText::FromString("moved " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
@@ -107,7 +106,7 @@ void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* 
 	{
 		if (Character->DefaultAttack(TargetCharacter))
 		{
-			Character->CharacterActions.Remove(AttackAction);
+			Character->CharacterActions.Remove(EMP_AttackCharacter);
 			
 			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
 			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
@@ -121,8 +120,7 @@ void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter*
 	{
 		if (Character->ActiveAbility(TargetCharacter))
 		{
-			Character->CharacterActions.Remove(FirstAbilityAction);
-			
+			Character->CharacterActions.Remove(EMP_AttackCharacter);
 			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
 			AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
 		}
@@ -161,7 +159,7 @@ void AKKGameMode::ChangeTurn()
 
 	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
 	{
-		MovementInfo.Character->CharacterActions = TArray{MoveAction, AttackAction, FirstAbilityAction};
+		MovementInfo.Character->CharacterActions = {EMP_MovedCharacter, EMP_AttackCharacter};
 	}
 }
 

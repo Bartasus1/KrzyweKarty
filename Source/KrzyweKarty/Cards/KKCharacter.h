@@ -59,7 +59,7 @@ public:
 	FCharacterDiedDelegate OnCharacterDeath;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	TArray<FCharacterActionsBase> CharacterActions = { SpawnAction };
+	TArray<TEnumAsByte<EMovementType>> CharacterActions;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game

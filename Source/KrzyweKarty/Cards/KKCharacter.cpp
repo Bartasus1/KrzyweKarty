@@ -3,8 +3,10 @@
 
 #include "KKCharacter.h"
 #include "Components/TextRenderComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
+#include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Interfaces/BaseInterface.h"
 
@@ -110,7 +112,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !CharacterActions.Find(AttackAction))
+	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !CharacterActions.Contains(EMP_AttackCharacter))
 		return false;
 	
 	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
@@ -139,6 +141,7 @@ void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 	}
 
 	TargetCharacter->CharacterDied();
+	Cast<AKKGameState>(UGameplayStatics::GetGameState(TargetCharacter))->Map->RemoveCharacterFromTile(TargetCharacter->GetTilePositionID());
 	TargetCharacter->Destroy();
 }
 
@@ -231,8 +234,8 @@ void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 
 	DOREPLIFETIME(AKKCharacter, CharacterStats);
 	DOREPLIFETIME(AKKCharacter, OwnedTileID);
-	DOREPLIFETIME(AKKCharacter, Direction);
-	DOREPLIFETIME(AKKCharacter, CharacterActions);	
+	DOREPLIFETIME(AKKCharacter, CharacterActions);
+	DOREPLIFETIME_CONDITION(AKKCharacter, Direction, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(AKKCharacter, OwningPlayer, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(AKKCharacter, CharacterID, COND_InitialOnly);
 }

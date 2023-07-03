@@ -63,6 +63,7 @@ void AKKSpawnpoint::SpawnCards()
 	AKKCharacter* BaseCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[SpawnClasses.Num() - 1]->ClassToSpawn, StartLocation, GetActorRotation());
 
 	GameState->Map->SetFractionBase(ID, BaseCharacter);
+	SpawnedCards.Add(BaseCharacter);
 	
 }
 

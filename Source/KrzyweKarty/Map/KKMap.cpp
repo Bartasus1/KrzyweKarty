@@ -231,6 +231,14 @@ AKKCharacter* AKKMap::GetCharacterAtIndex(int32 TileID)
 	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Character : nullptr;
 }
 
+void AKKMap::RemoveCharacterFromTile(int32 TileID)
+{
+	if(FMapCell* MapCell = GetCellAtIndex(TileID))
+	{
+		MapCell->Character = nullptr;
+	}
+}
+
 void AKKMap::BeginPlay()
 {
 	Super::BeginPlay();

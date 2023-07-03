@@ -38,8 +38,9 @@ FText UCharacterStatsWidget::HealthText()
 {
 	if (!Character)
 		return FText();
-	
-	HealthImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Character->GetHealth() / static_cast<float>(Character->GetDefaultHealth()));
+
+	float Value = (Character->GetDefaultHealth() != 0) ? (Character->GetHealth() / static_cast<float>(Character->GetDefaultHealth())) : 1;
+	HealthImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
 	
 
 	return FText::FormatOrdered(FormatText, Character->GetHealth());
@@ -49,8 +50,9 @@ FText UCharacterStatsWidget::ManaText()
 {
 	if (!Character)
 		return FText();
-	
-    ManaImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Character->GetMana() / static_cast<float>(Character->GetDefaultMana()));
+
+	float Value = (Character->GetDefaultMana() != 0) ? (Character->GetMana() / static_cast<float>(Character->GetDefaultMana())) : 1;
+    ManaImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
 
 	
 	return FText::FormatOrdered(FormatText, Character->GetMana());
@@ -60,8 +62,9 @@ FText UCharacterStatsWidget::DefenceText()
 {
 	if (!Character)
 		return FText();
-	
-	DefenceImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Character->GetDefence() / static_cast<float>(Character->GetDefaultDefence()));
+
+	float Value = (Character->GetDefaultDefence() != 0) ? (Character->GetDefence() / static_cast<float>(Character->GetDefaultDefence())) : 1;
+	DefenceImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
 	
 	
 	return FText::FormatOrdered(FormatText, Character->GetDefence());

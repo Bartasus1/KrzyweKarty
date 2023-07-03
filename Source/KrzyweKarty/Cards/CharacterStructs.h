@@ -52,6 +52,14 @@ enum EAttackType
 	EAT_PassiveAbility
 };
 
+UENUM(BlueprintType)
+enum EMovementType
+{
+	EMP_SummonedCharacter	UMETA(DisplayName="Summoned Character"),
+	EMP_MovedCharacter		UMETA(DisplayName="Moved Character"),
+	EMP_AttackCharacter		UMETA(DisplayName="Attacked Character")
+};
+
 USTRUCT()
 struct FCharacterAction : public FTableRowBase
 {

@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "KKPlayerController.h"
 #include "GameFramework/GameModeBase.h"
-#include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KKGameMode.generated.h"
 
 class UActionLog;
@@ -36,7 +35,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void MoveCharacter(AKKCharacter* Character, int32 TileID);
-	
+
+	/* DEPRECATED */ 
 	void MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID);
 
 	UFUNCTION(BlueprintCallable)

@@ -97,6 +97,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AKKCharacter* GetCharacterAtIndex(int32 TileID);
+
+	void RemoveCharacterFromTile(int32 TileID);
 	
 
 protected:
