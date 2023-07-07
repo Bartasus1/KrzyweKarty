@@ -20,5 +20,5 @@ public:
 
 	virtual bool CanBeAttacked(EAttackType AttackType) override;
 protected:
-	virtual TArray<AKKCharacter*> GetAffectedCharacters() override;
+	virtual TArray<FDirection> GetAffectedTiles(int32 Index) override;
 };

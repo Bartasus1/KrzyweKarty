@@ -18,8 +18,6 @@ public:
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
 	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
 
-	virtual TArray<FDirection> GetPossibleAttackTiles() override;
-
 private:
 	bool SecondAbilityInUse = false;
 };

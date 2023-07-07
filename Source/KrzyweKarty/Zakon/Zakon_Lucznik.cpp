@@ -29,13 +29,13 @@ bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 	if (GetMana() < GetFirstAbilityManaCost())
 		return false;
 	
-	for(AKKCharacter* Character : GetAffectedCharacters())
-	{
-		if(MinAttackConditions(Character, EAT_ActiveAbility))
-		{
-			DealDamage(Character, 5);
-		}
-	}
+	// for(AKKCharacter* Character : {}) //todo: FIX using GetAffectedTiles()
+	// {
+	// 	if(MinAttackConditions(Character, EAT_ActiveAbility))
+	// 	{
+	// 		DealDamage(Character, 5);
+	// 	}
+	// }
 	
 	DecreaseManaForFirstAbility();
 	
@@ -43,34 +43,17 @@ bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
 
 }
 
-TArray<FDirection> AZakon_Lucznik::GetPossibleAttackTiles()
-{
-	TArray<FDirection> DefaultAttackTiles;
-	for(int32 i = -3; i <= 3; i++)
-	{
-		if(i == 0)
-			continue;
-		
-		DefaultAttackTiles.Add({i, 0});
-		DefaultAttackTiles.Add({0, i});
-	}
-	
-	return DefaultAttackTiles;
-}
 
-TArray<AKKCharacter*> AZakon_Lucznik::GetAffectedCharacters()
+TArray<FDirection> AZakon_Lucznik::GetAffectedTiles(int32 Index)
 {
-	TArray<AKKCharacter*> AffectedCharacters;
-	
-	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-	{
-		AffectedCharacters = GameMode->GetMap()->GetCharactersAtTiles(this,
-		{
-			{2, -1},
-			{2, 0},
-			{2, 1}
-		});
-	}
-	
-	return AffectedCharacters;
+	return {
+		{2, -1},
+		{2, 0},
+		{2, 1}
+	};
+	/* 
+		###
+		 
+		 O 
+	*/
 }

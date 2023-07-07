@@ -9,6 +9,7 @@
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Interfaces/BaseInterface.h"
+#include "KrzyweKarty/Map/KKTile.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
@@ -78,12 +79,35 @@ TArray<FDirection> AKKCharacter::GetPossibleMoveTiles()
 
 TArray<FDirection> AKKCharacter::GetPossibleAttackTiles()
 {
-	return {
-			{-1, 0},
-			{1, 0},
-			{0 , -1},
-			{0, 1}
-	};
+	TArray<FDirection> DefaultAttackTiles;
+	const int32 AttackRange = CharacterStats.MaxAttackRange;
+	
+	for(int32 i = -AttackRange; i <= AttackRange; i++)
+	{
+		if(i == 0)
+			continue;
+		
+		DefaultAttackTiles.Add({i, 0});
+		DefaultAttackTiles.Add({0, i});
+	}
+	
+	return DefaultAttackTiles;
+}
+
+void AKKCharacter::HighlightDefaultAttackTiles()
+{
+	for(AKKTile* Tile: GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), EnemyCharactersOnly))
+	{
+		Tile->SetTileColor(Red);
+	}
+}
+
+void AKKCharacter::HighlightMoveTiles()
+{
+	for(AKKTile* Tile: GetMap()->GetTilesByDirection(this, GetPossibleMoveTiles(), NoCharacters))
+	{
+		Tile->SetTileColor(Yellow);
+	}
 }
 
 void AKKCharacter::OnConstruction(const FTransform& Transform)
@@ -212,6 +236,11 @@ bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackTyp
 		return false;
 	
 	return (TargetCharacter->CanBeAttacked(AttackType) && !IsInTheSameTeam(TargetCharacter));
+}
+
+AKKMap* AKKCharacter::GetMap()
+{
+	return GetWorld()->GetGameState<AKKGameState>()->Map;
 }
 
 

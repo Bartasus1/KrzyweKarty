@@ -51,7 +51,7 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 
 	if (Players.Num() == 2)
 	{
-		ChangeTurn();
+		GetWorldTimerManager().SetTimerForNextTick(this, &AKKGameMode::ChangeTurn);
 	}
 }
 
@@ -149,13 +149,15 @@ void AKKGameMode::BeginPlay()
 
 void AKKGameMode::ChangeTurn()
 {
-	Players[0]->bIsMyTurn = FirstPlayerTurn;
-	Players[1]->bIsMyTurn = !FirstPlayerTurn;
+	Players[0]->bIsMyTurn = bFirstPlayerTurn;
+	Players[1]->bIsMyTurn = !bFirstPlayerTurn;
 
 	Players[0]->OnRep_TurnChanged();
 
-	FirstPlayerTurn = !FirstPlayerTurn;
-	GetGameState<AKKGameState>()->bFirstPlayerTurn = FirstPlayerTurn;
+	bFirstPlayerTurn = !bFirstPlayerTurn;
+	
+	GetGameState<AKKGameState>()->bFirstPlayerTurn = bFirstPlayerTurn;
+	GetGameState<AKKGameState>()->OnRep_TurnChanged();
 
 	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
 	{

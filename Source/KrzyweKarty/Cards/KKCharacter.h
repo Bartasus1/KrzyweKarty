@@ -8,6 +8,7 @@
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKCharacter.generated.h"
 
+class AKKMap;
 struct FDirection;
 class AKKPlayerController;
 class UCharacterDataAsset;
@@ -77,6 +78,12 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<FDirection> GetPossibleAttackTiles();
 
+	UFUNCTION(BlueprintCallable)
+	virtual void HighlightDefaultAttackTiles();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void HighlightMoveTiles();
+
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
@@ -101,6 +108,8 @@ protected:
 	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
 	bool DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType);
 	bool MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType);
+
+	AKKMap* GetMap();
 
 public:
 	virtual int32 GetStrengthAtDistance(int32 Distance) { return GetStrength(); }

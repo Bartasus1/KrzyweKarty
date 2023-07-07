@@ -11,18 +11,17 @@
  * 
  */
 UCLASS()
-class KRZYWEKARTY_API AZakon_Lucznik : public AZakon, public  IAreaModifierInterface
+class KRZYWEKARTY_API AZakon_Lucznik : public AZakon, public IAreaModifierInterface
 {
 	GENERATED_BODY()
+
 public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
 
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
-
-	virtual TArray<FDirection> GetPossibleAttackTiles() override;
 	
 protected:
-	virtual TArray<AKKCharacter*> GetAffectedCharacters() override;
+	virtual TArray<FDirection> GetAffectedTiles(int32 Index) override;
 
 private:
 

@@ -11,21 +11,21 @@ bool AZakon_Paladyn::ActiveAbility(AKKCharacter* TargetCharacter)
 	if(GetMana() < GetFirstAbilityManaCost())
 		return false;
 	
-	for(AKKCharacter* Character : GetAffectedCharacters())
-	{
-		if(!Character)
-			continue;
-
-		
-		if(IsInTheSameTeam(Character))
-		{
-			Character->IncreaseHealth(4);
-		}
-		else
-		{
-			DealDamage(Character, 10);
-		}
-	}
+	// for(AKKCharacter* Character : {}) //todo: FIX using GetAffectedTiles(1)
+	// {
+	// 	if(!Character)
+	// 		continue;
+	//
+	// 	
+	// 	if(IsInTheSameTeam(Character))
+	// 	{
+	// 		Character->IncreaseHealth(4);
+	// 	}
+	// 	else
+	// 	{
+	// 		DealDamage(Character, 10);
+	// 	}
+	// }
 
 	DecreaseManaForFirstAbility();
 	return true;
@@ -39,7 +39,7 @@ bool AZakon_Paladyn::ActiveAbility2(AKKCharacter* TargetCharacter)
 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		AKKMap* Map = GameMode->GetMap();
-		if(!Map->MoveCharacter(TargetCharacter, EMD_Left) || !Map->MoveCharacter(TargetCharacter, EMD_Right))
+		if(!Map->MoveCharacter(TargetCharacter, EMD_Left) || !Map->MoveCharacter(TargetCharacter, EMD_Right)) // GetAffectedTiles(2);
 		{
 			DealDamage(TargetCharacter, 24);
 			DecreaseManaForSecondAbility();
@@ -58,24 +58,33 @@ bool AZakon_Paladyn::CanBeAttacked(EAttackType AttackType)
 	return Super::CanBeAttacked(AttackType);
 }
 
-
-
-TArray<AKKCharacter*> AZakon_Paladyn::GetAffectedCharacters()
+TArray<FDirection> AZakon_Paladyn::GetAffectedTiles(int32 Index)
 {
-	TArray<AKKCharacter*> AffectedCharacters;
-	
-	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+	switch (Index)
 	{
-		AffectedCharacters = GameMode->GetMap()->GetCharactersAtTiles(this,
-		{
+	case 1:
+		return {
 			{-1, 0},
 			{1, -1},
 			{1, 0},
 			{1, 1},
 			{2,0}
-		});
+		};
+		/*
+			 #
+			###
+			 O
+			 #
+		*/
+	case 2:
+		return {
+			{1, -1},
+			{1, 1}
+		};
+	default:
+		return {};
 	}
 
-	return AffectedCharacters;
+	
 }
 

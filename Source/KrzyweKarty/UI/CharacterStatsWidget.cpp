@@ -22,10 +22,10 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 		Character = NewCharacter;
 		CharacterNameText->SetText(Character->GetCharacterName());
 		Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
-		AddToViewport();
+
+		if(!IsInViewport())
+			AddToViewport();
 	}
-	
-	
 }
 
 void UCharacterStatsWidget::NativeConstruct()
@@ -36,46 +36,22 @@ void UCharacterStatsWidget::NativeConstruct()
 
 FText UCharacterStatsWidget::HealthText()
 {
-	if (!Character)
-		return FText();
-
-	float Value = (Character->GetDefaultHealth() != 0) ? (Character->GetHealth() / static_cast<float>(Character->GetDefaultHealth())) : 1;
-	HealthImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
-	
-
-	return FText::FormatOrdered(FormatText, Character->GetHealth());
+	return GetTextForStat(Character->GetHealth(), Character->GetDefaultHealth(), HealthImage);
 }
 
 FText UCharacterStatsWidget::ManaText()
 {
-	if (!Character)
-		return FText();
-
-	float Value = (Character->GetDefaultMana() != 0) ? (Character->GetMana() / static_cast<float>(Character->GetDefaultMana())) : 1;
-    ManaImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
-
-	
-	return FText::FormatOrdered(FormatText, Character->GetMana());
+	return GetTextForStat(Character->GetMana(), Character->GetDefaultMana(), ManaImage);
 }
 
 FText UCharacterStatsWidget::DefenceText()
 {
-	if (!Character)
-		return FText();
-
-	float Value = (Character->GetDefaultDefence() != 0) ? (Character->GetDefence() / static_cast<float>(Character->GetDefaultDefence())) : 1;
-	DefenceImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
-	
-	
-	return FText::FormatOrdered(FormatText, Character->GetDefence());
+	return GetTextForStat(Character->GetDefence(), Character->GetDefaultDefence(), DefenceImage);
 }
 
 FText UCharacterStatsWidget::StrengthText()
 {
-	if (!Character)
-		return FText();
-
-	return FText::FormatOrdered(FormatText, Character->GetStrength());
+	return GetTextForStat(Character->GetStrength(), Character->GetDefaultStrength(), nullptr);
 }
 
 void UCharacterStatsWidget::RemoveCharacter()
@@ -83,3 +59,18 @@ void UCharacterStatsWidget::RemoveCharacter()
 	Character = nullptr;
 	RemoveFromParent();
 }
+
+FText UCharacterStatsWidget::GetTextForStat(float BaseValue, float MaxValue, UImage* StatImage) const
+{
+	if (!Character)
+		return FText();
+
+	if(StatImage)
+	{
+		float Value = (Character->GetDefaultDefence() != 0) ? (BaseValue / MaxValue) : 1;
+        StatImage->GetDynamicMaterial()->SetScalarParameterValue("Progress", Value);
+	}
+	
+	return FText::FormatOrdered(FormatText, BaseValue);
+}
+

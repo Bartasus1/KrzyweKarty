@@ -69,4 +69,8 @@ public:
 
 	UFUNCTION()
 	void RemoveCharacter();
+
+private:
+
+	FText GetTextForStat(float BaseValue, float MaxValue, UImage* StatImage) const;
 };

@@ -46,6 +46,17 @@ struct FDirection
 	
 };
 
+UENUM(BlueprintType)
+enum ETileSelectionPolicy
+{
+	NONE,
+	NoCharacters,
+	AllyCharactersOnly,
+	EnemyCharactersOnly
+};
+
+
+
 UCLASS()
 class KRZYWEKARTY_API AKKMap : public AActor
 {
@@ -66,13 +77,10 @@ public:
 	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles, bool bFilterOutCharacters);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles, ETileSelectionPolicy TileSelectionPolicy = ETileSelectionPolicy::NONE);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID);
-
-	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesWithCharacters(AKKCharacter* Character, TArray<FDirection> Tiles);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTiles(TArray<int32> TilesID);
@@ -82,12 +90,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetAllCharactersOnMap();
-
-	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetAllyCharactersOnMap(AKKCharacter* Character);
-
-	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
 
 	UFUNCTION(BlueprintCallable)
 	void ClearTilesHighlights();
@@ -119,15 +121,13 @@ private:
 	FMapCell* GetCellAtIndex(int32 TileID);
 
 	void SetFractionBase(int32 ID, AKKCharacter* Base);
+	friend class AKKSpawnpoint;
 	
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);
 	const uint8 MapSize = 4;
 	const uint8 TotalMapSize = 20;
 	const uint8 BaseRow = 5;
-
-	
-	friend class AKKSpawnpoint;
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }

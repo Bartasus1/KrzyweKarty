@@ -56,7 +56,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	URoundManager* RoundManager;
 
-	bool FirstPlayerTurn = true;
+	bool bFirstPlayerTurn = true;
 
 	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 

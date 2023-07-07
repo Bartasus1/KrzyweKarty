@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "AreaModifierInterface.generated.h"
 
+struct FDirection;
 class AKKCharacter;
 
 // This class does not need to be modified.
@@ -24,5 +25,5 @@ class KRZYWEKARTY_API IAreaModifierInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 protected:
-	virtual TArray<AKKCharacter*> GetAffectedCharacters() = 0;
+	virtual TArray<FDirection> GetAffectedTiles(int32 Index = 0) = 0;
 };

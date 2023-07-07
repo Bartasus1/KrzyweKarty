@@ -17,33 +17,36 @@ class KRZYWEKARTY_API AKKGameState : public AGameStateBase
 	GENERATED_BODY()
 public:
 
+	UPROPERTY(ReplicatedUsing="OnRep_ActionLogs", Transient)
+	TArray<FText> ActionLogs;
 	
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadOnly)
 	bool bFirstPlayerTurn = false;
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	AKKMap* Map;
-
-
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnActionLogAdded ActionAdded;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnTurnChanged TurnChanged;
-	
-	UFUNCTION(BlueprintCallable)
-	TArray<FText>& GetActionLogs();
+
+public:
 	
 	UFUNCTION()
 	void OnRep_ActionLogs();
 
+	UFUNCTION()
+	void OnRep_TurnChanged();
+
 	UFUNCTION(Server, Reliable)
 	void AddActionLog(const FText& NewAction);
 
+	UFUNCTION(BlueprintCallable)
+	TArray<FText>& GetActionLogs();
+
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	UPROPERTY(ReplicatedUsing="OnRep_ActionLogs", Transient)
-	TArray<FText> ActionLogs;
 	
 };
