@@ -8,6 +8,7 @@
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKCharacter.generated.h"
 
+class AKKTile;
 class AKKMap;
 struct FDirection;
 class AKKPlayerController;
@@ -61,14 +62,13 @@ public:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	TArray<TEnumAsByte<EMovementType>> CharacterActions;
+
+	
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
-
-	UFUNCTION(BlueprintCallable)
-	virtual int32 GetTilePositionID() override;
-
+	
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<int32> GetPossibleSpawnTiles();
 	
@@ -91,6 +91,15 @@ public:
 
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
 	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
+
+	UFUNCTION(BlueprintCallable)
+	virtual int32 GetTilePositionID() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual TArray<AKKTile*> GetMoveTiles();
+
+	UFUNCTION(BlueprintCallable)
+	virtual TArray<AKKTile*> GetAttackTiles();
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void PlayAnimMontage(UAnimMontage* AnimMontage);

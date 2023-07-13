@@ -22,7 +22,7 @@ class KRZYWEKARTY_API UFindSelectableAsync : public UBlueprintAsyncActionBase
 
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"))
-	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction, bool bTraceWithHigherPriority = true);
+	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction, UInputAction* AbortAction, bool bTraceWithHigherPriority = true);
 
 	virtual void Activate() override;
 
@@ -41,10 +41,15 @@ private:
 	UInputMappingContext* MappingContext;
 	UPROPERTY(EditAnywhere)
 	UInputAction* ClickAction;
+	UPROPERTY(EditAnywhere)
+	UInputAction* AbortAction;
 
 	UPROPERTY(EditAnywhere)
 	bool bTraceWithHigherPriority;
 
 	UFUNCTION()
 	void FindSelectable();
+
+	UFUNCTION()
+	void ReportFail();
 };

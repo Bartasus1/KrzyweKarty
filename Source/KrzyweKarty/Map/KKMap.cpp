@@ -40,7 +40,7 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
 	
 }
 
-TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles)
+TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy)
 {
 	check(Character);
 	
@@ -51,14 +51,33 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 
 	const int32 Direction = (Character->OwningPlayer->PlayerID == 1) ? 1 : -1;
 	
-	for(const auto& Tile : Tiles)
+	for(const auto& Tile : RelativeTiles)
 	{
 		const int32 NextX = X + (Direction * Tile.X);
 		const int32 NextY = Y + (Direction * Tile.Y);
 		
 		if(IsValidIndex(NextX, NextY) && MapArray[NextX].MapRows[NextY].Character != nullptr)
 		{
-			FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
+			switch (CharacterSelectionPolicy)
+			{
+			case CSP_AllCharacters:
+				FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
+				break;
+			case CSP_AllyCharactersOnly:
+				if(Character->IsInTheSameTeam(MapArray[NextX].MapRows[NextY].Character))
+				{
+					FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
+				}
+				break;
+			case CSP_EnemyCharactersOnly:
+				if(!Character->IsInTheSameTeam(MapArray[NextX].MapRows[NextY].Character))
+				{
+					FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
+				}
+				break;
+			default:
+				break;
+			}
 		}
 	
 	}
@@ -66,7 +85,7 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 	return FoundCharacters;
 }
 
-TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles, ETileSelectionPolicy TileSelectionPolicy)
+TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy)
 {
 	TArray<AKKTile*> FoundTiles;
 
@@ -75,7 +94,7 @@ TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDi
 
 	const int32 Direction = Character->Direction;
 	
-	for(const FDirection& Tile : Tiles)
+	for(const FDirection& Tile : RelativeTiles)
 	{
 		const int32 NextX = X + (Direction * Tile.X);
 		const int32 NextY = Y + (Direction * Tile.Y);
@@ -86,23 +105,23 @@ TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDi
 			
 			switch (TileSelectionPolicy)
 			{
-			case NONE:
+			case TSP_None:
 				FoundTiles.Add(MapCell.Tile);
 				break;
 				
-			case NoCharacters:
+			case TSP_NoCharacters:
 				if(MapCell.Character == nullptr)
 				{
 					FoundTiles.Add(MapCell.Tile);
 				}
 				break;
-			case AllyCharactersOnly:
+			case TSP_AllyCharactersOnly:
 				if(MapCell.Character != nullptr && Character->IsInTheSameTeam(MapCell.Character))
 				{
 					FoundTiles.Add(MapCell.Tile);
 				}
 				break;
-			case EnemyCharactersOnly:
+			case TSP_EnemyCharactersOnly:
 				if(MapCell.Character != nullptr && !Character->IsInTheSameTeam(MapCell.Character))
 				{
 					FoundTiles.Add(MapCell.Tile);
@@ -179,11 +198,46 @@ TArray<AKKCharacter*> AKKMap::GetAllCharactersOnMap()
 	return AllCharacters;
 }
 
+TArray<AKKCharacter*> AKKMap::GetAllyCharactersOnMap(AKKCharacter* Character)
+{
+	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
+	{
+		return (Character != AnotherCharacter) && (Character->IsInTheSameTeam(AnotherCharacter));
+	});
+}
+
+TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
+{
+	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
+	{
+		return (Character != AnotherCharacter) && (!Character->IsInTheSameTeam(AnotherCharacter));
+	});
+}
+
+void AKKMap::CanAttackBase(AKKCharacter* Character, TArray<AKKTile*>& InDefaultAttackTiles)
+{
+	const bool bIsForwardFacing = Character->Direction == 1;
+	int32 BaseAttackTiles[2] = {bIsForwardFacing ? 17: 1, bIsForwardFacing ? 18: 2};
+	int32 BaseIndex = bIsForwardFacing ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
+	
+
+	if(Character->OwnedTileID == BaseAttackTiles[0] || Character->OwnedTileID == BaseAttackTiles[1])
+	{
+		InDefaultAttackTiles.Add(BaseArray[BaseIndex].Tile);
+	}
+}
+
+
 void AKKMap::ClearTilesHighlights()
 {
 	for(int i = 0; i < 20; i++)
 	{
 		GetCellAtIndex(i)->Tile->SetTileColor(None);
+	}
+
+	for(auto& BaseTile: BaseArray)
+	{
+		BaseTile.Tile->SetTileColor(None);
 	}
 }
 
@@ -240,19 +294,17 @@ void AKKMap::SetupMap()
 			MapArray[i].MapRows.Add({Tile, nullptr});
 		}
 	}
-
-	MapArray.Add(FMapRow());
-
-	const float BaseLocationX[2] = { -340.f, 340.f};
+	
+	const float BaseLocationX[2] = { -338.f, 338.f};
 	const float BaseRotationYaw[2] = { 90.f, 270.f};
 	
 	for (int32 i = 0; i < 2; i++)
 	{
 		AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, FVector(BaseLocationX[i], 0.f, 0.f), FRotator(0.f, BaseRotationYaw[i], 0.f));
-		Tile->TileID = GetID(BaseRow , i);
+		Tile->TileID = INT32_MAX - i;
 		Tile->OnRep_TileID();
 
-		MapArray[BaseRow].MapRows.Add({Tile, nullptr});
+		BaseArray.Add({Tile, nullptr});
 	}
 }
 
@@ -281,11 +333,9 @@ FMapCell* AKKMap::GetCellAtIndex(int32 TileID)
 void AKKMap::SetFractionBase(int32 ID, AKKCharacter* Base)
 {
 	// ID comes in 1-2 range -> make it 0-1
-	if(FMapCell* MapCell = GetCellAtIndex(GetID(BaseRow, ID - 1)))
-	{
-		AssignCharacterToTile(Base, MapCell);
-		Base->SetActorRotation(MapCell->Tile->GetActorRotation());
-	}
+	ID--;
+
+	AssignCharacterToTile(Base, &BaseArray[ID]);
 }
 
 
@@ -294,5 +344,6 @@ void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(AKKMap, MapArray);
+	DOREPLIFETIME(AKKMap, BaseArray);
 }
 

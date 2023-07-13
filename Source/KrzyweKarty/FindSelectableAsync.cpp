@@ -7,12 +7,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
-UFindSelectableAsync* UFindSelectableAsync::FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction, bool bTraceWithHigherPriority)
+UFindSelectableAsync* UFindSelectableAsync::FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, UInputMappingContext* MappingContext, UInputAction* ClickAction, UInputAction* AbortAction, bool bTraceWithHigherPriority)
 {
 	UFindSelectableAsync* FindSelectableAsync = NewObject<UFindSelectableAsync>();
 	FindSelectableAsync->PlayerController = PlayerController;
 	FindSelectableAsync->MappingContext = MappingContext;
 	FindSelectableAsync->ClickAction = ClickAction;
+	FindSelectableAsync->AbortAction = AbortAction;
 	FindSelectableAsync->bTraceWithHigherPriority = bTraceWithHigherPriority;
 
 	return FindSelectableAsync;
@@ -28,6 +29,7 @@ void UFindSelectableAsync::Activate()
 	UEnhancedInputComponent* InputComponent =  Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 
 	InputComponent->BindAction(ClickAction, ETriggerEvent::Started, this, &UFindSelectableAsync::FindSelectable);
+	InputComponent->BindAction(AbortAction, ETriggerEvent::Started, this, &UFindSelectableAsync::ReportFail);
 	
 }
 
@@ -42,9 +44,14 @@ void UFindSelectableAsync::FindSelectable()
 	}
 	else
 	{
-		SelectableNotFound.Broadcast();
-		
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		Subsystem->RemoveMappingContext(MappingContext);
+		ReportFail();
 	}
+}
+
+void UFindSelectableAsync::ReportFail()
+{
+	SelectableNotFound.Broadcast();
+		
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+	Subsystem->RemoveMappingContext(MappingContext);
 }

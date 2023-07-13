@@ -54,7 +54,7 @@ bool AKKPlayerController::MinMoveRequirements()
 
 FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel) const
 {
-	float Range = 1500;
+	float Range = 3500;
  	FVector Start, Direction;
  	DeprojectMousePositionToWorld(Start, Direction);
  

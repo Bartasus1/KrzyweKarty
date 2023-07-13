@@ -49,10 +49,18 @@ struct FDirection
 UENUM(BlueprintType)
 enum ETileSelectionPolicy
 {
-	NONE,
-	NoCharacters,
-	AllyCharactersOnly,
-	EnemyCharactersOnly
+	TSP_None	UMETA(DisplayName="None"),
+	TSP_NoCharacters UMETA(DisplayName="No Characters"),
+	TSP_AllyCharactersOnly	UMETA(DisplayName="Ally Characters Only"),
+	TSP_EnemyCharactersOnly UMETA(DisplayName="Enemy Characters Only")
+};
+
+UENUM(BlueprintType)
+enum ECharacterSelectionPolicy
+{
+	CSP_AllCharacters UMETA(DisplayName="All Characters"),
+	CSP_AllyCharactersOnly UMETA(DisplayName="Ally Characters Only"),
+	CSP_EnemyCharactersOnly UMETA(DisplayName="Enemy Characters Only")
 };
 
 
@@ -74,10 +82,10 @@ public:
 	//bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> Tiles);
+	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Tiles, ETileSelectionPolicy TileSelectionPolicy = ETileSelectionPolicy::NONE);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy = TSP_None);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID);
@@ -91,6 +99,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetAllCharactersOnMap();
 
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKCharacter*> GetAllyCharactersOnMap(AKKCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
+
+	void CanAttackBase(AKKCharacter* Character, TArray<AKKTile*> &InDefaultAttackTiles);
+	
 	UFUNCTION(BlueprintCallable)
 	void ClearTilesHighlights();
 
@@ -128,6 +144,9 @@ private:
 	const uint8 MapSize = 4;
 	const uint8 TotalMapSize = 20;
 	const uint8 BaseRow = 5;
+
+	UPROPERTY(Replicated)
+	TArray<FMapCell> BaseArray;
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }

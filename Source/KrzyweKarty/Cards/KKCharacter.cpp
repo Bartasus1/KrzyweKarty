@@ -62,6 +62,8 @@ int32 AKKCharacter::GetTilePositionID()
 	return OwnedTileID;
 }
 
+
+
 TArray<int32> AKKCharacter::GetPossibleSpawnTiles()
 {
 	return { 0, 1, 2 ,3};
@@ -94,9 +96,23 @@ TArray<FDirection> AKKCharacter::GetPossibleAttackTiles()
 	return DefaultAttackTiles;
 }
 
+TArray<AKKTile*> AKKCharacter::GetMoveTiles()
+{
+	return GetMap()->GetTilesByDirection(this, GetPossibleMoveTiles(), TSP_NoCharacters);
+}
+
+TArray<AKKTile*> AKKCharacter::GetAttackTiles()
+{
+	TArray<AKKTile*> Tiles = GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), TSP_EnemyCharactersOnly);
+	
+	GetMap()->CanAttackBase(this, Tiles);
+	
+	return Tiles;
+}
+
 void AKKCharacter::HighlightDefaultAttackTiles()
 {
-	for(AKKTile* Tile: GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), EnemyCharactersOnly))
+	for(AKKTile* Tile: GetAttackTiles())
 	{
 		Tile->SetTileColor(Red);
 	}
@@ -104,7 +120,7 @@ void AKKCharacter::HighlightDefaultAttackTiles()
 
 void AKKCharacter::HighlightMoveTiles()
 {
-	for(AKKTile* Tile: GetMap()->GetTilesByDirection(this, GetPossibleMoveTiles(), NoCharacters))
+	for(AKKTile* Tile: GetMoveTiles())
 	{
 		Tile->SetTileColor(Yellow);
 	}

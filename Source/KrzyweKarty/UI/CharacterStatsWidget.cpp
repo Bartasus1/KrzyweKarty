@@ -14,18 +14,17 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 		return;
 	}
 	
-	if(Character != NewCharacter)
-	{
-		if(Character)
-			Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
-		
-		Character = NewCharacter;
-		CharacterNameText->SetText(Character->GetCharacterName());
-		Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
 
-		if(!IsInViewport())
-			AddToViewport();
-	}
+	if(Character)
+		Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+	
+	Character = NewCharacter;
+	CharacterNameText->SetText(Character->GetCharacterName());
+	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+
+	if(!IsInViewport())
+		AddToViewport();
+	
 }
 
 void UCharacterStatsWidget::NativeConstruct()
