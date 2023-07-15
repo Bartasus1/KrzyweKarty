@@ -14,14 +14,6 @@ class ISelectableInterface;
 #define SelectableTraceChannel ECC_GameTraceChannel1
 #define PriorityTraceChannel ECC_GameTraceChannel2
 
-UENUM()
-enum EMovementDirection
-{
-	EMD_Forward	=   4	UMETA(DisplayName = "Forward"),
-	EMD_Backward = -4	UMETA(DisplayName = "Backward"),
-	EMD_Right =     1	UMETA(DisplayName = "Right"),
-	EMD_Left =     -1	UMETA(DisplayName = "Left")
-};
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayerController : public APlayerController

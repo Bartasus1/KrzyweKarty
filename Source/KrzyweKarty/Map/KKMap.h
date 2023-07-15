@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Net/UnrealNetwork.h"
 #include "KKMap.generated.h"
 
-enum EMovementDirection : int;
 class UStaticMeshComponent;
 class AKKCharacter;
 class AKKTile;
@@ -33,6 +31,15 @@ struct FMapRow
 	TArray<FMapCell> MapRows;
 };
 
+UENUM()
+enum ERotationDirection
+{
+	ERD_Forward = 1	UMETA(DisplayName = "Forward"),
+	ERD_Right		UMETA(DisplayName = "Right"),
+	ERD_Backward	UMETA(DisplayName = "Backward"),
+	ERD_Left		UMETA(DisplayName = "Left")
+};
+
 USTRUCT(BlueprintType)
 struct FDirection
 {
@@ -44,6 +51,7 @@ struct FDirection
 	UPROPERTY(BlueprintReadWrite)
 	int32 Y;
 	
+	FDirection Rotate(const ERotationDirection Rotation) const;
 };
 
 UENUM(BlueprintType)

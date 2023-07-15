@@ -37,7 +37,7 @@ public:
 	void MoveCharacter(AKKCharacter* Character, int32 TileID);
 
 	/* DEPRECATED */ 
-	void MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID);
+	//void MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID);
 
 	UFUNCTION(BlueprintCallable)
 	void PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter);

@@ -8,6 +8,7 @@
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKCharacter.generated.h"
 
+enum ERotationDirection : int;
 class AKKTile;
 class AKKMap;
 struct FDirection;
@@ -82,7 +83,12 @@ protected:
 	virtual void HighlightDefaultAttackTiles();
 
 	UFUNCTION(BlueprintCallable)
+	virtual void HighlightActiveAbilityTiles();
+
+	UFUNCTION(BlueprintCallable)
 	virtual void HighlightMoveTiles();
+
+	TArray<FDirection> RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection);
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
@@ -169,4 +175,6 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }
+
+
 };

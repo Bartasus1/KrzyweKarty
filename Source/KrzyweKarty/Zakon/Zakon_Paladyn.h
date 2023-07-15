@@ -18,6 +18,8 @@ public:
 	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
 	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
 
+	virtual void HighlightActiveAbilityTiles() override;
+
 	virtual bool CanBeAttacked(EAttackType AttackType) override;
 protected:
 	virtual TArray<FDirection> GetAffectedTiles(int32 Index) override;

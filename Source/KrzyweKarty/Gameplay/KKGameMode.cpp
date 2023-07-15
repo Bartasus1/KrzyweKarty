@@ -80,25 +80,25 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, int32 TileID)
 	}
 }
 
-void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID)
-{
-	if (RoundManager->CanUseCharacter(Character, EMP_MovedCharacter))
-	{
-		if(PlayerID != 1)
-		{
-			MovementDirection = (MovementDirection == EMD_Forward) ? EMD_Backward : MovementDirection;
-			MovementDirection = (MovementDirection == EMD_Right) ? EMD_Left : MovementDirection;
-		}
-		
-		if (Map->MoveCharacter(Character, MovementDirection))
-		{
-			Character->CharacterActions.Remove(EMP_MovedCharacter);
-			
-			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
-			AddActionLog(Character, nullptr, FText::FromString("moved " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
-		}
-	}
-}
+// void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID)
+// {
+// 	if (RoundManager->CanUseCharacter(Character, EMP_MovedCharacter))
+// 	{
+// 		if(PlayerID != 1)
+// 		{
+// 			MovementDirection = (MovementDirection == EMD_Forward) ? EMD_Backward : MovementDirection;
+// 			MovementDirection = (MovementDirection == EMD_Right) ? EMD_Left : MovementDirection;
+// 		}
+// 		
+// 		if (Map->MoveCharacter(Character, MovementDirection))
+// 		{
+// 			Character->CharacterActions.Remove(EMP_MovedCharacter);
+// 			
+// 			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
+// 			AddActionLog(Character, nullptr, FText::FromString("moved " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
+// 		}
+// 	}
+// }
 
 void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {

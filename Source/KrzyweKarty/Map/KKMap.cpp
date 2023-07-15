@@ -2,8 +2,27 @@
 
 #include "KKMap.h"
 #include "KKTile.h"
+#include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
+
+
+FDirection FDirection::Rotate(const ERotationDirection Rotation) const
+{
+	switch (Rotation)
+	{
+	case ERD_Forward:
+		return {X , Y};
+	case ERD_Right:
+		return {Y , X};
+	case ERD_Backward:
+		return {-X , -Y};
+	case ERD_Left:
+		return {-Y , X};
+	default:
+		return *this;
+	}
+}
 
 // Sets default values
 AKKMap::AKKMap()

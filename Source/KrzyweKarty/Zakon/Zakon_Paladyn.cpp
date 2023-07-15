@@ -5,6 +5,7 @@
 
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Map/KKMap.h"
+#include "KrzyweKarty/Map/KKTile.h"
 
 bool AZakon_Paladyn::ActiveAbility(AKKCharacter* TargetCharacter)
 {
@@ -39,15 +40,22 @@ bool AZakon_Paladyn::ActiveAbility2(AKKCharacter* TargetCharacter)
 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		AKKMap* Map = GameMode->GetMap();
-		if(!Map->MoveCharacter(TargetCharacter, EMD_Left) || !Map->MoveCharacter(TargetCharacter, EMD_Right)) // GetAffectedTiles(2);
-		{
-			DealDamage(TargetCharacter, 24);
-			DecreaseManaForSecondAbility();
-			return true;
-		}
+
+		DealDamage(TargetCharacter, 24);
+		DecreaseManaForSecondAbility();
+		return true;
+		
 	}
 	
 	return false;
+}
+
+void AZakon_Paladyn::HighlightActiveAbilityTiles()
+{
+	for(AKKTile* Tile : GetMap()->GetTilesByDirection(this, RotateDirections(GetAffectedTiles(1), ERD_Right)))
+	{
+		Tile->SetTileColor(Red);
+	}
 }
 
 bool AZakon_Paladyn::CanBeAttacked(EAttackType AttackType)

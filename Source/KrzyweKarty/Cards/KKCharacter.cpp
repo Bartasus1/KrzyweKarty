@@ -4,6 +4,7 @@
 #include "KKCharacter.h"
 #include "Components/TextRenderComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
@@ -120,6 +121,22 @@ void AKKCharacter::HighlightMoveTiles()
 	{
 		Tile->SetTileColor(Yellow);
 	}
+}
+
+void AKKCharacter::HighlightActiveAbilityTiles()
+{
+	
+}
+TArray<FDirection> AKKCharacter::RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection)
+{
+	TArray<FDirection> OutDirections;
+
+	for(FDirection InDirection : Directions)
+	{
+		OutDirections.Add(InDirection.Rotate(RotationDirection));
+	}
+
+	return OutDirections;
 }
 
 void AKKCharacter::OnConstruction(const FTransform& Transform)
