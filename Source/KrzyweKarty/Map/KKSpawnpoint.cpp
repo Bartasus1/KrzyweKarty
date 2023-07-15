@@ -24,7 +24,7 @@ void AKKSpawnpoint::BeginPlay()
 
 	if (HasAuthority())
 	{
-		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AKKSpawnpoint::SpawnCards);
+		GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AKKSpawnpoint::SpawnCards); // let map spawn first
 
 		if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 		{
@@ -60,7 +60,7 @@ void AKKSpawnpoint::SpawnCards()
 	}
 
 	AKKGameState* GameState = Cast<AKKGameState>(UGameplayStatics::GetGameState(this));
-	AKKCharacter* BaseCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses[SpawnClasses.Num() - 1]->ClassToSpawn, StartLocation, GetActorRotation() + FRotator(0.f, 90.f, 0.f));
+	AKKCharacter* BaseCharacter = GetWorld()->SpawnActor<AKKCharacter>(SpawnClasses.Last()->ClassToSpawn, StartLocation, GetActorRotation() + FRotator(0.f, 90.f, 0.f));
 
 	GameState->Map->SetFractionBase(ID, BaseCharacter);
 	SpawnedCards.Add(BaseCharacter);

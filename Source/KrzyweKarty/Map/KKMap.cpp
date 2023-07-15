@@ -214,7 +214,7 @@ TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 	});
 }
 
-void AKKMap::CanAttackBase(AKKCharacter* Character, TArray<AKKTile*>& InDefaultAttackTiles)
+TArray<AKKTile*> AKKMap::CanAttackBase(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles)
 {
 	const bool bIsForwardFacing = Character->Direction == 1;
 	int32 BaseAttackTiles[2] = {bIsForwardFacing ? 17: 1, bIsForwardFacing ? 18: 2};
@@ -225,8 +225,9 @@ void AKKMap::CanAttackBase(AKKCharacter* Character, TArray<AKKTile*>& InDefaultA
 	{
 		InDefaultAttackTiles.Add(BaseArray[BaseIndex].Tile);
 	}
-}
 
+	return InDefaultAttackTiles;
+}
 
 void AKKMap::ClearTilesHighlights()
 {
@@ -243,11 +244,21 @@ void AKKMap::ClearTilesHighlights()
 
 AKKTile* AKKMap::GetTileAtIndex(int32 TileID)
 {
+	if(TileID == INT32_MAX || TileID == INT32_MAX - 1)
+	{
+		return BaseArray[INT32_MAX - TileID].Tile;
+	}
+	
 	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Tile : nullptr;
 }
 
 AKKCharacter* AKKMap::GetCharacterAtIndex(int32 TileID)
 {
+	if(TileID == INT32_MAX || TileID == INT32_MAX - 1)
+	{
+		return BaseArray[INT32_MAX - TileID].Character;
+	}
+	
 	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Character : nullptr;
 }
 

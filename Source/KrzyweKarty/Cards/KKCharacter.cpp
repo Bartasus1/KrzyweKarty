@@ -103,11 +103,7 @@ TArray<AKKTile*> AKKCharacter::GetMoveTiles()
 
 TArray<AKKTile*> AKKCharacter::GetAttackTiles()
 {
-	TArray<AKKTile*> Tiles = GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), TSP_EnemyCharactersOnly);
-	
-	GetMap()->CanAttackBase(this, Tiles);
-	
-	return Tiles;
+	return GetMap()->CanAttackBase(this, GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), TSP_EnemyCharactersOnly));
 }
 
 void AKKCharacter::HighlightDefaultAttackTiles()

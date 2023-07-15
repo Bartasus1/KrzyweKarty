@@ -105,7 +105,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
 
-	void CanAttackBase(AKKCharacter* Character, TArray<AKKTile*> &InDefaultAttackTiles);
+	TArray<AKKTile*> CanAttackBase(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles);
 	
 	UFUNCTION(BlueprintCallable)
 	void ClearTilesHighlights();
