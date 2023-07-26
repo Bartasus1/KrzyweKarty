@@ -4,20 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Zakon.h"
+#include "KrzyweKarty/Interfaces/AreaModifierInterface.h"
 #include "Zakon_Halabardzista.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class KRZYWEKARTY_API AZakon_Halabardzista : public AZakon
+class KRZYWEKARTY_API AZakon_Halabardzista : public AZakon, public IAreaModifierInterface
 {
+
+
+private:
 	GENERATED_BODY()
-	
+
 public:
 
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override; 
-
-	virtual  int32 GetStrengthAtDistance(int32 Distance) override;
 	
+	virtual int32 GetStrengthForAttack(AKKCharacter* TargetCharacter) override;
+	
+protected:
+	virtual TArray<FDirection> GetAffectedTiles(int32 Index) override;	
 };

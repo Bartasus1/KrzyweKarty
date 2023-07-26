@@ -4,15 +4,6 @@
 #include "Zakon_Kawalerzysta.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
-bool AZakon_Kawalerzysta::ActiveAbility(AKKCharacter* TargetCharacter)
-{
-	return Super::ActiveAbility(TargetCharacter);
-}
-
-bool AZakon_Kawalerzysta::ActiveAbility2(AKKCharacter* TargetCharacter)
-{
-	return Super::ActiveAbility2(TargetCharacter);
-}
 
 TArray<FDirection> AZakon_Kawalerzysta::GetPossibleMoveTiles()
 {

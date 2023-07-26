@@ -18,7 +18,6 @@ class KRZYWEKARTY_API AZakon_Lucznik : public AZakon, public IAreaModifierInterf
 public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
 
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
 	
 protected:
 	virtual TArray<FDirection> GetAffectedTiles(int32 Index) override;

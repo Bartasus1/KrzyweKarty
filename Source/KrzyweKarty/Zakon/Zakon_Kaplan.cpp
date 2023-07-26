@@ -15,34 +15,30 @@ bool AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 	return false;
 }
 
-bool AZakon_Kaplan::ActiveAbility(AKKCharacter* TargetCharacter)
-{
-	if (GetMana() < GetFirstAbilityManaCost())
-		return false;
-
-	if (IsInTheSameTeam(TargetCharacter))
-	{
-		TargetCharacter->IncreaseHealth(3);
-		TargetCharacter->IncreaseMana(4);
-	}
-
-	DecreaseManaForFirstAbility();
-	return true;
-}
-
-bool AZakon_Kaplan::ActiveAbility2(AKKCharacter* TargetCharacter)
-{
-	if (GetMana() < GetSecondAbilityManaCost())
-		return false;
-
-	if (DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility))
-	{
-		DealDamage(TargetCharacter, 17);
-		
-		DecreaseManaForSecondAbility();
-		return true;
-	}
-
-	return false;
-}
+// bool AZakon_Kaplan::ActiveAbility()
+// {
+// 	if (GetMana() < GetFirstAbilityManaCost())
+// 		return false;
+//
+// 	
+//
+// 	DecreaseManaForFirstAbility();
+// 	return true;
+// }
+//
+// bool AZakon_Kaplan::ActiveAbility2()
+// {
+// 	if (GetMana() < GetSecondAbilityManaCost())
+// 		return false;
+//
+// 	// if (DefaultAttackConditions(ReverseState, EAT_ActiveAbility))
+// 	// {
+// 	// 	DealDamage(ReverseState, 17);
+// 	// 	
+// 	// 	DecreaseManaForSecondAbility();
+// 	// 	return true;
+// 	// }
+//
+// 	return false;
+// }
 

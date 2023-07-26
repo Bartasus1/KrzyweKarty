@@ -16,7 +16,5 @@ class KRZYWEKARTY_API AZakon_Kaplan : public AZakon
 public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
 	
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
-	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
 
 };

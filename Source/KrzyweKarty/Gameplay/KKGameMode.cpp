@@ -61,10 +61,8 @@ void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32
 
 	if (Map->AddCharacterToMap(Character, TileID))
 	{
-		Character->CharacterActions.Append({EMP_MovedCharacter, EMP_AttackCharacter});
 		Character->PlayAnimMontage(Character->CharacterDataAsset->SummonMontage);
-		
-		RoundManager->AddCharacterToList(Character, EMP_SummonedCharacter);
+
 		AddActionLog(Character, nullptr, FText::FromString(" has been added to the map"));
 	}
 }
@@ -73,42 +71,16 @@ void AKKGameMode::MoveCharacter(AKKCharacter* Character, int32 TileID)
 {
 	if (Map->MoveCharacter(Character, TileID))
 	{
-		Character->CharacterActions.Remove(EMP_MovedCharacter);
-			
-		RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
 		AddActionLog(Character, nullptr, FText::FromString("moved"));
 	}
 }
 
-// void AKKGameMode::MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection, int32 PlayerID)
-// {
-// 	if (RoundManager->CanUseCharacter(Character, EMP_MovedCharacter))
-// 	{
-// 		if(PlayerID != 1)
-// 		{
-// 			MovementDirection = (MovementDirection == EMD_Forward) ? EMD_Backward : MovementDirection;
-// 			MovementDirection = (MovementDirection == EMD_Right) ? EMD_Left : MovementDirection;
-// 		}
-// 		
-// 		if (Map->MoveCharacter(Character, MovementDirection))
-// 		{
-// 			Character->CharacterActions.Remove(EMP_MovedCharacter);
-// 			
-// 			RoundManager->AddCharacterToList(Character, EMP_MovedCharacter);
-// 			AddActionLog(Character, nullptr, FText::FromString("moved " + UEnum::GetDisplayValueAsText(MovementDirection).ToString()));
-// 		}
-// 	}
-// }
-
 void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Character->IsCharacterOnMap())
+	if (Character->IsCharacterOnMap())
 	{
 		if (Character->DefaultAttack(TargetCharacter))
 		{
-			Character->CharacterActions.Remove(EMP_AttackCharacter);
-			
-			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
 			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
 		}
 	}
@@ -116,14 +88,11 @@ void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* 
 
 void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
 {
-	if (RoundManager->CanUseCharacter(Character, EMP_AttackCharacter) && Character->IsCharacterOnMap())
+	if (Character->IsCharacterOnMap())
 	{
-		if (Character->ActiveAbility(TargetCharacter))
-		{
-			Character->CharacterActions.Remove(EMP_AttackCharacter);
-			RoundManager->AddCharacterToList(Character, EMP_AttackCharacter);
-			AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
-		}
+		Character->ActiveAbility(0, TargetCharacter); // find a way to check if ability succeeded
+		AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
+		
 	}
 }
 

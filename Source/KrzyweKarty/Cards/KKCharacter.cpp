@@ -63,8 +63,6 @@ int32 AKKCharacter::GetTilePositionID()
 	return OwnedTileID;
 }
 
-
-
 TArray<int32> AKKCharacter::GetPossibleSpawnTiles()
 {
 	return { 0, 1, 2 ,3};
@@ -123,10 +121,6 @@ void AKKCharacter::HighlightMoveTiles()
 	}
 }
 
-void AKKCharacter::HighlightActiveAbilityTiles()
-{
-	
-}
 TArray<FDirection> AKKCharacter::RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection)
 {
 	TArray<FDirection> OutDirections;
@@ -160,22 +154,50 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 			CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
 		}
 	}
-	
 }
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !CharacterActions.Contains(EMP_AttackCharacter))
+
+	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !HasAuthority())
 		return false;
 	
-	int32 Damage = GetStrengthAtDistance(GetDistanceTo(TargetCharacter));
-	DealDamage(TargetCharacter, Damage);
+	DealDamage(TargetCharacter, GetStrengthForAttack(TargetCharacter));
 
 	PlayAnimMontage(CharacterDataAsset->AttackMontage);
 	
 	return true;
 }
 
+
+void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
+{
+	UKKDamage* DamageType = UActiveAbilityDamage::StaticClass()->GetDefaultObject<UActiveAbilityDamage>();
+	
+	if(CanUseActiveAbility(Index, DamageType))
+	{
+		ActiveAbility_Internal(Index, SelectableObject);
+		ConsumeActiveAbilityCost(Index);
+	}
+}
+
+void AKKCharacter::ActiveAbility_Internal(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
+{
+}
+
+void AKKCharacter::ShowActiveAbilityState(bool ReverseState)
+{
+}
+
+bool AKKCharacter::CanUseActiveAbility(int32 Index, UKKDamage* DamageType)
+{
+	return GetMana() >= GetActiveAbilityCost(Index);
+}
+
+void AKKCharacter::ConsumeActiveAbilityCost(int32 Index)
+{
+	DecreaseMana(GetActiveAbilityCost(Index));
+}
 
 void AKKCharacter::PlayAnimMontage_Implementation(UAnimMontage* AnimMontage)
 {
@@ -192,25 +214,37 @@ void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 			GameMode->EndGameWithWinner(OwningPlayer->PlayerID);
 		}
 	}
-
+	
 	TargetCharacter->CharacterDied();
-	Cast<AKKGameState>(UGameplayStatics::GetGameState(TargetCharacter))->Map->RemoveCharacterFromTile(TargetCharacter->GetTilePositionID());
+	GetMap()->RemoveCharacterFromTile(TargetCharacter->GetTilePositionID());
 	TargetCharacter->Destroy();
 }
 
 void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 {
-	const int32 NewHealth = TargetCharacter->GetHealth() - (Damage - TargetCharacter->GetDefence());
-	
-	TargetCharacter->SetHealth(NewHealth);
-	TargetCharacter->DecreaseDefence();
-
-	if (TargetCharacter->GetHealth() <= 0)
+	if(HasAuthority())
 	{
-		KillCharacter(TargetCharacter);
+		const int32 NewHealth = TargetCharacter->GetHealth() - (Damage - TargetCharacter->GetDefence());
+	
+		TargetCharacter->SetHealth(NewHealth);
+		TargetCharacter->DecreaseDefence();
+
+		if (TargetCharacter->GetHealth() <= 0)
+		{
+			KillCharacter(TargetCharacter);
+		}
 	}
 }
 
+int32 AKKCharacter::GetStrengthForAttack(AKKCharacter* TargetCharacter)
+{
+	return GetStrength();
+}
+
+bool AKKCharacter::CanBeAttacked(EAttackType AttackType)
+{
+	return true;
+}
 
 int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 {
@@ -261,13 +295,13 @@ bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttac
 
 bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
 {
-	if(TargetCharacter == nullptr || TargetCharacter == this)
+	if(TargetCharacter == nullptr || TargetCharacter == this || !IsCharacterOnMap())
 		return false;
 	
 	return (TargetCharacter->CanBeAttacked(AttackType) && !IsInTheSameTeam(TargetCharacter));
 }
 
-AKKMap* AKKCharacter::GetMap()
+AKKMap* AKKCharacter::GetMap() const
 {
 	return GetWorld()->GetGameState<AKKGameState>()->Map;
 }

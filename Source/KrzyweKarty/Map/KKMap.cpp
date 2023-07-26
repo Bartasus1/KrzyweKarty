@@ -2,10 +2,8 @@
 
 #include "KKMap.h"
 #include "KKTile.h"
-#include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
-#include "KrzyweKarty/Gameplay/KKPlayerController.h"
-
+#include "Net/UnrealNetwork.h"
 
 FDirection FDirection::Rotate(const ERotationDirection Rotation) const
 {
@@ -59,46 +57,37 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
 	
 }
 
-TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy)
+TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy)
 {
-	check(Character);
-	
 	TArray<AKKCharacter*> FoundCharacters;
-
-	const int32 X = GetX(Character->OwnedTileID);
-	const int32 Y = GetY(Character->OwnedTileID);
-
-	const int32 Direction = (Character->OwningPlayer->PlayerID == 1) ? 1 : -1;
 	
-	for(const auto& Tile : RelativeTiles)
+	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(RelativeTiles)))
 	{
-		const int32 NextX = X + (Direction * Tile.X);
-		const int32 NextY = Y + (Direction * Tile.Y);
-		
-		if(IsValidIndex(NextX, NextY) && MapArray[NextX].MapRows[NextY].Character != nullptr)
+		if(MapCell.Character != nullptr)
 		{
-			switch (CharacterSelectionPolicy)
-			{
-			case CSP_AllCharacters:
-				FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
-				break;
-			case CSP_AllyCharactersOnly:
-				if(Character->IsInTheSameTeam(MapArray[NextX].MapRows[NextY].Character))
-				{
-					FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
-				}
-				break;
-			case CSP_EnemyCharactersOnly:
-				if(!Character->IsInTheSameTeam(MapArray[NextX].MapRows[NextY].Character))
-				{
-					FoundCharacters.Add(MapArray[NextX].MapRows[NextY].Character);
-				}
-				break;
-			default:
-				break;
-			}
+			continue;
 		}
-	
+		
+		switch (CharacterSelectionPolicy)
+		{
+		case CSP_AllCharacters:
+			FoundCharacters.Add(MapCell.Character);
+			break;
+		case CSP_AllyCharactersOnly:
+			if(Character->IsInTheSameTeam(MapCell.Character))
+			{
+				FoundCharacters.Add(MapCell.Character);
+			}
+			break;
+		case CSP_EnemyCharactersOnly:
+			if(!Character->IsInTheSameTeam(MapCell.Character))
+			{
+				FoundCharacters.Add(MapCell.Character);
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 	return FoundCharacters;
@@ -107,57 +96,68 @@ TArray<AKKCharacter*> AKKMap::GetCharactersAtTiles(AKKCharacter* Character, TArr
 TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy)
 {
 	TArray<AKKTile*> FoundTiles;
+	
+	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(RelativeTiles))) 
+	{
+		
+		switch (TileSelectionPolicy)
+		{
+		case TSP_AllTiles:
+			FoundTiles.Add(MapCell.Tile);
+			break;
+			
+		case TSP_NoCharacters:
+			if(MapCell.Character == nullptr)
+			{
+				FoundTiles.Add(MapCell.Tile);
+			}
+			break;
+		case TSP_AllyCharactersOnly:
+			if(MapCell.Character != nullptr && Character->IsInTheSameTeam(MapCell.Character))
+			{
+				FoundTiles.Add(MapCell.Tile);
+			}
+			break;
+		case TSP_EnemyCharactersOnly:
+			if(MapCell.Character != nullptr && !Character->IsInTheSameTeam(MapCell.Character))
+			{
+				FoundTiles.Add(MapCell.Tile);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	return FoundTiles;
+}
+
+TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles)
+{
+	TArray<FMapCell> FoundCells;
 
 	const int32 X = GetX(Character->OwnedTileID);
 	const int32 Y = GetY(Character->OwnedTileID);
 
 	const int32 Direction = Character->Direction;
 	
-	for(const FDirection& Tile : RelativeTiles)
+	for(FDirection& Tile : RelativeTiles)
 	{
 		const int32 NextX = X + (Direction * Tile.X);
 		const int32 NextY = Y + (Direction * Tile.Y);
 		
 		if(IsValidIndex(NextX, NextY))
 		{
-			FMapCell MapCell = MapArray[NextX].MapRows[NextY];
-			
-			switch (TileSelectionPolicy)
-			{
-			case TSP_None:
-				FoundTiles.Add(MapCell.Tile);
-				break;
-				
-			case TSP_NoCharacters:
-				if(MapCell.Character == nullptr)
-				{
-					FoundTiles.Add(MapCell.Tile);
-				}
-				break;
-			case TSP_AllyCharactersOnly:
-				if(MapCell.Character != nullptr && Character->IsInTheSameTeam(MapCell.Character))
-				{
-					FoundTiles.Add(MapCell.Tile);
-				}
-				break;
-			case TSP_EnemyCharactersOnly:
-				if(MapCell.Character != nullptr && !Character->IsInTheSameTeam(MapCell.Character))
-				{
-					FoundTiles.Add(MapCell.Tile);
-				}
-				break;
-			default:
-				break;
-			}
+			FoundCells.Add(MapArray[NextX].MapRows[NextY]);
 		}
 	}
 
-	return FoundTiles;
+	return FoundCells;
 }
 
 TArray<AKKTile*> AKKMap::GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID)
 {
-	check(Character);
+	check(Character); //todo: fix bug when clicking on empty tile and no character is selected
 	
 	TArray<AKKTile*> FoundTiles;
 	
@@ -355,6 +355,24 @@ FMapCell* AKKMap::GetCellAtIndex(int32 TileID)
 	if(IsValidIndex(X, Y))
 	{
 		return &MapArray[X].MapRows[Y];
+	}
+	
+	return nullptr;
+}
+
+FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, FDirection Direction)
+{
+	const int32 X = GetX(Character->OwnedTileID);
+	const int32 Y = GetY(Character->OwnedTileID);
+
+	const int32 CharacterDirection = Character->Direction;
+	
+	const int32 NextX = X + (CharacterDirection * Direction.X);
+	const int32 NextY = Y + (CharacterDirection * Direction.Y);
+		
+	if(IsValidIndex(NextX, NextY))
+	{
+		return &MapArray[NextX].MapRows[NextY];
 	}
 	
 	return nullptr;

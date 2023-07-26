@@ -8,6 +8,7 @@
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKCharacter.generated.h"
 
+struct FMapCell;
 enum ERotationDirection : int;
 class AKKTile;
 class AKKMap;
@@ -81,10 +82,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void HighlightDefaultAttackTiles();
-
-	UFUNCTION(BlueprintCallable)
-	virtual void HighlightActiveAbilityTiles();
-
+	
 	UFUNCTION(BlueprintCallable)
 	virtual void HighlightMoveTiles();
 
@@ -94,9 +92,16 @@ protected:
 
 public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter);
+	
+	virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject); 
+	virtual void ShowActiveAbilityState(bool ReverseState = false);
+	
 
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
-	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) PURE_VIRTUAL(AKKCharacter::ActiveAbility, return false;);
+	virtual bool CanUseActiveAbility(int32 Index, UKKDamage* DamageType);
+	virtual void ConsumeActiveAbilityCost(int32 Index);
+
+	//protected:
+	virtual void ActiveAbility_Internal(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject); 
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;
@@ -113,27 +118,29 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void CharacterDied();
 
-
 protected:
 	//Subclass Sandbox
 	void KillCharacter(AKKCharacter* TargetCharacter) const;
 	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage);
 
 	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
+	
 	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
 	bool DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType);
 	bool MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType);
 
-	AKKMap* GetMap();
+	AKKMap* GetMap() const;
 
 public:
-	virtual int32 GetStrengthAtDistance(int32 Distance) { return GetStrength(); }
-	virtual bool CanBeAttacked(EAttackType AttackType) { return (OwnedTileID != -1); }
+	virtual int32 GetStrengthForAttack(AKKCharacter* TargetCharacter);
+	virtual bool CanBeAttacked(EAttackType AttackType);
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
+
+	
 
 public:
 	FORCEINLINE FText GetCharacterName() const { check(CharacterDataAsset); return CharacterDataAsset->CharacterName; }
@@ -161,6 +168,8 @@ public:
 	FORCEINLINE void IncreaseMana(int32 InMana = 1)			{ CharacterStats.Mana += FMath::Clamp(InMana, 0, GetDefaultMana() - GetMana()); }
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	{ CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
 
+	FORCEINLINE int32 GetActiveAbilityCost(int32 Index) const
+	{ check(&CharacterDataAsset->ActiveAbilities[Index]) return CharacterDataAsset->ActiveAbilities[Index].ManaCost; }
 	FORCEINLINE int32 GetFirstAbilityManaCost() const
 	{ check(&CharacterDataAsset->ActiveAbilities[0]) return CharacterDataAsset->ActiveAbilities[0].ManaCost; }
 	FORCEINLINE int32 GetSecondAbilityManaCost() const
@@ -178,3 +187,5 @@ public:
 
 
 };
+
+

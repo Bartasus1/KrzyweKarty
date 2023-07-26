@@ -2,61 +2,58 @@
 
 
 #include "Zakon_Paladyn.h"
-
-#include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Map/KKMap.h"
-#include "KrzyweKarty/Map/KKTile.h"
 
-bool AZakon_Paladyn::ActiveAbility(AKKCharacter* TargetCharacter)
-{
-	if(GetMana() < GetFirstAbilityManaCost())
-		return false;
-	
-	// for(AKKCharacter* Character : {}) //todo: FIX using GetAffectedTiles(1)
-	// {
-	// 	if(!Character)
-	// 		continue;
-	//
-	// 	
-	// 	if(IsInTheSameTeam(Character))
-	// 	{
-	// 		Character->IncreaseHealth(4);
-	// 	}
-	// 	else
-	// 	{
-	// 		DealDamage(Character, 10);
-	// 	}
-	// }
+// bool AZakon_Paladyn::ActiveAbility()
+// {
+// 	if(GetMana() < GetFirstAbilityManaCost())
+// 		return false;
+// 	
+// 	// for(AKKCharacter* Character : {}) //todo: FIX using GetAffectedTiles(1)
+// 	// {
+// 	// 	if(!Character)
+// 	// 		continue;
+// 	//
+// 	// 	
+// 	// 	if(IsInTheSameTeam(Character))
+// 	// 	{
+// 	// 		Character->IncreaseHealth(4);
+// 	// 	}
+// 	// 	else
+// 	// 	{
+// 	// 		DealDamage(Character, 10);
+// 	// 	}
+// 	// }
+//
+// 	DecreaseManaForFirstAbility();
+// 	return true;
+// }
+//
+// bool AZakon_Paladyn::ActiveAbility2()
+// {
+// 	if(GetMana() < GetSecondAbilityManaCost())
+// 		return false;
+//
+// 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+// 	{
+// 		AKKMap* Map = GameMode->GetMap();
+//
+// 		//DealDamage(ReverseState, 24);
+// 		DecreaseManaForSecondAbility();
+// 		return true;
+// 		
+// 	}
+// 	
+// 	return false;
+// }
 
-	DecreaseManaForFirstAbility();
-	return true;
-}
-
-bool AZakon_Paladyn::ActiveAbility2(AKKCharacter* TargetCharacter)
-{
-	if(GetMana() < GetSecondAbilityManaCost())
-		return false;
-
-	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-	{
-		AKKMap* Map = GameMode->GetMap();
-
-		DealDamage(TargetCharacter, 24);
-		DecreaseManaForSecondAbility();
-		return true;
-		
-	}
-	
-	return false;
-}
-
-void AZakon_Paladyn::HighlightActiveAbilityTiles()
-{
-	for(AKKTile* Tile : GetMap()->GetTilesByDirection(this, RotateDirections(GetAffectedTiles(1), ERD_Right)))
-	{
-		Tile->SetTileColor(Red);
-	}
-}
+// void AZakon_Paladyn::HighlightActiveAbilityTiles()
+// {
+//	for(AKKTile* Tile : GetMap()->GetTilesByDirection(this, RotateDirections(GetAffectedTiles(1), ERD_Right)))
+// 	{
+// 		Tile->SetTileColor(Red);
+// 	}
+// }
 
 bool AZakon_Paladyn::CanBeAttacked(EAttackType AttackType)
 {

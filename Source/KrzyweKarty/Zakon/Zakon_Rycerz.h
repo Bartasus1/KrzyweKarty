@@ -14,9 +14,6 @@ class KRZYWEKARTY_API AZakon_Rycerz : public AZakon
 {
 	GENERATED_BODY()
 
-public:
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
-
 protected:
 	virtual bool CanBeAttacked(EAttackType AttackType) override;
 

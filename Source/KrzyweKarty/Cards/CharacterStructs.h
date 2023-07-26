@@ -60,35 +60,73 @@ enum EMovementType
 	EMP_AttackCharacter		UMETA(DisplayName="Attacked Character")
 };
 
-USTRUCT()
-struct FCharacterAction : public FTableRowBase
+UENUM()
+enum EAttackResult
+{
+	AttackDenied, //No Mana
+	AttackBlocked, //Blocked by another character 
+	AttackConfirmed // Successful attack
+};
+
+USTRUCT(BlueprintType)
+struct FAttackResult
 {
 	GENERATED_BODY()
+	
+	FAttackResult() {}
+	FAttackResult(EAttackResult InAttackResult, FText Text): AttackResultEnum(InAttackResult), AttackResultText(Text) { }
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EAttackResult> AttackResultEnum = AttackConfirmed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UInputMappingContext* MappingContext;
+	FText AttackResultText;
 	
 };
 
-
-USTRUCT(BlueprintType)
-struct FCharacterActionsBase
+UCLASS(BlueprintType)
+class UKKDamage : public UObject
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FKey ActionKey;
+public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText ActionNameText;
-
-	friend bool operator==(const FCharacterActionsBase& First, const FCharacterActionsBase& Second)
+	UKKDamage() {}
+	UKKDamage(EAttackType InAttackType) : AttackType(InAttackType)
 	{
-		return First.ActionKey.GetFName() == Second.ActionKey.GetFName();
+		
+	}
+
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EAttackType> AttackType = EAT_DefaultAttack;
+};
+
+
+
+
+UCLASS(BlueprintType)
+class UDefaultAttackDamage : public UKKDamage
+{
+	GENERATED_BODY()
+
+public:
+	UDefaultAttackDamage() : UKKDamage(EAT_DefaultAttack)
+	{
+		
 	}
 };
 
-static inline FCharacterActionsBase SpawnAction = {EKeys::N, FText::FromString("Add to Map")};
-static inline FCharacterActionsBase AttackAction = {EKeys::X, FText::FromString("Attack")};
-static inline FCharacterActionsBase FirstAbilityAction = {EKeys::J, FText::FromString("First Ability")};
-static inline FCharacterActionsBase MoveAction = {EKeys::M, FText::FromString("Move")};
+UCLASS(BlueprintType)
+class UActiveAbilityDamage : public UKKDamage
+{
+	GENERATED_BODY()
+
+public:
+	UActiveAbilityDamage() : UKKDamage(EAT_ActiveAbility)
+	{
+		
+	}
+};
+
+

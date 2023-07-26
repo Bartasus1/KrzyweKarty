@@ -46,10 +46,10 @@ struct FDirection
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 X;
+	int32 X; // vertical
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 Y;
+	int32 Y; // horizontal
 	
 	FDirection Rotate(const ERotationDirection Rotation) const;
 };
@@ -57,8 +57,8 @@ struct FDirection
 UENUM(BlueprintType)
 enum ETileSelectionPolicy
 {
-	TSP_None	UMETA(DisplayName="None"),
-	TSP_NoCharacters UMETA(DisplayName="No Characters"),
+	TSP_AllTiles				UMETA(DisplayName="None"),
+	TSP_NoCharacters		UMETA(DisplayName="No Characters"),
 	TSP_AllyCharactersOnly	UMETA(DisplayName="Ally Characters Only"),
 	TSP_EnemyCharactersOnly UMETA(DisplayName="Enemy Characters Only")
 };
@@ -66,8 +66,8 @@ enum ETileSelectionPolicy
 UENUM(BlueprintType)
 enum ECharacterSelectionPolicy
 {
-	CSP_AllCharacters UMETA(DisplayName="All Characters"),
-	CSP_AllyCharactersOnly UMETA(DisplayName="Ally Characters Only"),
+	CSP_AllCharacters		UMETA(DisplayName="All Characters"),
+	CSP_AllyCharactersOnly	UMETA(DisplayName="Ally Characters Only"),
 	CSP_EnemyCharactersOnly UMETA(DisplayName="Enemy Characters Only")
 };
 
@@ -90,10 +90,13 @@ public:
 	//bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetCharactersAtTiles(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
+	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy = TSP_None);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles);
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID);
@@ -125,7 +128,10 @@ public:
 	AKKCharacter* GetCharacterAtIndex(int32 TileID);
 
 	void RemoveCharacterFromTile(int32 TileID);
+
 	
+	FMapCell* GetCellAtIndex(int32 TileID);
+	FMapCell* GetCellByDirection(AKKCharacter* Character, FDirection Direction);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))
@@ -141,10 +147,8 @@ protected:
 private:
 	void SetupMap();
 	void AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell);
-	
-	FMapCell* GetCellAtIndex(int32 TileID);
-
 	void SetFractionBase(int32 ID, AKKCharacter* Base);
+	
 	friend class AKKSpawnpoint;
 	
 	////   Map values   ////

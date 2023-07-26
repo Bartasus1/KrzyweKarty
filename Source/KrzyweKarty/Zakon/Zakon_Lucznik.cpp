@@ -24,24 +24,24 @@ bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 	return SuccessfulAttack;
 }
 
-bool AZakon_Lucznik::ActiveAbility(AKKCharacter* TargetCharacter) //Trojstrzal
-{
-	if (GetMana() < GetFirstAbilityManaCost())
-		return false;
-	
-	// for(AKKCharacter* Character : {}) //todo: FIX using GetAffectedTiles()
-	// {
-	// 	if(MinAttackConditions(Character, EAT_ActiveAbility))
-	// 	{
-	// 		DealDamage(Character, 5);
-	// 	}
-	// }
-	
-	DecreaseManaForFirstAbility();
-	
-	return true;
-
-}
+// bool AZakon_Lucznik::ActiveAbility() //Trojstrzal
+// {
+// 	if (GetMana() < GetFirstAbilityManaCost())
+// 		return false;
+// 	
+// 	// for(AKKCharacter* Character : {}) //todo: FIX using GetAffectedTiles()
+// 	// {
+// 	// 	if(MinAttackConditions(Character, EAT_ActiveAbility))
+// 	// 	{
+// 	// 		DealDamage(Character, 5);
+// 	// 	}
+// 	// }
+// 	
+// 	DecreaseManaForFirstAbility();
+// 	
+// 	return true;
+//
+// }
 
 
 TArray<FDirection> AZakon_Lucznik::GetAffectedTiles(int32 Index)

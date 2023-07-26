@@ -3,16 +3,16 @@
 
 #include "Zakon_Rycerz.h"
 
-bool AZakon_Rycerz::ActiveAbility(AKKCharacter* TargetCharacter)
-{
-	if (GetMana() < GetFirstAbilityManaCost())
-		return false;
-
-	IncreaseHealth(4);
-	DecreaseManaForFirstAbility();
-
-	return true;
-}
+// bool AZakon_Rycerz::ActiveAbility()
+// {
+// 	if (GetMana() < GetFirstAbilityManaCost())
+// 		return false;
+//
+// 	IncreaseHealth(4);
+// 	DecreaseManaForFirstAbility();
+//
+// 	return true;
+// }
 
 bool AZakon_Rycerz::CanBeAttacked(EAttackType AttackType)
 {

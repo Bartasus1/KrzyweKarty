@@ -27,29 +27,29 @@ bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 	return false;
 }
 
-bool AZakon_Kusznik::ActiveAbility(AKKCharacter* TargetCharacter)
-{
-	if(GetMana() < GetFirstAbilityManaCost())
-		return false;
-
-	if(!DefaultAttackConditions(TargetCharacter, EAT_ActiveAbility))
-		return false;
-
-	DealDamage(TargetCharacter, 15);
-	TargetCharacter->DecreaseDefence();
-
-	DecreaseManaForFirstAbility();
-	return true;
-}
-
-bool AZakon_Kusznik::ActiveAbility2(AKKCharacter* TargetCharacter)
-{
-	if(GetHealth() < GetSecondAbilityManaCost())
-		return false;
-
-	IncreaseMana(2);
-	SecondAbilityInUse = true;
-	DecreaseHealth(GetSecondAbilityManaCost());
-	return true;
-}
+// bool AZakon_Kusznik::ActiveAbility()
+// {
+// 	if(GetMana() < GetFirstAbilityManaCost())
+// 		return false;
+//
+// 	// if(!DefaultAttackConditions(ReverseState, EAT_ActiveAbility))
+// 	// 	return false;
+// 	//
+// 	// DealDamage(ReverseState, 15);
+// 	// ReverseState->DecreaseDefence();
+//
+// 	DecreaseManaForFirstAbility();
+// 	return true;
+// }
+//
+// bool AZakon_Kusznik::ActiveAbility2()
+// {
+// 	if(GetHealth() < GetSecondAbilityManaCost())
+// 		return false;
+//
+// 	IncreaseMana(2);
+// 	SecondAbilityInUse = true;
+// 	DecreaseHealth(GetSecondAbilityManaCost());
+// 	return true;
+// }
 

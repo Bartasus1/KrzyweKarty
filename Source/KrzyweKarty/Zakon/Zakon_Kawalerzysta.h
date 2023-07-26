@@ -14,9 +14,6 @@ class KRZYWEKARTY_API AZakon_Kawalerzysta : public AZakon
 {
 	GENERATED_BODY()
 public:
-	
-	virtual bool ActiveAbility(AKKCharacter* TargetCharacter) override;
-	virtual bool ActiveAbility2(AKKCharacter* TargetCharacter) override;
 
 	virtual TArray<FDirection> GetPossibleMoveTiles() override;
 	
