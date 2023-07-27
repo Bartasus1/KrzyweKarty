@@ -27,7 +27,7 @@ AKKPlayer::AKKPlayer()
 	SpotLight->SetupAttachment(Camera);
 
 	SpringArm->bDoCollisionTest = false;
-	SpringArm->TargetArmLength = 900.f;
+	SpringArm->TargetArmLength = 1100.f;
 	SpringArm->SocketOffset = FVector(0, 0, 200.f);
 
 	Camera->SetRelativeRotation(FRotator(-10, 0, 0));

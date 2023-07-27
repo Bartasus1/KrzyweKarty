@@ -63,7 +63,7 @@ bool AZakon_Paladyn::CanBeAttacked(EAttackType AttackType)
 	return Super::CanBeAttacked(AttackType);
 }
 
-TArray<FDirection> AZakon_Paladyn::GetAffectedTiles(int32 Index)
+TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(int32 Index)
 {
 	switch (Index)
 	{
@@ -86,6 +86,10 @@ TArray<FDirection> AZakon_Paladyn::GetAffectedTiles(int32 Index)
 			{1, -1},
 			{1, 1}
 		};
+		/*
+			# #
+			 O
+		 */
 	default:
 		return {};
 	}

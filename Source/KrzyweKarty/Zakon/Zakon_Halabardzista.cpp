@@ -45,7 +45,7 @@ int32 AZakon_Halabardzista::GetStrengthForAttack(AKKCharacter* TargetCharacter)
 	return Super::GetStrengthForAttack(TargetCharacter);
 }
 
-TArray<FDirection> AZakon_Halabardzista::GetAffectedTiles(int32 Index)
+TArray<FDirection> AZakon_Halabardzista::GetAffectedTiles_Implementation(int32 Index)
 {
 	return {
 		{1, 0},

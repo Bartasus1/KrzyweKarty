@@ -86,18 +86,23 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void HighlightMoveTiles();
 
+	UFUNCTION(BlueprintCallable)
 	TArray<FDirection> RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection);
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter);
-	
-	virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject); 
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
+
+	UFUNCTION(BlueprintCallable)
 	virtual void ShowActiveAbilityState(bool ReverseState = false);
 	
-
-	virtual bool CanUseActiveAbility(int32 Index, UKKDamage* DamageType);
+	UFUNCTION(BlueprintCallable)
+	virtual bool CanUseActiveAbility(int32 Index);
+	UFUNCTION(BlueprintCallable)
 	virtual void ConsumeActiveAbilityCost(int32 Index);
 
 	//protected:
@@ -169,11 +174,11 @@ public:
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	{ CharacterStats.Defence += FMath::Clamp(InDefence, 0, GetDefaultDefence() - GetDefence()); }
 
 	FORCEINLINE int32 GetActiveAbilityCost(int32 Index) const
-	{ check(&CharacterDataAsset->ActiveAbilities[Index]) return CharacterDataAsset->ActiveAbilities[Index].ManaCost; }
+	{ check(&CharacterDataAsset->ActiveAbilities[Index]) return CharacterDataAsset->ActiveAbilities[Index].AbilityCost; }
 	FORCEINLINE int32 GetFirstAbilityManaCost() const
-	{ check(&CharacterDataAsset->ActiveAbilities[0]) return CharacterDataAsset->ActiveAbilities[0].ManaCost; }
+	{ check(&CharacterDataAsset->ActiveAbilities[0]) return CharacterDataAsset->ActiveAbilities[0].AbilityCost; }
 	FORCEINLINE int32 GetSecondAbilityManaCost() const
-	{ check(&CharacterDataAsset->ActiveAbilities[1]) return CharacterDataAsset->ActiveAbilities[1].ManaCost; }
+	{ check(&CharacterDataAsset->ActiveAbilities[1]) return CharacterDataAsset->ActiveAbilities[1].AbilityCost; }
 
 	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetFirstAbilityManaCost()); }
 	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetSecondAbilityManaCost()); }
@@ -184,6 +189,10 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE TSubclassOf<AAbilityExecutor> GetExecutorForAbility(int32 Index) const
+	{ check(&CharacterDataAsset->ActiveAbilities[Index]) return CharacterDataAsset->ActiveAbilities[Index].AbilityExecutorClass; }
 
 
 };

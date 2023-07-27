@@ -123,14 +123,12 @@ void AKKCharacter::HighlightMoveTiles()
 
 TArray<FDirection> AKKCharacter::RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection)
 {
-	TArray<FDirection> OutDirections;
-
-	for(FDirection InDirection : Directions)
+	for(FDirection& InDirection : Directions)
 	{
-		OutDirections.Add(InDirection.Rotate(RotationDirection));
+		InDirection = InDirection.Rotate(RotationDirection);
 	}
 
-	return OutDirections;
+	return Directions;
 }
 
 void AKKCharacter::OnConstruction(const FTransform& Transform)
@@ -174,7 +172,7 @@ void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterf
 {
 	UKKDamage* DamageType = UActiveAbilityDamage::StaticClass()->GetDefaultObject<UActiveAbilityDamage>();
 	
-	if(CanUseActiveAbility(Index, DamageType))
+	if(CanUseActiveAbility(Index))
 	{
 		ActiveAbility_Internal(Index, SelectableObject);
 		ConsumeActiveAbilityCost(Index);
@@ -189,7 +187,7 @@ void AKKCharacter::ShowActiveAbilityState(bool ReverseState)
 {
 }
 
-bool AKKCharacter::CanUseActiveAbility(int32 Index, UKKDamage* DamageType)
+bool AKKCharacter::CanUseActiveAbility(int32 Index)
 {
 	return GetMana() >= GetActiveAbilityCost(Index);
 }

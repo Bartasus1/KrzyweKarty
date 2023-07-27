@@ -45,6 +45,11 @@ struct FDirection
 {
 	GENERATED_BODY()
 
+	FDirection(): X(0), Y(0) {}
+	FDirection(int32 InX, int32 InY): X(InX), Y(InY) {}
+	FDirection(const FDirection &Other): X(Other.X), Y(Other.Y) {}
+	
+
 	UPROPERTY(BlueprintReadWrite)
 	int32 X; // vertical
 

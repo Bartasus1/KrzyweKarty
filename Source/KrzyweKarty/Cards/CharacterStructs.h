@@ -1,9 +1,8 @@
 ﻿#pragma once
-#include "Engine/DataTable.h"
-#include "EnhancedInput/Public/InputMappingContext.h"
-
+#include "AbilityExecutor.h"
 #include "CharacterStructs.generated.h"
 
+class AAbilityExecutor;
 USTRUCT(BlueprintType)
 struct FCharacterStats
 {
@@ -37,10 +36,13 @@ struct FAbilityDescription
 	FText AbilityDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ManaCost;
+	int32 AbilityCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* AbilityImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AAbilityExecutor> AbilityExecutorClass = AAbilityExecutor::StaticClass();
 	
 };
 

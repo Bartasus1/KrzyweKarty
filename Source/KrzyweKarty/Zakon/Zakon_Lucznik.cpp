@@ -44,7 +44,7 @@ bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 // }
 
 
-TArray<FDirection> AZakon_Lucznik::GetAffectedTiles(int32 Index)
+TArray<FDirection> AZakon_Lucznik::GetAffectedTiles_Implementation(int32 Index)
 {
 	return {
 		{2, -1},

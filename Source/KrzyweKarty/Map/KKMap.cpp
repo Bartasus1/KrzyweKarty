@@ -16,7 +16,7 @@ FDirection FDirection::Rotate(const ERotationDirection Rotation) const
 	case ERD_Backward:
 		return {-X , -Y};
 	case ERD_Left:
-		return {-Y , X};
+		return {-Y , -X};
 	default:
 		return *this;
 	}
