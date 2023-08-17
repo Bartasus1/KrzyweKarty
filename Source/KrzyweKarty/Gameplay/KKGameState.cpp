@@ -4,7 +4,8 @@
 #include "KKGameState.h"
 #include "Net/UnrealNetwork.h"
 
-TArray<FText>& AKKGameState::GetActionLogs()
+
+TArray<FLogStruct>& AKKGameState::GetActionLogs()
 {
 	return ActionLogs;
 }
@@ -21,7 +22,7 @@ void AKKGameState::OnRep_TurnChanged()
 
 void AKKGameState::AddActionLog_Implementation(const FText& NewAction)
 {
-	ActionLogs.Add(NewAction);
+	ActionLogs.Add({NewAction, true});
 	OnRep_ActionLogs();
 }
 

@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "AbilityExecutor.h"
+#include "NativeGameplayTags.h"
+#include "KrzyweKarty/Components/AbilityHelperComponent.h"
 #include "CharacterStructs.generated.h"
 
 class AAbilityExecutor;
@@ -40,10 +41,6 @@ struct FAbilityDescription
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* AbilityImage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<AAbilityExecutor> AbilityExecutorClass = AAbilityExecutor::StaticClass();
-	
 };
 
 UENUM()
@@ -98,13 +95,10 @@ public:
 	{
 		
 	}
-
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TEnumAsByte<EAttackType> AttackType = EAT_DefaultAttack;
 };
-
-
 
 
 UCLASS(BlueprintType)

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CharacterStructs.h"
 #include "Engine/DataAsset.h"
+#include "KrzyweKarty/Abilities/CharacterAttributeSet.h"
 #include "CharacterDataAsset.generated.h"
  
 

@@ -65,12 +65,14 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	TArray<TEnumAsByte<EMovementType>> CharacterActions;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCharacterAttributeSet* CharacterAttributes;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
-	
+
+	// Interaction with the Map
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<int32> GetPossibleSpawnTiles();
 	
@@ -92,7 +94,11 @@ protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
+	// Actions
 	virtual bool DefaultAttack(AKKCharacter* TargetCharacter);
+
+	UFUNCTION(BlueprintCallable)
+	void TryUseActiveAbility(int32 Index);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
@@ -183,18 +189,18 @@ public:
 	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetFirstAbilityManaCost()); }
 	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetSecondAbilityManaCost()); }
 
-
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }
 
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE TSubclassOf<AAbilityExecutor> GetExecutorForAbility(int32 Index) const
-	{ check(&CharacterDataAsset->ActiveAbilities[Index]) return CharacterDataAsset->ActiveAbilities[Index].AbilityExecutorClass; }
+	
+
 
 
 };
+
+
 
 

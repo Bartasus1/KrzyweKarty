@@ -8,6 +8,19 @@
 
 class AKKMap;
 
+USTRUCT(BlueprintType)
+struct FLogStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	FText LogText;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsSentByServer = true;
+	
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActionLogAdded);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTurnChanged);
 
@@ -18,7 +31,7 @@ class KRZYWEKARTY_API AKKGameState : public AGameStateBase
 public:
 
 	UPROPERTY(ReplicatedUsing="OnRep_ActionLogs", Transient)
-	TArray<FText> ActionLogs;
+	TArray<FLogStruct> ActionLogs;
 	
 	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadOnly)
 	bool bFirstPlayerTurn = false;
@@ -40,11 +53,11 @@ public:
 	UFUNCTION()
 	void OnRep_TurnChanged();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void AddActionLog(const FText& NewAction);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FText>& GetActionLogs();
+	TArray<FLogStruct>& GetActionLogs();
 
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

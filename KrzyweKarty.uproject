@@ -10,7 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"UMG"
+				"UMG",
+				"GameplayAbilities",
+				"DeveloperSettings"
 			]
 		}
 	],
@@ -26,6 +28,10 @@
 		},
 		{
 			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
 			"Enabled": true
 		}
 	]

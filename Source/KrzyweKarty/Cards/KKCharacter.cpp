@@ -4,6 +4,7 @@
 #include "KKCharacter.h"
 #include "Components/TextRenderComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
@@ -140,12 +141,17 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 	if(CharacterDataAsset != nullptr)
 	{
 		CharacterStats = CharacterDataAsset->CharacterStats;
-
 		TextRenderName->SetText(CharacterDataAsset->CharacterName);
 		
 		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
 		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
 
+
+		CharacterAttributes->InitHealth(CharacterStats.Health);
+		CharacterAttributes->InitDefence(CharacterStats.Defence);
+		CharacterAttributes->InitMana(CharacterStats.Mana);
+		CharacterAttributes->InitStrength(CharacterStats.Strength);
+		
 		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
 		{
 			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
@@ -167,6 +173,13 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	return true;
 }
 
+void AKKCharacter::TryUseActiveAbility(int32 Index)
+{
+	if(CanUseActiveAbility(Index))
+	{
+		
+	}
+}
 
 void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
 {
