@@ -3,3 +3,4 @@
 
 #include "CharacterHelpersSettings.h"
 
+static UCharacterHelpersSettings* DefaultInstance = nullptr;

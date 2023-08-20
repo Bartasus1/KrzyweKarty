@@ -11,9 +11,9 @@ UDamageModifierCalculation::UDamageModifierCalculation()
 	TargetDefence.bSnapshot = true;
 
 	SourceStrength.AttributeToCapture = UCharacterAttributeSet::GetStrengthAttribute();
-	SourceStrength.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	SourceStrength.AttributeSource = EGameplayEffectAttributeCaptureSource::Source;
 	SourceStrength.bSnapshot = true;
-
+	
 	RelevantAttributesToCapture.Add(TargetDefence);
 	RelevantAttributesToCapture.Add(SourceStrength);
 }
@@ -26,12 +26,13 @@ float UDamageModifierCalculation::CalculateBaseMagnitude_Implementation(const FG
 	FAggregatorEvaluateParameters EvaluationParameters;
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
-
+	
 	float Defence = 0.f;
-	GetCapturedAttributeMagnitude(TargetDefence, Spec, EvaluationParameters, Defence);
+    GetCapturedAttributeMagnitude(TargetDefence, Spec, EvaluationParameters, Defence);
 
-	float Damage = 0.f;
-	GetCapturedAttributeMagnitude(SourceStrength, Spec, EvaluationParameters, Damage);
+    float Damage = 0.f;
+    GetCapturedAttributeMagnitude(SourceStrength, Spec, EvaluationParameters, Damage);
 
-	return Damage - Defence;
+    return Damage - Defence;
+
 }

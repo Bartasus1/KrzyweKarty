@@ -21,8 +21,9 @@ public:
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 
 private:
-
+	UPROPERTY()
 	FGameplayEffectAttributeCaptureDefinition SourceStrength;
 
+	UPROPERTY()
 	FGameplayEffectAttributeCaptureDefinition TargetDefence;
 };

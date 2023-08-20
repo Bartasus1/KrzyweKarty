@@ -11,7 +11,7 @@ bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 		SetStrength(GetStrength() + 2);
 		if(Super::DefaultAttack(TargetCharacter))
 		{
-			SetStrength(GetDefaultStrength());
+			//SetStrength(GetDefaultStrength());
 			SecondAbilityInUse = false;
 			return true;
 		}
@@ -20,7 +20,7 @@ bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 	
 	if(Super::DefaultAttack(TargetCharacter))
 	{
-		IncreaseHealth(2);
+		//IncreaseHealth(2);
 		return true;
 	}
 

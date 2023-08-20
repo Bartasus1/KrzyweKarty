@@ -17,6 +17,20 @@ class KRZYWEKARTY_API UCharacterHelpersSettings : public UDeveloperSettings
 
 public:
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite)
-	TSoftClassPtr<UGameplayEffect> AttackGameplayEffect;
+	static const UCharacterHelpersSettings* Get()
+	{
+		return GetDefault<UCharacterHelpersSettings>();
+	}
+
+	
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Character Visuals")
+	TSoftObjectPtr<UStaticMesh> PlatformMesh;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Character Visuals")
+	TSoftObjectPtr<UMaterial> TextRenderMaterial;
+	
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Gameplay Effects")
+	TSubclassOf<UGameplayEffect> AttackGameplayEffect;
+	
+	
 };

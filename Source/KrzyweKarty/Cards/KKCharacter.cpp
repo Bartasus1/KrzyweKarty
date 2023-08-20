@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
 #include "KKCharacter.h"
+#include "AbilitySystemComponent.h"
 #include "Components/TextRenderComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
@@ -12,6 +12,7 @@
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Interfaces/BaseInterface.h"
 #include "KrzyweKarty/Map/KKTile.h"
+#include "KrzyweKarty/CharacterHelpersSettings.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
@@ -29,7 +30,9 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetupAttachment(Platform);
 	TextRenderName->SetupAttachment(Platform);
 
-	
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->ReplicationMode = EGameplayEffectReplicationMode::Mixed;
 
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
@@ -37,21 +40,21 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 	CharacterMesh->SetCastShadow(false);
 
+	TextRenderName->SetTextMaterial(UCharacterHelpersSettings::Get()->TextRenderMaterial.LoadSynchronous());
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-	
-	ConstructorHelpers::FObjectFinder<UStaticMesh> PlatformMesh(TEXT("/Game/Map/Meshes/Platform"));
-	ConstructorHelpers::FObjectFinder<UMaterial> TextRenderMaterial (TEXT("Material'/Game/Cards/Materials/M_CharacterNameMaterial.M_CharacterNameMaterial'"));
-	if(PlatformMesh.Succeeded() && TextRenderMaterial.Succeeded())
-	{
-		Platform->SetStaticMesh(PlatformMesh.Object);
-		Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-		Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 
-		TextRenderName->SetTextMaterial(TextRenderMaterial.Object);
-	}
+	
+	Platform->SetStaticMesh(UCharacterHelpersSettings::Get()->PlatformMesh.LoadSynchronous());
+	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
+}
+
+UAbilitySystemComponent* AKKCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 void AKKCharacter::CharacterDied_Implementation()
@@ -138,6 +141,9 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 	TextRenderName->SetWorldRotation(FRotator(0.f)); // rotation is handled in text render material
 
+	TextRenderName->SetTextMaterial(UCharacterHelpersSettings::Get()->TextRenderMaterial.LoadSynchronous());
+	Platform->SetStaticMesh(UCharacterHelpersSettings::Get()->PlatformMesh.LoadSynchronous());
+	
 	if(CharacterDataAsset != nullptr)
 	{
 		CharacterStats = CharacterDataAsset->CharacterStats;
@@ -146,11 +152,21 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
 		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
 
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
+		if(!CharacterAttributes)
+		{
+			//CharacterAttributes = const_cast<UCharacterAttributeSet*>(AbilitySystemComponent->AddSet<UCharacterAttributeSet>());
+			CharacterAttributes = NewObject<UCharacterAttributeSet>(this);
+			AbilitySystemComponent->AddSpawnedAttribute(CharacterAttributes);
+		}
+		
 		CharacterAttributes->InitHealth(CharacterStats.Health);
 		CharacterAttributes->InitDefence(CharacterStats.Defence);
 		CharacterAttributes->InitMana(CharacterStats.Mana);
 		CharacterAttributes->InitStrength(CharacterStats.Strength);
+
+		AbilitySystemComponent->ForceReplication();
 		
 		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
 		{
@@ -166,8 +182,10 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !HasAuthority())
 		return false;
 	
-	DealDamage(TargetCharacter, GetStrengthForAttack(TargetCharacter));
-
+	
+	UGameplayEffect* GameplayEffect = UCharacterHelpersSettings::Get()->AttackGameplayEffect->GetDefaultObject<UGameplayEffect>();
+	AbilitySystemComponent->ApplyGameplayEffectToTarget(GameplayEffect, TargetCharacter->GetAbilitySystemComponent());
+	
 	PlayAnimMontage(CharacterDataAsset->AttackMontage);
 	
 	return true;
@@ -322,6 +340,7 @@ AKKMap* AKKCharacter::GetMap() const
 void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
 
 }
 
