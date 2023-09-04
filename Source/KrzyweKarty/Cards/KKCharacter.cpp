@@ -13,6 +13,9 @@
 #include "KrzyweKarty/Interfaces/BaseInterface.h"
 #include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/CharacterHelpersSettings.h"
+#include "Core/Public/Containers/Array.h"
+#include "Kismet/GameplayStatics.h"
+#include "Voronoi/Voronoi.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
@@ -39,15 +42,12 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CharacterMesh->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 	CharacterMesh->SetCastShadow(false);
-
-	TextRenderName->SetTextMaterial(UCharacterHelpersSettings::Get()->TextRenderMaterial.LoadSynchronous());
+	
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-
 	
-	Platform->SetStaticMesh(UCharacterHelpersSettings::Get()->PlatformMesh.LoadSynchronous());
 	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 }
@@ -154,7 +154,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-		if(!CharacterAttributes)
+		if(CharacterAttributes == nullptr)
 		{
 			//CharacterAttributes = const_cast<UCharacterAttributeSet*>(AbilitySystemComponent->AddSet<UCharacterAttributeSet>());
 			CharacterAttributes = NewObject<UCharacterAttributeSet>(this);
@@ -178,17 +178,25 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-
-	if (!DefaultAttackConditions(TargetCharacter, EAT_DefaultAttack) && !HasAuthority())
+	if (!DefaultAttackConditions(TargetCharacter) && !HasAuthority())
 		return false;
 	
+	UGameplayEffect* GameplayEffect = UCharacterHelpersSettings::Get()->AttackGameplayEffect.GetDefaultObject();
+	FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectToTarget(GameplayEffect, TargetCharacter->GetAbilitySystemComponent());
 	
-	UGameplayEffect* GameplayEffect = UCharacterHelpersSettings::Get()->AttackGameplayEffect->GetDefaultObject<UGameplayEffect>();
-	AbilitySystemComponent->ApplyGameplayEffectToTarget(GameplayEffect, TargetCharacter->GetAbilitySystemComponent());
+	const bool bSuccessfulAttack = EffectHandle.WasSuccessfullyApplied();
 	
-	PlayAnimMontage(CharacterDataAsset->AttackMontage);
+	if(bSuccessfulAttack)
+	{
+		PlayAnimMontage(CharacterDataAsset->AttackMontage);
+		
+		if(TargetCharacter->GetHealth() <= 0.f)
+		{
+			KillCharacter(TargetCharacter);
+		}
+	}
 	
-	return true;
+	return bSuccessfulAttack;
 }
 
 void AKKCharacter::TryUseActiveAbility(int32 Index)
@@ -201,8 +209,6 @@ void AKKCharacter::TryUseActiveAbility(int32 Index)
 
 void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
 {
-	UKKDamage* DamageType = UActiveAbilityDamage::StaticClass()->GetDefaultObject<UActiveAbilityDamage>();
-	
 	if(CanUseActiveAbility(Index))
 	{
 		ActiveAbility_Internal(Index, SelectableObject);
@@ -253,10 +259,13 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 {
 	if(HasAuthority())
 	{
-		const int32 NewHealth = TargetCharacter->GetHealth() - (Damage - TargetCharacter->GetDefence());
-	
-		TargetCharacter->SetHealth(NewHealth);
-		TargetCharacter->DecreaseDefence();
+		FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+		ContextHandle.AddSourceObject(this);
+		
+		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(UCharacterHelpersSettings::Get()->AttackGameplayEffect, 1, ContextHandle);
+		SpecHandle.Data.Get()->SetByCallerNameMagnitudes.Add("Damage", Damage);
+
+		AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetCharacter->AbilitySystemComponent);
 
 		if (TargetCharacter->GetHealth() <= 0)
 		{
@@ -311,9 +320,9 @@ bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
 	return (InLineX || InLineY);
 }
 
-bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
+bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter)
 {
-	if(MinAttackConditions(TargetCharacter, AttackType))
+	if(MinAttackConditions(TargetCharacter))
 	{
 		if(GetDistanceTo(TargetCharacter) <= CharacterStats.MaxAttackRange && IsInLineWith(TargetCharacter))
 			return true;
@@ -322,12 +331,12 @@ bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter, EAttac
 	return false;
 }
 
-bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter, EAttackType AttackType)
+bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter)
 {
 	if(TargetCharacter == nullptr || TargetCharacter == this || !IsCharacterOnMap())
 		return false;
 	
-	return (TargetCharacter->CanBeAttacked(AttackType) && !IsInTheSameTeam(TargetCharacter));
+	return (!IsInTheSameTeam(TargetCharacter));
 }
 
 AKKMap* AKKCharacter::GetMap() const

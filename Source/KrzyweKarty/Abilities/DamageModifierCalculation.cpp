@@ -30,9 +30,12 @@ float UDamageModifierCalculation::CalculateBaseMagnitude_Implementation(const FG
 	float Defence = 0.f;
     GetCapturedAttributeMagnitude(TargetDefence, Spec, EvaluationParameters, Defence);
 
-    float Damage = 0.f;
-    GetCapturedAttributeMagnitude(SourceStrength, Spec, EvaluationParameters, Damage);
-
+    float Damage = Spec.GetSetByCallerMagnitude("Damage", false, 0.f);
+	if(Damage == 0.f)
+	{
+		GetCapturedAttributeMagnitude(SourceStrength, Spec, EvaluationParameters, Damage);
+	}
+	
     return Damage - Defence;
 
 }

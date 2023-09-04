@@ -62,7 +62,7 @@ enum EMovementType
 UENUM()
 enum EAttackResult
 {
-	AttackDenied, //No Mana
+	AttackDenied, //No attack conditions met
 	AttackBlocked, //Blocked by another character 
 	AttackConfirmed // Successful attack
 };
@@ -82,47 +82,3 @@ struct FAttackResult
 	FText AttackResultText;
 	
 };
-
-UCLASS(BlueprintType)
-class UKKDamage : public UObject
-{
-	GENERATED_BODY()
-
-public:
-
-	UKKDamage() {}
-	UKKDamage(EAttackType InAttackType) : AttackType(InAttackType)
-	{
-		
-	}
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EAttackType> AttackType = EAT_DefaultAttack;
-};
-
-
-UCLASS(BlueprintType)
-class UDefaultAttackDamage : public UKKDamage
-{
-	GENERATED_BODY()
-
-public:
-	UDefaultAttackDamage() : UKKDamage(EAT_DefaultAttack)
-	{
-		
-	}
-};
-
-UCLASS(BlueprintType)
-class UActiveAbilityDamage : public UKKDamage
-{
-	GENERATED_BODY()
-
-public:
-	UActiveAbilityDamage() : UKKDamage(EAT_ActiveAbility)
-	{
-		
-	}
-};
-
-

@@ -2,8 +2,6 @@
 
 
 #include "Zakon_Lucznik.h"
-
-#include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
 bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)

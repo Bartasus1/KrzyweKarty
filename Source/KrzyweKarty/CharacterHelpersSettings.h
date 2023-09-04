@@ -16,12 +16,6 @@ class KRZYWEKARTY_API UCharacterHelpersSettings : public UDeveloperSettings
 	GENERATED_BODY()
 
 public:
-
-	static const UCharacterHelpersSettings* Get()
-	{
-		return GetDefault<UCharacterHelpersSettings>();
-	}
-
 	
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Character Visuals")
 	TSoftObjectPtr<UStaticMesh> PlatformMesh;
@@ -31,6 +25,16 @@ public:
 	
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Gameplay Effects")
 	TSubclassOf<UGameplayEffect> AttackGameplayEffect;
-	
-	
+
+	static const UCharacterHelpersSettings* Get()
+	{
+		if(Instance == nullptr)
+		{
+			Instance = GetDefault<UCharacterHelpersSettings>();
+		}
+		return Instance;
+	}
+private:
+
+	static const inline UCharacterHelpersSettings* Instance = nullptr;
 };
