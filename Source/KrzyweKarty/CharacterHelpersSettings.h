@@ -22,9 +22,6 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Character Visuals")
 	TSoftObjectPtr<UMaterial> TextRenderMaterial;
-	
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Gameplay Effects")
-	TSubclassOf<UGameplayEffect> AttackGameplayEffect;
 
 	static const UCharacterHelpersSettings* Get()
 	{

@@ -3,7 +3,6 @@
 
 
 #include "KKCharacter.h"
-#include "AbilitySystemComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Map/KKMap.h"
@@ -14,8 +13,6 @@
 #include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "Core/Public/Containers/Array.h"
-#include "Kismet/GameplayStatics.h"
-#include "Voronoi/Voronoi.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
@@ -33,10 +30,6 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetupAttachment(Platform);
 	TextRenderName->SetupAttachment(Platform);
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent");
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->ReplicationMode = EGameplayEffectReplicationMode::Mixed;
-
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
 	CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -50,11 +43,6 @@ AKKCharacter::AKKCharacter()
 	
 	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
-}
-
-UAbilitySystemComponent* AKKCharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }
 
 void AKKCharacter::CharacterDied_Implementation()
@@ -151,22 +139,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 		
 		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
 		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
-
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
-		if(CharacterAttributes == nullptr)
-		{
-			//CharacterAttributes = const_cast<UCharacterAttributeSet*>(AbilitySystemComponent->AddSet<UCharacterAttributeSet>());
-			CharacterAttributes = NewObject<UCharacterAttributeSet>(this);
-			AbilitySystemComponent->AddSpawnedAttribute(CharacterAttributes);
-		}
 		
-		CharacterAttributes->InitHealth(CharacterStats.Health);
-		CharacterAttributes->InitDefence(CharacterStats.Defence);
-		CharacterAttributes->InitMana(CharacterStats.Mana);
-		CharacterAttributes->InitStrength(CharacterStats.Strength);
-
-		AbilitySystemComponent->ForceReplication();
 		
 		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
 		{
@@ -181,12 +154,8 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 	if (!DefaultAttackConditions(TargetCharacter) && !HasAuthority())
 		return false;
 	
-	UGameplayEffect* GameplayEffect = UCharacterHelpersSettings::Get()->AttackGameplayEffect.GetDefaultObject();
-	FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectToTarget(GameplayEffect, TargetCharacter->GetAbilitySystemComponent());
-	
-	const bool bSuccessfulAttack = EffectHandle.WasSuccessfullyApplied();
-	
-	if(bSuccessfulAttack)
+
+	if(true)
 	{
 		PlayAnimMontage(CharacterDataAsset->AttackMontage);
 		
@@ -196,7 +165,7 @@ bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 		}
 	}
 	
-	return bSuccessfulAttack;
+	return false;
 }
 
 void AKKCharacter::TryUseActiveAbility(int32 Index)
@@ -259,14 +228,7 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
 {
 	if(HasAuthority())
 	{
-		FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
-		ContextHandle.AddSourceObject(this);
-		
-		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(UCharacterHelpersSettings::Get()->AttackGameplayEffect, 1, ContextHandle);
-		SpecHandle.Data.Get()->SetByCallerNameMagnitudes.Add("Damage", Damage);
-
-		AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), TargetCharacter->AbilitySystemComponent);
-
+		//todo: Deal Damage 
 		if (TargetCharacter->GetHealth() <= 0)
 		{
 			KillCharacter(TargetCharacter);

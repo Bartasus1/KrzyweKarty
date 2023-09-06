@@ -25,7 +25,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 
 UCLASS(Abstract)
-class KRZYWEKARTY_API AKKCharacter : public AActor, public ISelectableInterface, public IAbilitySystemInterface
+class KRZYWEKARTY_API AKKCharacter : public AActor, public ISelectableInterface
 {
 
 private:
@@ -43,12 +43,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UTextRenderComponent* TextRenderName;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UAbilitySystemComponent* AbilitySystemComponent;
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 	///////////////////////////////////////////////////////////////////////////////
 
@@ -72,9 +66,6 @@ public:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	TArray<TEnumAsByte<EMovementType>> CharacterActions;
-
-	UPROPERTY(BlueprintReadOnly)
-	UCharacterAttributeSet* CharacterAttributes;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
@@ -165,22 +156,22 @@ protected:
 	
 
 public:
-	FORCEINLINE FText GetCharacterName() const { check(CharacterDataAsset); return CharacterDataAsset->CharacterName; }
+	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
 	
-	FORCEINLINE int32 GetHealth()	const { return CharacterAttributes->GetHealth(); }
-	FORCEINLINE int32 GetMana()		const { return CharacterAttributes->GetMana(); }
-	FORCEINLINE int32 GetDefence()	const { return CharacterAttributes->GetDefence(); }
-	FORCEINLINE int32 GetStrength() const { return CharacterAttributes->GetStrength(); }
+	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
+	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefence()	const { return CharacterStats.Defence; }
+	FORCEINLINE int32 GetStrength() const { return CharacterStats.Strength; }
 
-	FORCEINLINE int32 GetDefaultHealth()   const { return CharacterAttributes->Health.GetBaseValue(); }
-	FORCEINLINE int32 GetDefaultMana()     const { return CharacterAttributes->Mana.GetBaseValue(); }
-	FORCEINLINE int32 GetDefaultDefence()  const { return CharacterAttributes->Defence.GetBaseValue(); }
-	FORCEINLINE int32 GetDefaultStrength() const { return CharacterAttributes->Strength.GetBaseValue(); }
+	FORCEINLINE int32 GetDefaultHealth()   const { return CharacterDataAsset->CharacterStats.Health; }
+	FORCEINLINE int32 GetDefaultMana()     const { return CharacterDataAsset->CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefaultDefence()  const { return CharacterDataAsset->CharacterStats.Defence; }
+	FORCEINLINE int32 GetDefaultStrength() const { return CharacterDataAsset->CharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth) const	{ CharacterAttributes->SetHealth(NewHealth); }
-	FORCEINLINE void SetMana(int32 NewMana)		const	{ CharacterAttributes->SetMana(NewMana); }
-	FORCEINLINE void SetDefence(int32 NewDefence)	const	{ CharacterAttributes->SetDefence(NewDefence); }
-	FORCEINLINE void SetStrength(int32 NewStrength) const	{ CharacterAttributes->SetStrength(NewStrength); }
+	FORCEINLINE void SetHealth(int32 NewHealth) 	{ CharacterStats.Health		=	FMath::Clamp<int32>(NewHealth, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana		=	FMath::Clamp<int32>(NewMana, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence	=	FMath::Clamp<int32>(NewDefence, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength	=	FMath::Clamp<int32>(NewStrength, 0, GetDefaultHealth()); }
 
 	FORCEINLINE void DecreaseHealth(int32 InHealth = 1)   { SetHealth(GetHealth() - InHealth); }
 	FORCEINLINE void DecreaseMana(int32 InMana = 1)		  { SetMana(GetMana() - InMana); }

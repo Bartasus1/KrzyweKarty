@@ -1,9 +1,6 @@
 ﻿#pragma once
-#include "NativeGameplayTags.h"
-#include "KrzyweKarty/Components/AbilityHelperComponent.h"
 #include "CharacterStructs.generated.h"
 
-class AAbilityExecutor;
 USTRUCT(BlueprintType)
 struct FCharacterStats
 {
