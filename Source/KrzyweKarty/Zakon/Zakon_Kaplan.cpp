@@ -4,15 +4,16 @@
 #include "Zakon_Kaplan.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
-bool AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
+FAttackResultInfo AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (Super::DefaultAttack(TargetCharacter))
+	const FAttackResultInfo AttackResult = Super::DefaultAttack(TargetCharacter);
+	
+	if (AttackResult.AttackResultEnum == EAttackResult::AttackConfirmed)
 	{
 		IncreaseMana(3);
-		return true;
 	}
 
-	return false;
+	return AttackResult;
 }
 
 // bool AZakon_Kaplan::ActiveAbility()

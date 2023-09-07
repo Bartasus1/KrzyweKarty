@@ -79,10 +79,13 @@ void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* 
 {
 	if (Character->IsCharacterOnMap())
 	{
-		if (Character->DefaultAttack(TargetCharacter))
+		const FAttackResultInfo AttackResult = Character->DefaultAttack(TargetCharacter);
+		
+		if (AttackResult.AttackResultEnum == EAttackResult::AttackConfirmed)
 		{
 			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
 		}
+		//else ...
 	}
 }
 
@@ -90,7 +93,7 @@ void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter*
 {
 	if (Character->IsCharacterOnMap())
 	{
-		Character->ActiveAbility(0, TargetCharacter); // find a way to check if ability succeeded
+		//Character->ActiveAbility(0, TargetCharacter); // find a way to check if ability succeeded
 		AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
 		
 	}

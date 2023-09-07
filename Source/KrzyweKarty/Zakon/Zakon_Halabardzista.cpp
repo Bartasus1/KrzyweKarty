@@ -35,14 +35,15 @@
 // 	return true;
 // }
 
-int32 AZakon_Halabardzista::GetStrengthForAttack(AKKCharacter* TargetCharacter)
+
+int32 AZakon_Halabardzista::DefineDamageAmount(AKKCharacter* TargetCharacter)
 {
-	if(GetDistanceTo(TargetCharacter) == 2)
+	switch (GetDistanceTo(TargetCharacter))
 	{
-		return  6;
+		case 1: return GetStrength();
+		case 2: return  6;
+		default: return 0;
 	}
-	
-	return Super::GetStrengthForAttack(TargetCharacter);
 }
 
 TArray<FDirection> AZakon_Halabardzista::GetAffectedTiles_Implementation(int32 Index)

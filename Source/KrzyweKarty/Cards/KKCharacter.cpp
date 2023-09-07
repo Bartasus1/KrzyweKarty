@@ -113,16 +113,6 @@ void AKKCharacter::HighlightMoveTiles()
 	}
 }
 
-TArray<FDirection> AKKCharacter::RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection)
-{
-	for(FDirection& InDirection : Directions)
-	{
-		InDirection = InDirection.Rotate(RotationDirection);
-	}
-
-	return Directions;
-}
-
 void AKKCharacter::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
@@ -149,59 +139,45 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 	}
 }
 
-bool AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
+FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if (!DefaultAttackConditions(TargetCharacter) && !HasAuthority())
-		return false;
+	if(!MinAttackConditions(TargetCharacter))
+	{
+		return FAttackResultInfo(EAttackResult::AttackDenied, FText::FromString("Attack Conditions not satisfied")); // move text later to CharacterHelperSettings
+	}
 	
+	FAttackResultInfo AttackResultInfo;
 
-	if(true)
+	int32 Damage = DefineDamageAmount(TargetCharacter);
+
+	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo);
+
+	if(AttackResultInfo.AttackResultEnum == EAttackResult::AttackConfirmed)
 	{
 		PlayAnimMontage(CharacterDataAsset->AttackMontage);
-		
-		if(TargetCharacter->GetHealth() <= 0.f)
-		{
-			KillCharacter(TargetCharacter);
-		}
 	}
 	
-	return false;
+	return AttackResultInfo;
 }
 
-void AKKCharacter::TryUseActiveAbility(int32 Index)
+int32 AKKCharacter::DefineDamageAmount(AKKCharacter* TargetCharacter)
 {
-	if(CanUseActiveAbility(Index))
-	{
-		
-	}
+	return GetStrength();
 }
 
-void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
+void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo)
 {
-	if(CanUseActiveAbility(Index))
-	{
-		ActiveAbility_Internal(Index, SelectableObject);
-		ConsumeActiveAbilityCost(Index);
-	}
+	DealDamage(this, DamageAmount);
 }
 
-void AKKCharacter::ActiveAbility_Internal(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
-{
-}
-
-void AKKCharacter::ShowActiveAbilityState(bool ReverseState)
-{
-}
-
-bool AKKCharacter::CanUseActiveAbility(int32 Index)
-{
-	return GetMana() >= GetActiveAbilityCost(Index);
-}
-
-void AKKCharacter::ConsumeActiveAbilityCost(int32 Index)
-{
-	DecreaseMana(GetActiveAbilityCost(Index));
-}
+// void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
+// {
+// 	if(CanUseActiveAbility(Index))
+// 	{
+// 		ActiveAbility_Internal(Index, SelectableObject);
+// 		ConsumeActiveAbilityCost(Index);
+// 	}
+// }
 
 void AKKCharacter::PlayAnimMontage_Implementation(UAnimMontage* AnimMontage)
 {
@@ -224,27 +200,19 @@ void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
 	TargetCharacter->Destroy();
 }
 
-void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage)
+void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 {
-	if(HasAuthority())
+	const int32 NewHealth = TargetCharacter->GetHealth() - (Damage - TargetCharacter->GetDefence());
+	
+	TargetCharacter->SetHealth(NewHealth);
+	TargetCharacter->DecreaseDefence();
+
+	if(TargetCharacter->GetHealth() <= 0)
 	{
-		//todo: Deal Damage 
-		if (TargetCharacter->GetHealth() <= 0)
-		{
-			KillCharacter(TargetCharacter);
-		}
+		KillCharacter(TargetCharacter); // Need to debate about it -> should it maybe be placed in ApplyDamageToSelf?
 	}
 }
 
-int32 AKKCharacter::GetStrengthForAttack(AKKCharacter* TargetCharacter)
-{
-	return GetStrength();
-}
-
-bool AKKCharacter::CanBeAttacked(EAttackType AttackType)
-{
-	return true;
-}
 
 int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 {
@@ -272,27 +240,6 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 	return FVector2D::Distance(PositionOne, PositionTwo);
 }
 
-bool AKKCharacter::IsInLineWith(AKKCharacter* TargetCharacter) const
-{
-	int32 TargetTileID = TargetCharacter->OwnedTileID;
-
-	bool InLineX = (OwnedTileID / 4) == (TargetTileID / 4);
-	bool InLineY = (OwnedTileID % 4) == (TargetTileID % 4);
-
-	return (InLineX || InLineY);
-}
-
-bool AKKCharacter::DefaultAttackConditions(AKKCharacter* TargetCharacter)
-{
-	if(MinAttackConditions(TargetCharacter))
-	{
-		if(GetDistanceTo(TargetCharacter) <= CharacterStats.MaxAttackRange && IsInLineWith(TargetCharacter))
-			return true;
-	}
-	
-	return false;
-}
-
 bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter)
 {
 	if(TargetCharacter == nullptr || TargetCharacter == this || !IsCharacterOnMap())
@@ -315,11 +262,6 @@ void AKKCharacter::BeginPlay()
 
 }
 
-void AKKCharacter::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	
-}
 
 void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

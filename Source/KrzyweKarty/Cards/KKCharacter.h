@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemInterface.h"
 #include "CharacterDataAsset.h"
 #include "GameFramework/Actor.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
@@ -15,8 +14,8 @@ enum ERotationDirection : int;
 class AKKTile;
 class AKKMap;
 struct FDirection;
-class AKKPlayerController;
 class UCharacterDataAsset;
+class AKKPlayerController;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
@@ -71,6 +70,8 @@ protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
 
+public:
+///////////////////////////////////////////////////////////////////////	
 	// Interaction with the Map
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<int32> GetPossibleSpawnTiles();
@@ -86,32 +87,27 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void HighlightMoveTiles();
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
-	UFUNCTION(BlueprintCallable)
-	TArray<FDirection> RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection);
-
+protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
-	// Actions
-	virtual bool DefaultAttack(AKKCharacter* TargetCharacter);
+///////////////////////////////////////////////////////////////////////
+	//Attacking Actions
 
-	UFUNCTION(BlueprintCallable)
-	void TryUseActiveAbility(int32 Index);
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ShowActiveAbilityState(bool ReverseState = false);
+	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter);
 	
-	UFUNCTION(BlueprintCallable)
-	virtual bool CanUseActiveAbility(int32 Index);
-	UFUNCTION(BlueprintCallable)
-	virtual void ConsumeActiveAbilityCost(int32 Index);
-
-	//protected:
-	virtual void ActiveAbility_Internal(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject); 
+	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter);
+	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo);
+	
+//////////////////////////////////////////////////////////////////////////////////////////////
+	// Abilities Actions
+	
+	// UFUNCTION(BlueprintCallable)
+	// virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
+	
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;
@@ -122,6 +118,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<AKKTile*> GetAttackTiles();
 
+
+/////////////////////////////////////////////////////////
+	// Networked functions
+	
 	UFUNCTION(NetMulticast, Unreliable)
 	void PlayAnimMontage(UAnimMontage* AnimMontage);
 
@@ -129,31 +129,22 @@ public:
 	void CharacterDied();
 
 protected:
+////////////////////////////////////////////////////////////////	
 	//Subclass Sandbox
 	void KillCharacter(AKKCharacter* TargetCharacter) const;
-	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage);
+	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const;
 
 	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
-	
-	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
-	bool DefaultAttackConditions(AKKCharacter* TargetCharacter);
+
 	bool MinAttackConditions(AKKCharacter* TargetCharacter);
 
-	//virtual void NotifyAttackBegin(EAttackType AttackType);
-	//virtual void NotifyAttackEnd(EAttackType AttackType);
+////////////////////////////////////////////////////////////////
 
 	AKKMap* GetMap() const;
 
-public:
-	virtual int32 GetStrengthForAttack(AKKCharacter* TargetCharacter);
-	virtual bool CanBeAttacked(EAttackType AttackType);
-	
-protected:
+////////////////////////////////////////////////////////////////
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
-
-	
 
 public:
 	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }

@@ -14,20 +14,19 @@
 // 	return true;
 // }
 
-bool AZakon_Rycerz::CanBeAttacked(EAttackType AttackType)
+void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo)
 {
-	const bool CouldBeAttacked = Super::CanBeAttacked(AttackType);
+	ReceivedAttacksCounter++;
 
-	if (CouldBeAttacked)
+	if(ReceivedAttacksCounter >= 3)
 	{
-		AttacksCounter++;
-
-		if (AttacksCounter >= 3)
-		{
-			AttacksCounter = 0;
-			return false;
-		}
+		ReceivedAttacksCounter = 0;
+		
+		AttackResultInfo.AttackResultEnum = EAttackResult::AttackBlocked;
+		AttackResultInfo.AttackResultText = FText::FromString("Knight blocked the attack due to his Passive Ability");
 	}
-
-	return CouldBeAttacked;
+	else
+	{
+		Super::ApplyDamageToSelf(DamageAmount, AttackResultInfo);
+	}
 }

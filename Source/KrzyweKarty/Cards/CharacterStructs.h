@@ -57,7 +57,7 @@ enum EMovementType
 };
 
 UENUM()
-enum EAttackResult
+enum class EAttackResult
 {
 	AttackDenied, //No attack conditions met
 	AttackBlocked, //Blocked by another character 
@@ -65,15 +65,15 @@ enum EAttackResult
 };
 
 USTRUCT(BlueprintType)
-struct FAttackResult
+struct FAttackResultInfo
 {
 	GENERATED_BODY()
 	
-	FAttackResult() {}
-	FAttackResult(EAttackResult InAttackResult, FText Text): AttackResultEnum(InAttackResult), AttackResultText(Text) { }
+	FAttackResultInfo() {}
+	FAttackResultInfo(EAttackResult InAttackResult, FText Text): AttackResultEnum(InAttackResult), AttackResultText(Text) { }
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EAttackResult> AttackResultEnum = AttackConfirmed;
+	EAttackResult AttackResultEnum = EAttackResult::AttackConfirmed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText AttackResultText;

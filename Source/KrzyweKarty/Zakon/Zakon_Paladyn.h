@@ -16,7 +16,6 @@ class KRZYWEKARTY_API AZakon_Paladyn : public AZakon, public IAreaModifierInterf
 	GENERATED_BODY()
 	
 public:
-	virtual bool CanBeAttacked(EAttackType AttackType) override;
-	
+
 	TArray<FDirection> GetAffectedTiles_Implementation(int32 Index) override;
 };
