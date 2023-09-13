@@ -8,7 +8,7 @@ FAttackResultInfo AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	FAttackResultInfo AttackResult = Super::DefaultAttack(TargetCharacter);
 
-	if (AttackResult.AttackResultEnum == EAttackResult::AttackConfirmed)
+	if (AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		AttacksCounter++;
 	}

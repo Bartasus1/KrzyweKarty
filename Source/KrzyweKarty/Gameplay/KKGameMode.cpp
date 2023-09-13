@@ -81,11 +81,14 @@ void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* 
 	{
 		const FAttackResultInfo AttackResult = Character->DefaultAttack(TargetCharacter);
 		
-		if (AttackResult.AttackResultEnum == EAttackResult::AttackConfirmed)
+		if (AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
 		{
 			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
 		}
-		//else ...
+		else
+		{
+			GetGameState<AKKGameState>()->AddActionLog(AttackResult.ErrorMessage);
+		}
 	}
 }
 
@@ -133,7 +136,7 @@ void AKKGameMode::ChangeTurn()
 
 	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
 	{
-		MovementInfo.Character->CharacterActions = {EMP_MovedCharacter, EMP_AttackCharacter};
+		//MovementInfo.Character->CharacterActions = {EMP_MovedCharacter, EMP_AttackCharacter};
 	}
 }
 

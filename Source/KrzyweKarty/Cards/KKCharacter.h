@@ -9,6 +9,7 @@
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KKCharacter.generated.h"
 
+class UAction;
 struct FMapCell;
 enum ERotationDirection : int;
 class AKKTile;
@@ -26,8 +27,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 UCLASS(Abstract)
 class KRZYWEKARTY_API AKKCharacter : public AActor, public ISelectableInterface
 {
-
-private:
 	GENERATED_BODY()
 
 public:
@@ -64,7 +63,7 @@ public:
 	FCharacterDiedDelegate OnCharacterDeath;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	TArray<TEnumAsByte<EMovementType>> CharacterActions;
+	TArray<const UAction*> CharacterActions;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
@@ -135,8 +134,6 @@ protected:
 	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const;
 
 	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
-
-	bool MinAttackConditions(AKKCharacter* TargetCharacter);
 
 ////////////////////////////////////////////////////////////////
 

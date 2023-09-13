@@ -22,8 +22,8 @@ void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Att
 	{
 		ReceivedAttacksCounter = 0;
 		
-		AttackResultInfo.AttackResultEnum = EAttackResult::AttackBlocked;
-		AttackResultInfo.AttackResultText = FText::FromString("Knight blocked the attack due to his Passive Ability");
+		AttackResultInfo.AttackStatus = EAttackResult::AttackBlocked;
+		AttackResultInfo.ErrorMessage = FText::FromString("Knight blocked the attack with his Passive Ability");
 	}
 	else
 	{

@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CharacterStructs.generated.h"
 
+class AKKCharacter;
+
 USTRUCT(BlueprintType)
 struct FCharacterStats
 {
@@ -70,12 +72,46 @@ struct FAttackResultInfo
 	GENERATED_BODY()
 	
 	FAttackResultInfo() {}
-	FAttackResultInfo(EAttackResult InAttackResult, FText Text): AttackResultEnum(InAttackResult), AttackResultText(Text) { }
+	FAttackResultInfo(EAttackResult InAttackResult, FText Text): AttackStatus(InAttackResult), ErrorMessage(Text) { }
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EAttackResult AttackResultEnum = EAttackResult::AttackConfirmed;
+	EAttackResult AttackStatus = EAttackResult::AttackConfirmed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText AttackResultText;
+	FText ErrorMessage;
 	
 };
+
+UENUM(BlueprintType)
+enum EActionType
+{
+	EAT_None,
+	EAT_SummonedCharacter	UMETA(DisplayName="Summoned Character"),
+	EAT_MovedCharacter		UMETA(DisplayName="Moved Character"),
+	EAT_AttackCharacter		UMETA(DisplayName="Attacked Character")
+};
+
+
+
+
+
+// inline void UAttackAction::BeginAction()
+// {
+// 	if(!Character->MinAttackConditions(TargetCharacter))
+// 	{
+// 		return;
+// 	}
+// 	
+// 	FAttackResultInfo AttackResultInfo;
+//
+// 	int32 Damage = Character->DefineDamageAmount(TargetCharacter);
+//
+// 	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo);
+//
+// 	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
+// 	{
+// 		Character->PlayAnimMontage(Character->CharacterDataAsset->AttackMontage);
+// 		bWasActionSuccessful = true;
+// 	}
+// 	
+// }

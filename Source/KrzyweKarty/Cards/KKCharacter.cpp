@@ -141,10 +141,10 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	if(!MinAttackConditions(TargetCharacter))
-	{
-		return FAttackResultInfo(EAttackResult::AttackDenied, FText::FromString("Attack Conditions not satisfied")); // move text later to CharacterHelperSettings
-	}
+	// if(!MinAttackConditions(TargetCharacter))
+	// {
+	// 	return FAttackResultInfo(EAttackResult::AttackDenied, FText::FromString("You cannot attack this character")); // move text later to CharacterHelperSettings
+	// }
 	
 	FAttackResultInfo AttackResultInfo;
 
@@ -152,7 +152,7 @@ FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 
 	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo);
 
-	if(AttackResultInfo.AttackResultEnum == EAttackResult::AttackConfirmed)
+	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		PlayAnimMontage(CharacterDataAsset->AttackMontage);
 	}
@@ -238,14 +238,6 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
 
 	return FVector2D::Distance(PositionOne, PositionTwo);
-}
-
-bool AKKCharacter::MinAttackConditions(AKKCharacter* TargetCharacter)
-{
-	if(TargetCharacter == nullptr || TargetCharacter == this || !IsCharacterOnMap())
-		return false;
-	
-	return (!IsInTheSameTeam(TargetCharacter));
 }
 
 AKKMap* AKKCharacter::GetMap() const

@@ -1,14 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Zakon_Kusznik.h"
-#include "KrzyweKarty/Map/KKMap.h"
 
 FAttackResultInfo AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	FAttackResultInfo AttackResult = Super::DefaultAttack(TargetCharacter);
 
-	if(AttackResult.AttackResultEnum == EAttackResult::AttackConfirmed)
+	if(AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		IncreaseHealth(2);
 	}

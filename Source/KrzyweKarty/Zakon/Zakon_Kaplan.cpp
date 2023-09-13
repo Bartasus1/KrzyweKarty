@@ -8,7 +8,7 @@ FAttackResultInfo AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	const FAttackResultInfo AttackResult = Super::DefaultAttack(TargetCharacter);
 	
-	if (AttackResult.AttackResultEnum == EAttackResult::AttackConfirmed)
+	if (AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		IncreaseMana(3);
 	}
