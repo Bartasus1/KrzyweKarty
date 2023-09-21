@@ -21,6 +21,8 @@ class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnEndDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRoundEndDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 
@@ -61,9 +63,15 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
+
+	UPROPERTY(BlueprintAssignable)
+	FTurnEndDelegate OnTurnEnd;
+	
+	UPROPERTY(BlueprintAssignable)
+	FRoundEndDelegate OnRoundEnd;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	TArray<const UAction*> CharacterActions;
+	TArray<int32> CharacterActions;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
@@ -81,11 +89,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<FDirection> GetPossibleAttackTiles();
 
-	UFUNCTION(BlueprintCallable)
-	virtual void HighlightDefaultAttackTiles();
-	
-	UFUNCTION(BlueprintCallable)
-	virtual void HighlightMoveTiles();
+/////////////////////////////////////////////////////////////
+	// Actions & Rounds
+	int32 GetTopActionWeight();
+
+	UFUNCTION()
+	virtual void OnRoundEnded();
+
+	UFUNCTION()
+	virtual void OnTurnEnded();
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 

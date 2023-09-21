@@ -27,39 +27,34 @@ public:
 
 	virtual bool CanCharacterMakeAction() const;
 	virtual void BeginAction();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ShowActionAffectedTiles() const;
 	
-	virtual int32 GetActionWeight();
-	virtual bool WasActionSuccessful();
+	int32 GetActionWeight() const;
 
 protected:
 	int32 ActionWeight = 0;
-	bool bWasActionSuccessful = false;
 
+	UFUNCTION(BlueprintAuthorityOnly)
 	void AddActionToCharacterList() const;
 	
 	AKKGameState* GetGameState() const;
+	AKKMap* GetMap() const;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
-
 UCLASS(Abstract)
 class UMapAction : public UAction
 {
 	GENERATED_BODY()
-
 public:
 	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
 	int32 DestinationTileID = -1;
 
 	virtual bool CanCharacterMakeAction() const override;
-
-protected:
-	
-	AKKMap* GetMap() const;
-	
 };
-
 //////////////////////////////////////////////////////////////////////////////////
 
 UCLASS()
@@ -73,8 +68,10 @@ public:
 
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
+
+	virtual void ShowActionAffectedTiles() const override;
 };
-/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 UCLASS()
 class UMoveAction : public UMapAction
 {
@@ -86,6 +83,8 @@ public:
 
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
+
+	virtual void ShowActionAffectedTiles() const override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -104,4 +103,6 @@ public:
 
 	virtual void TryBeginAction() override;
 	virtual void BeginAction() override;
+
+	virtual void ShowActionAffectedTiles() const override;
 };

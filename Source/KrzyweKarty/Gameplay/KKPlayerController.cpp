@@ -3,6 +3,8 @@
 
 #include "KKPlayerController.h"
 #include "KKGameMode.h"
+#include "KKGameState.h"
+#include "KrzyweKarty/Cards/Action.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
@@ -14,7 +16,6 @@ AKKPlayerController::AKKPlayerController()
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
-	
 }
 
 void AKKPlayerController::BeginPlay()
@@ -25,7 +26,10 @@ void AKKPlayerController::BeginPlay()
 
 	PlayerCameraManager->ViewPitchMin = -70;
 	PlayerCameraManager->ViewPitchMax = 10;
-	
+
+	CharacterActions.Add(USummonAction::StaticClass(), NewObject<USummonAction>(this, "Summon Action"));
+	CharacterActions.Add(UMoveAction::StaticClass(), NewObject<UMoveAction>(this, "Move Action"));
+	CharacterActions.Add(UAttackAction::StaticClass(), NewObject<UAttackAction>(this, "Attack Action"));
 }
 
 void AKKPlayerController::Tick(float DeltaSeconds)
@@ -37,7 +41,6 @@ void AKKPlayerController::Tick(float DeltaSeconds)
 		ShowTargetStats(TracedCharacter);
 	}
 }
-
 
 void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -66,9 +69,43 @@ FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel
 	return HitResult;
 }
 
-TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable(bool bHigherPriority) const
+TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable(bool bHigherPriority /* = false */) const
 {
 	return CastLineTrace((bHigherPriority ? PriorityTraceChannel : SelectableTraceChannel)).GetActor();
+}
+
+bool AKKPlayerController::SelectCharacter()
+{
+	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
+	{
+		if(TracedCharacter->OwningPlayer == this)
+		{
+			SelectedCharacter = TracedCharacter;
+			ShowCharacterStats(SelectedCharacter);
+
+			for(auto& Action: CharacterActions)
+			{
+				Action.Value->Character = SelectedCharacter;
+			}
+			
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void AKKPlayerController::OnCharacterSelection()
+{
+	if(SelectedCharacter->IsCharacterOnMap())
+	{
+		CharacterActions[UMoveAction::StaticClass()]->ShowActionAffectedTiles();
+		CharacterActions[UAttackAction::StaticClass()]->ShowActionAffectedTiles();
+	}
+	else
+	{
+		CharacterActions[USummonAction::StaticClass()]->ShowActionAffectedTiles();
+	}
 }
 
 

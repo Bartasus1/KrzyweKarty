@@ -3,6 +3,8 @@
 
 
 #include "KKCharacter.h"
+
+#include "Action.h"
 #include "Components/TextRenderComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Map/KKMap.h"
@@ -43,6 +45,8 @@ AKKCharacter::AKKCharacter()
 	
 	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
+
+	OnRoundEnd.AddUniqueDynamic(this, &AKKCharacter::OnRoundEnded);
 }
 
 void AKKCharacter::CharacterDied_Implementation()
@@ -97,20 +101,23 @@ TArray<AKKTile*> AKKCharacter::GetAttackTiles()
 	return GetMap()->CanAttackBase(this, GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), TSP_EnemyCharactersOnly));
 }
 
-void AKKCharacter::HighlightDefaultAttackTiles()
+int32 AKKCharacter::GetTopActionWeight()
 {
-	for(AKKTile* Tile: GetAttackTiles())
+	if(CharacterActions.IsEmpty())
 	{
-		Tile->SetTileColor(Red);
+		return 0;
 	}
+
+	return CharacterActions.Top();
 }
 
-void AKKCharacter::HighlightMoveTiles()
+void AKKCharacter::OnRoundEnded()
 {
-	for(AKKTile* Tile: GetMoveTiles())
-	{
-		Tile->SetTileColor(Yellow);
-	}
+	CharacterActions.Reset();
+}
+
+void AKKCharacter::OnTurnEnded()
+{
 }
 
 void AKKCharacter::OnConstruction(const FTransform& Transform)
@@ -141,11 +148,6 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 
 FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	// if(!MinAttackConditions(TargetCharacter))
-	// {
-	// 	return FAttackResultInfo(EAttackResult::AttackDenied, FText::FromString("You cannot attack this character")); // move text later to CharacterHelperSettings
-	// }
-	
 	FAttackResultInfo AttackResultInfo;
 
 	int32 Damage = DefineDamageAmount(TargetCharacter);

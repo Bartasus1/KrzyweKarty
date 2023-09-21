@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
+#include "KrzyweKarty/Map/KKTile.h"
 
 UAction::UAction()
 {
@@ -21,48 +22,46 @@ void UAction::BeginAction()
 {
 }
 
-int32 UAction::GetActionWeight()
+void UAction::ShowActionAffectedTiles() const
+{
+}
+
+int32 UAction::GetActionWeight() const
 {
 	return ActionWeight;
 }
 
-bool UAction::WasActionSuccessful()
-{
-	return bWasActionSuccessful;
-}
-
 void UAction::AddActionToCharacterList() const
 {
-	Character->CharacterActions.AddUnique(this);
+	Character->CharacterActions.AddUnique(ActionWeight);
 }
 
 bool UAction::CanCharacterMakeAction() const
 {
-	if(Character->CharacterActions.Num() == 0)
-		return true;
-	if(Character->CharacterActions.Num() >= 3)
+	if(Character == nullptr)
+	{
 		return false;
+	}
 	
-	return (Character != nullptr && Character->CharacterActions.Top()->ActionWeight < ActionWeight);
+	return Character->GetTopActionWeight() < ActionWeight;
 }
 
 AKKGameState* UAction::GetGameState() const
 {
 	return GetWorld()->GetGameState<AKKGameState>();
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
+AKKMap* UAction::GetMap() const
+{
+	return GetGameState()->Map;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 bool UMapAction::CanCharacterMakeAction() const
 {
 	return (Super::CanCharacterMakeAction() && GetMap()->GetCharacterAtIndex(DestinationTileID) == nullptr);
 	
 }
-
-AKKMap* UMapAction::GetMap() const
-{
-return GetGameState()->Map;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 USummonAction::USummonAction()
@@ -81,6 +80,14 @@ void USummonAction::BeginAction()
 	AddActionToCharacterList();
 }
 
+void USummonAction::ShowActionAffectedTiles() const
+{
+	for(AKKTile* Tile: GetMap()->GetTilesForSpawn(Character, Character->GetPossibleSpawnTiles()))
+	{
+		Tile->SetTileColor(Blue);
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 UMoveAction::UMoveAction()
@@ -97,6 +104,17 @@ void UMoveAction::BeginAction()
 {
 	GetMap()->MoveCharacter(Character, DestinationTileID);
 	AddActionToCharacterList();
+}
+
+void UMoveAction::ShowActionAffectedTiles() const
+{
+	if(Character->GetTopActionWeight() < ActionWeight)
+	{
+		for(AKKTile* Tile: Character->GetMoveTiles())
+		{
+			Tile->SetTileColor(Yellow);
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,5 +143,16 @@ void UAttackAction::BeginAction()
 	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		AddActionToCharacterList();
+	}
+}
+
+void UAttackAction::ShowActionAffectedTiles() const
+{
+	if(Character->GetTopActionWeight() < ActionWeight)
+	{
+		for(AKKTile* Tile: Character->GetAttackTiles())
+		{
+			Tile->SetTileColor(Red);
+		}
 	}
 }

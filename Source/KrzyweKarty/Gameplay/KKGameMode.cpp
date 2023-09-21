@@ -17,8 +17,7 @@
 AKKGameMode::AKKGameMode()
 {
 	RoundManager = CreateDefaultSubobject<URoundManager>("RoundManager");
-
-	RoundManager->OnRoundEnd.AddUniqueDynamic(this, &AKKGameMode::ChangeTurn);
+	
 
 	GameStateClass = AKKGameState::StaticClass();
 	PlayerControllerClass = AKKPlayerController::StaticClass();
@@ -133,11 +132,7 @@ void AKKGameMode::ChangeTurn()
 	
 	GetGameState<AKKGameState>()->bFirstPlayerTurn = bFirstPlayerTurn;
 	GetGameState<AKKGameState>()->OnRep_TurnChanged();
-
-	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
-	{
-		//MovementInfo.Character->CharacterActions = {EMP_MovedCharacter, EMP_AttackCharacter};
-	}
+	
 }
 
 void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action)
