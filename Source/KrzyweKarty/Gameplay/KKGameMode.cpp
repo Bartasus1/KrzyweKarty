@@ -6,7 +6,6 @@
 #include "KKGameState.h"
 #include "KKPlayer.h"
 #include "KKPlayerController.h"
-#include "RoundManager.h"
 #include "GameFramework/PlayerState.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
@@ -16,9 +15,6 @@
 
 AKKGameMode::AKKGameMode()
 {
-	RoundManager = CreateDefaultSubobject<URoundManager>("RoundManager");
-	
-
 	GameStateClass = AKKGameState::StaticClass();
 	PlayerControllerClass = AKKPlayerController::StaticClass();
 	DefaultPawnClass = AKKPlayer::StaticClass();
@@ -51,53 +47,6 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 	if (Players.Num() == 2)
 	{
 		GetWorldTimerManager().SetTimerForNextTick(this, &AKKGameMode::ChangeTurn);
-	}
-}
-
-void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)
-{
-	TileID = (PlayerID == 1) ? TileID : 19 - TileID;
-
-	if (Map->AddCharacterToMap(Character, TileID))
-	{
-		Character->PlayAnimMontage(Character->CharacterDataAsset->SummonMontage);
-
-		AddActionLog(Character, nullptr, FText::FromString(" has been added to the map"));
-	}
-}
-
-void AKKGameMode::MoveCharacter(AKKCharacter* Character, int32 TileID)
-{
-	if (Map->MoveCharacter(Character, TileID))
-	{
-		AddActionLog(Character, nullptr, FText::FromString("moved"));
-	}
-}
-
-void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
-{
-	if (Character->IsCharacterOnMap())
-	{
-		const FAttackResultInfo AttackResult = Character->DefaultAttack(TargetCharacter);
-		
-		if (AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
-		{
-			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
-		}
-		else
-		{
-			GetGameState<AKKGameState>()->AddActionLog(AttackResult.ErrorMessage);
-		}
-	}
-}
-
-void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
-{
-	if (Character->IsCharacterOnMap())
-	{
-		//Character->ActiveAbility(0, TargetCharacter); // find a way to check if ability succeeded
-		AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
-		
 	}
 }
 

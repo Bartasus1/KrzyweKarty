@@ -138,12 +138,9 @@ void UAttackAction::TryBeginAction()
 
 void UAttackAction::BeginAction()
 {
-	FAttackResultInfo AttackResultInfo = Character->DefaultAttack(TargetCharacter);
-
-	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
-	{
-		AddActionToCharacterList();
-	}
+	Character->DefaultAttack(TargetCharacter);
+	
+	AddActionToCharacterList();
 }
 
 void UAttackAction::ShowActionAffectedTiles() const

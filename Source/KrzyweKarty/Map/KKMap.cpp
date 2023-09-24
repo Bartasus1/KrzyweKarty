@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KKMap.h"
+
+#include "Fraction.h"
 #include "KKTile.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "Net/UnrealNetwork.h"
 
 FDirection FDirection::Rotate(const ERotationDirection Rotation) const
@@ -296,6 +299,29 @@ void AKKMap::BeginPlay()
 	if (HasAuthority())
 	{
 		SetupMap();
+		
+		for(auto& Component : GetComponents())
+		{
+			if(UFractionComponent* FractionComponent = Cast<UFractionComponent>(Component))
+			{
+				AFraction* FractionActor = GetWorld()->SpawnActor<AFraction>(FractionComponent->FractionClass, FractionComponent->GetComponentTransform());
+
+				TArray<AKKCharacter*> SpawnedCharacters = FractionActor->SpawnCharacters();
+
+				AKKCharacter* FractionBase = GetWorld()->SpawnActor<AKKCharacter>(FractionActor->BaseClass, BaseArray[FractionComponent->ID].Tile->GetActorLocation(), FractionComponent->GetComponentRotation() + FRotator(0.f, 90.f, 0.f));
+				AssignCharacterToTile(FractionBase, &BaseArray[FractionComponent->ID]);
+
+				SpawnedCharacters.Add(FractionBase);
+
+				if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+				{
+					for (auto & Character : SpawnedCharacters)
+					{
+						Character->OwningPlayer = GameMode->GetPlayerController(FractionComponent->ID); //todo: Fix client not getting characters
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -380,9 +406,6 @@ FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, FDirection Directi
 
 void AKKMap::SetFractionBase(int32 ID, AKKCharacter* Base)
 {
-	// ID comes in 1-2 range -> make it 0-1
-	ID--;
-
 	AssignCharacterToTile(Base, &BaseArray[ID]);
 }
 

@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {

@@ -5,6 +5,8 @@
 #include "KKCharacter.h"
 
 #include "Action.h"
+#include "Animation/AnimBlueprint.h"
+#include "Animation/AnimInstance.h"
 #include "Components/TextRenderComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "KrzyweKarty/Map/KKMap.h"
@@ -15,6 +17,7 @@
 #include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "Core/Public/Containers/Array.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AKKCharacter::AKKCharacter()
