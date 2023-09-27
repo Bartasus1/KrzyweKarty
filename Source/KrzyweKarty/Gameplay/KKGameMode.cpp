@@ -33,8 +33,7 @@ APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole,
 		Players.Add(KKPlayerController);
 
 		KKPlayerController->PlayerID = Players.Num();
-
-		OnPlayerJoined.Broadcast();
+		GetWorldTimerManager().SetTimerForNextTick(this, &AKKGameMode::SpawnCharacterForPlayer);
 	}
 
 	return PlayerController;
@@ -82,6 +81,14 @@ void AKKGameMode::ChangeTurn()
 	GetGameState<AKKGameState>()->bFirstPlayerTurn = bFirstPlayerTurn;
 	GetGameState<AKKGameState>()->OnRep_TurnChanged();
 	
+}
+
+void AKKGameMode::SpawnCharacterForPlayer()
+{
+	if(Map)
+	{
+		Map->SpawnFraction(Players.Num() - 1, nullptr); //todo: find a way to allow player to choose a fraction in previous level and pass it here
+	}
 }
 
 void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action)

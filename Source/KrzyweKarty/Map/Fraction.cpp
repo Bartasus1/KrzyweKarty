@@ -44,12 +44,17 @@ TArray<AKKCharacter*> AFraction::SpawnCharacters()
 			FRotator SpawnRotation = GetActorRotation();
 
 			SpawnedCharacters.Add(GetWorld()->SpawnActor<AKKCharacter>(CharactersToSpawn[i], SpawnLocation, SpawnRotation));
+			SpawnedCharacters[i]->Direction = (ID == 0) ? 1 : -1;
 		}
 	}
 
 	return SpawnedCharacters;
 }
 
+AKKCharacter* AFraction::SpawnBase() const
+{
+	return GetWorld()->SpawnActor<AKKCharacter>(BaseClass, GetActorLocation(), GetActorRotation() + FRotator(0.f, 90.f, 0.f));
+}
 
 
 void AFraction::OnConstruction(const FTransform& Transform)

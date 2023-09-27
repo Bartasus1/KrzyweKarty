@@ -73,6 +73,8 @@ public:
 
 	void RemoveCharacterFromTile(int32 TileID);
 
+	void SpawnFraction(int32 ID, TSubclassOf<AFraction> FractionClass);
+
 	
 	FMapCell* GetCellAtIndex(int32 TileID);
 	FMapCell* GetCellByDirection(AKKCharacter* Character, FDirection Direction);

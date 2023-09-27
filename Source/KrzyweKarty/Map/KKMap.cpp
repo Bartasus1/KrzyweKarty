@@ -292,6 +292,38 @@ void AKKMap::RemoveCharacterFromTile(int32 TileID)
 	}
 }
 
+void AKKMap::SpawnFraction(int32 ID, TSubclassOf<AFraction> FractionClass)
+{
+	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		TInlineComponentArray<UFractionComponent*, 2> FractionComponents;
+		GetComponents(FractionComponents);
+
+		if(FractionComponents.IsValidIndex(ID))
+		{
+			UFractionComponent* FractionComponent = FractionComponents[ID];
+			if(FractionClass)
+			{
+				FractionComponent->FractionClass = FractionClass;
+			}
+		
+			AFraction* FractionActor = GetWorld()->SpawnActor<AFraction>(FractionComponent->FractionClass, FractionComponent->GetComponentTransform());
+			FractionActor->ID = FractionComponent->ID;
+
+			TArray<AKKCharacter*> SpawnedCharacters = FractionActor->SpawnCharacters();
+			AKKCharacter* FractionBase = FractionActor->SpawnBase();
+		
+			AssignCharacterToTile(FractionBase, &BaseArray[FractionComponent->ID]);
+			SpawnedCharacters.Add(FractionBase);
+
+			for(AKKCharacter* Character : SpawnedCharacters)
+			{
+				Character->OwningPlayer = GameMode->GetPlayerController(FractionComponent->ID);
+			}
+		}
+	}
+}
+
 void AKKMap::BeginPlay()
 {
 	Super::BeginPlay();
@@ -299,29 +331,6 @@ void AKKMap::BeginPlay()
 	if (HasAuthority())
 	{
 		SetupMap();
-		
-		for(auto& Component : GetComponents())
-		{
-			if(UFractionComponent* FractionComponent = Cast<UFractionComponent>(Component))
-			{
-				AFraction* FractionActor = GetWorld()->SpawnActor<AFraction>(FractionComponent->FractionClass, FractionComponent->GetComponentTransform());
-
-				TArray<AKKCharacter*> SpawnedCharacters = FractionActor->SpawnCharacters();
-
-				AKKCharacter* FractionBase = GetWorld()->SpawnActor<AKKCharacter>(FractionActor->BaseClass, BaseArray[FractionComponent->ID].Tile->GetActorLocation(), FractionComponent->GetComponentRotation() + FRotator(0.f, 90.f, 0.f));
-				AssignCharacterToTile(FractionBase, &BaseArray[FractionComponent->ID]);
-
-				SpawnedCharacters.Add(FractionBase);
-
-				if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
-				{
-					for (auto & Character : SpawnedCharacters)
-					{
-						Character->OwningPlayer = GameMode->GetPlayerController(FractionComponent->ID); //todo: Fix client not getting characters
-					}
-				}
-			}
-		}
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Map/KKTile.h"
+#include "KrzyweKarty/Subsystems/RoundManagerSubsystem.h"
 
 UAction::UAction()
 {
@@ -15,6 +16,7 @@ void UAction::TryBeginAction()
 	if(CanCharacterMakeAction())
 	{
 		BeginAction();
+		GetWorld()->GetSubsystem<URoundManagerSubsystem>()->RegisterCharacterInSystem(Character);
 	}
 }
 

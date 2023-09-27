@@ -39,6 +39,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ChangeTurn();
 
+	UFUNCTION()
+	void SpawnCharacterForPlayer();
+
 private:
 	bool bFirstPlayerTurn = true;
 

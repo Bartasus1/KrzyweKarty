@@ -42,8 +42,11 @@ public:
 	TSubclassOf<AKKCharacter> BaseClass;
 
 	TArray<AKKCharacter*> SpawnCharacters();
+	AKKCharacter* SpawnBase() const;
 	
+	int32 ID;
 protected:
+	
 	
 	virtual void OnConstruction(const FTransform& Transform) override;
 
