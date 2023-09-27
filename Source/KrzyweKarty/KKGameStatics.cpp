@@ -2,6 +2,7 @@
 
 
 #include "KKGameStatics.h"
+#include "Cards/KKCharacter.h"
 #include "GameFramework/PlayerState.h"
 #include "Gameplay/KKGameMode.h"
 #include "Gameplay/KKGameState.h"
@@ -30,4 +31,14 @@ void UKKGameStatics::AddActionLog( AKKCharacter* Character, AKKCharacter* Target
 			GameState->AddActionLog(Log);
 		}
 	}
+}
+
+TArray<FDirection> UKKGameStatics::RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection)
+{
+	for(FDirection& InDirection : Directions)
+	{
+		InDirection = InDirection.Rotate(RotationDirection);
+	}
+
+	return Directions;
 }

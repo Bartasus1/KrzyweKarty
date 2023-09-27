@@ -14,8 +14,9 @@ class KRZYWEKARTY_API AZakon_Kusznik : public AZakon
 {
 	GENERATED_BODY()
 public:
-	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
+	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter) override;
 
+	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter) override;
 
 private:
 	bool SecondAbilityInUse = false;

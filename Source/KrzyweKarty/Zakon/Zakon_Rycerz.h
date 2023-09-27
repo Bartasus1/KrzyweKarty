@@ -15,8 +15,8 @@ class KRZYWEKARTY_API AZakon_Rycerz : public AZakon
 	GENERATED_BODY()
 
 protected:
-	virtual bool CanBeAttacked(EAttackType AttackType) override;
+	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo) override;
 
 private:
-	int8 AttacksCounter = 0;
+	int8 ReceivedAttacksCounter = 0;
 };

@@ -4,11 +4,11 @@
 #include "Zakon_Lucznik.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
-bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
+FAttackResultInfo AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
-	const bool SuccessfulAttack = Super::DefaultAttack(TargetCharacter);
+	FAttackResultInfo AttackResult = Super::DefaultAttack(TargetCharacter);
 
-	if (SuccessfulAttack)
+	if (AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		AttacksCounter++;
 	}
@@ -19,7 +19,7 @@ bool AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 		AttacksCounter = 0;
 	}
 
-	return SuccessfulAttack;
+	return AttackResult;
 }
 
 // bool AZakon_Lucznik::ActiveAbility() //Trojstrzal

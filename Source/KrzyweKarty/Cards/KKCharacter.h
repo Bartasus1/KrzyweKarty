@@ -3,32 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemInterface.h"
 #include "CharacterDataAsset.h"
 #include "GameFramework/Actor.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KKCharacter.generated.h"
 
+class UAction;
 struct FMapCell;
 enum ERotationDirection : int;
 class AKKTile;
 class AKKMap;
 struct FDirection;
-class AKKPlayerController;
 class UCharacterDataAsset;
+class AKKPlayerController;
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnEndDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRoundEndDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 
 UCLASS(Abstract)
-class KRZYWEKARTY_API AKKCharacter : public AActor, public ISelectableInterface, public IAbilitySystemInterface
+class KRZYWEKARTY_API AKKCharacter : public AActor, public ISelectableInterface
 {
-
-private:
 	GENERATED_BODY()
 
 public:
@@ -43,12 +43,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UTextRenderComponent* TextRenderName;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UAbilitySystemComponent* AbilitySystemComponent;
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 	///////////////////////////////////////////////////////////////////////////////
 
@@ -69,17 +63,22 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
+
+	UPROPERTY(BlueprintAssignable)
+	FTurnEndDelegate OnTurnEnd;
+	
+	UPROPERTY(BlueprintAssignable)
+	FRoundEndDelegate OnRoundEnd;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	TArray<TEnumAsByte<EMovementType>> CharacterActions;
-
-	UPROPERTY(BlueprintReadOnly)
-	UCharacterAttributeSet* CharacterAttributes;
+	TArray<int32> CharacterActions;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
 
+public:
+///////////////////////////////////////////////////////////////////////	
 	// Interaction with the Map
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<int32> GetPossibleSpawnTiles();
@@ -90,37 +89,36 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<FDirection> GetPossibleAttackTiles();
 
-	UFUNCTION(BlueprintCallable)
-	virtual void HighlightDefaultAttackTiles();
+/////////////////////////////////////////////////////////////
+	// Actions & Rounds
+	int32 GetTopActionWeight();
+
+	UFUNCTION()
+	virtual void OnRoundEnded();
+
+	UFUNCTION()
+	virtual void OnTurnEnded();
 	
-	UFUNCTION(BlueprintCallable)
-	virtual void HighlightMoveTiles();
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
-	UFUNCTION(BlueprintCallable)
-	TArray<FDirection> RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection);
-
+protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:
-	// Actions
-	virtual bool DefaultAttack(AKKCharacter* TargetCharacter);
+///////////////////////////////////////////////////////////////////////
+	//Attacking Actions
 
-	UFUNCTION(BlueprintCallable)
-	void TryUseActiveAbility(int32 Index);
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ShowActiveAbilityState(bool ReverseState = false);
+	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter);
 	
-	UFUNCTION(BlueprintCallable)
-	virtual bool CanUseActiveAbility(int32 Index);
-	UFUNCTION(BlueprintCallable)
-	virtual void ConsumeActiveAbilityCost(int32 Index);
-
-	//protected:
-	virtual void ActiveAbility_Internal(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject); 
+	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter);
+	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo);
+	
+//////////////////////////////////////////////////////////////////////////////////////////////
+	// Abilities Actions
+	
+	// UFUNCTION(BlueprintCallable)
+	// virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
+	
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;
@@ -131,6 +129,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<AKKTile*> GetAttackTiles();
 
+
+/////////////////////////////////////////////////////////
+	// Networked functions
+	
 	UFUNCTION(NetMulticast, Unreliable)
 	void PlayAnimMontage(UAnimMontage* AnimMontage);
 
@@ -138,49 +140,38 @@ public:
 	void CharacterDied();
 
 protected:
+////////////////////////////////////////////////////////////////	
 	//Subclass Sandbox
 	void KillCharacter(AKKCharacter* TargetCharacter) const;
-	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage);
+	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const;
 
 	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
-	
-	bool IsInLineWith(AKKCharacter* TargetCharacter) const;
-	bool DefaultAttackConditions(AKKCharacter* TargetCharacter);
-	bool MinAttackConditions(AKKCharacter* TargetCharacter);
 
-	//virtual void NotifyAttackBegin(EAttackType AttackType);
-	//virtual void NotifyAttackEnd(EAttackType AttackType);
+////////////////////////////////////////////////////////////////
 
 	AKKMap* GetMap() const;
 
-public:
-	virtual int32 GetStrengthForAttack(AKKCharacter* TargetCharacter);
-	virtual bool CanBeAttacked(EAttackType AttackType);
-	
-protected:
+////////////////////////////////////////////////////////////////
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
-	
-
 public:
-	FORCEINLINE FText GetCharacterName() const { check(CharacterDataAsset); return CharacterDataAsset->CharacterName; }
+	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
 	
-	FORCEINLINE int32 GetHealth()	const { return CharacterAttributes->GetHealth(); }
-	FORCEINLINE int32 GetMana()		const { return CharacterAttributes->GetMana(); }
-	FORCEINLINE int32 GetDefence()	const { return CharacterAttributes->GetDefence(); }
-	FORCEINLINE int32 GetStrength() const { return CharacterAttributes->GetStrength(); }
+	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
+	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefence()	const { return CharacterStats.Defence; }
+	FORCEINLINE int32 GetStrength() const { return CharacterStats.Strength; }
 
-	FORCEINLINE int32 GetDefaultHealth()   const { return CharacterAttributes->Health.GetBaseValue(); }
-	FORCEINLINE int32 GetDefaultMana()     const { return CharacterAttributes->Mana.GetBaseValue(); }
-	FORCEINLINE int32 GetDefaultDefence()  const { return CharacterAttributes->Defence.GetBaseValue(); }
-	FORCEINLINE int32 GetDefaultStrength() const { return CharacterAttributes->Strength.GetBaseValue(); }
+	FORCEINLINE int32 GetDefaultHealth()   const { return CharacterDataAsset->CharacterStats.Health; }
+	FORCEINLINE int32 GetDefaultMana()     const { return CharacterDataAsset->CharacterStats.Mana; }
+	FORCEINLINE int32 GetDefaultDefence()  const { return CharacterDataAsset->CharacterStats.Defence; }
+	FORCEINLINE int32 GetDefaultStrength() const { return CharacterDataAsset->CharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth) const	{ CharacterAttributes->SetHealth(NewHealth); }
-	FORCEINLINE void SetMana(int32 NewMana)		const	{ CharacterAttributes->SetMana(NewMana); }
-	FORCEINLINE void SetDefence(int32 NewDefence)	const	{ CharacterAttributes->SetDefence(NewDefence); }
-	FORCEINLINE void SetStrength(int32 NewStrength) const	{ CharacterAttributes->SetStrength(NewStrength); }
+	FORCEINLINE void SetHealth(int32 NewHealth) 	{ CharacterStats.Health		=	FMath::Clamp<int32>(NewHealth, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana		=	FMath::Clamp<int32>(NewMana, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence	=	FMath::Clamp<int32>(NewDefence, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength	=	FMath::Clamp<int32>(NewStrength, 0, GetDefaultHealth()); }
 
 	FORCEINLINE void DecreaseHealth(int32 InHealth = 1)   { SetHealth(GetHealth() - InHealth); }
 	FORCEINLINE void DecreaseMana(int32 InMana = 1)		  { SetMana(GetMana() - InMana); }

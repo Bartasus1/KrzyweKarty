@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Map/KKMap.h"
 #include "KKGameStatics.generated.h"
 
 /**
@@ -20,4 +21,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
+
+	UFUNCTION(BlueprintCallable)
+	static TArray<FDirection> RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection);
 };

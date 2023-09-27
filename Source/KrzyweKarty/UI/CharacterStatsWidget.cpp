@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
@@ -14,17 +15,19 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 		return;
 	}
 	
-
 	if(Character)
+	{
 		Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+	}
 	
 	Character = NewCharacter;
 	CharacterNameText->SetText(Character->GetCharacterName());
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
 
 	if(!IsInViewport())
+	{
 		AddToViewport();
-	
+	}
 }
 
 void UCharacterStatsWidget::NativeConstruct()

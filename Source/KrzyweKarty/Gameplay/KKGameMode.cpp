@@ -6,7 +6,6 @@
 #include "KKGameState.h"
 #include "KKPlayer.h"
 #include "KKPlayerController.h"
-#include "RoundManager.h"
 #include "GameFramework/PlayerState.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
@@ -16,10 +15,6 @@
 
 AKKGameMode::AKKGameMode()
 {
-	RoundManager = CreateDefaultSubobject<URoundManager>("RoundManager");
-
-	RoundManager->OnRoundEnd.AddUniqueDynamic(this, &AKKGameMode::ChangeTurn);
-
 	GameStateClass = AKKGameState::StaticClass();
 	PlayerControllerClass = AKKPlayerController::StaticClass();
 	DefaultPawnClass = AKKPlayer::StaticClass();
@@ -38,8 +33,7 @@ APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole,
 		Players.Add(KKPlayerController);
 
 		KKPlayerController->PlayerID = Players.Num();
-
-		OnPlayerJoined.Broadcast();
+		GetWorldTimerManager().SetTimerForNextTick(this, &AKKGameMode::SpawnCharacterForPlayer);
 	}
 
 	return PlayerController;
@@ -52,47 +46,6 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 	if (Players.Num() == 2)
 	{
 		GetWorldTimerManager().SetTimerForNextTick(this, &AKKGameMode::ChangeTurn);
-	}
-}
-
-void AKKGameMode::AddCharacterToMap(AKKCharacter* Character, int32 TileID, int32 PlayerID)
-{
-	TileID = (PlayerID == 1) ? TileID : 19 - TileID;
-
-	if (Map->AddCharacterToMap(Character, TileID))
-	{
-		Character->PlayAnimMontage(Character->CharacterDataAsset->SummonMontage);
-
-		AddActionLog(Character, nullptr, FText::FromString(" has been added to the map"));
-	}
-}
-
-void AKKGameMode::MoveCharacter(AKKCharacter* Character, int32 TileID)
-{
-	if (Map->MoveCharacter(Character, TileID))
-	{
-		AddActionLog(Character, nullptr, FText::FromString("moved"));
-	}
-}
-
-void AKKGameMode::PerformCharacterAttack(AKKCharacter* Character, AKKCharacter* TargetCharacter)
-{
-	if (Character->IsCharacterOnMap())
-	{
-		if (Character->DefaultAttack(TargetCharacter))
-		{
-			AddActionLog(Character, TargetCharacter, FText::FromString("attacked "));
-		}
-	}
-}
-
-void AKKGameMode::PerformCharacterAbility(AKKCharacter* Character, AKKCharacter* TargetCharacter)
-{
-	if (Character->IsCharacterOnMap())
-	{
-		Character->ActiveAbility(0, TargetCharacter); // find a way to check if ability succeeded
-		AddActionLog(Character, Character, FText::FromString("used ability " + Character->CharacterDataAsset->ActiveAbilities[0].AbilityName.ToString()));
-		
 	}
 }
 
@@ -127,10 +80,14 @@ void AKKGameMode::ChangeTurn()
 	
 	GetGameState<AKKGameState>()->bFirstPlayerTurn = bFirstPlayerTurn;
 	GetGameState<AKKGameState>()->OnRep_TurnChanged();
+	
+}
 
-	for(FMovementInfo MovementInfo : RoundManager->CharactersUsedInRound)
+void AKKGameMode::SpawnCharacterForPlayer()
+{
+	if(Map)
 	{
-		MovementInfo.Character->CharacterActions = {EMP_MovedCharacter, EMP_AttackCharacter};
+		Map->SpawnFraction(Players.Num() - 1, nullptr); //todo: find a way to allow player to choose a fraction in previous level and pass it here
 	}
 }
 

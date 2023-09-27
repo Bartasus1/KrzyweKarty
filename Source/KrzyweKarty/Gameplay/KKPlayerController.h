@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KKPlayerController.generated.h"
 
-
+class UAction;
 class AKKCharacter;
 class AKKTile;
 class ISelectableInterface;
@@ -24,7 +24,7 @@ public:
 	AKKPlayerController();
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	AKKCharacter* SelectedCharacter;
+	AKKCharacter* SelectedCharacter = nullptr;
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
 	int32 PlayerID = 1;
@@ -32,12 +32,15 @@ public:
 	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadOnly)
 	bool bIsMyTurn = true;
 	
-private:
+protected:
 	UFUNCTION(BlueprintCallable)
 	void ShowCharacterStats(AKKCharacter* CardCharacter);
 
 	UFUNCTION(BlueprintCallable)
 	void ShowTargetStats(AKKCharacter* CardCharacter);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<TSubclassOf<UAction>, UAction*> CharacterActions;
 
 public:
 	
@@ -46,6 +49,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TScriptInterface<ISelectableInterface> TraceForSelectable(bool bHigherPriority = false) const;
+
+	UFUNCTION(BlueprintCallable)
+	bool SelectCharacter();
+
+	UFUNCTION(BlueprintCallable)
+	void OnCharacterSelection();
 	
 	UFUNCTION()
 	void OnRep_TurnChanged();

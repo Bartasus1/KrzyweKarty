@@ -14,7 +14,7 @@ class KRZYWEKARTY_API AZakon_Kaplan : public AZakon
 {
 	GENERATED_BODY()
 public:
-	virtual bool DefaultAttack(AKKCharacter* TargetCharacter) override;
+	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter) override;
 	
 
 };

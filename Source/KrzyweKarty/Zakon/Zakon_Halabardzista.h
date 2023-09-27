@@ -19,7 +19,7 @@ private:
 	GENERATED_BODY()
 
 public:
-	virtual int32 GetStrengthForAttack(AKKCharacter* TargetCharacter) override;
+	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter) override;
 	
 
 	TArray<FDirection> GetAffectedTiles_Implementation(int32 Index) override;	

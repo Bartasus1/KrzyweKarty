@@ -1,30 +1,27 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Zakon_Kusznik.h"
-#include "KrzyweKarty/Map/KKMap.h"
 
-bool AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
+FAttackResultInfo AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
+{
+	FAttackResultInfo AttackResult = Super::DefaultAttack(TargetCharacter);
+
+	if(AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
+	{
+		IncreaseHealth(2);
+	}
+	
+	return AttackResult;
+}
+
+int32 AZakon_Kusznik::DefineDamageAmount(AKKCharacter* TargetCharacter)
 {
 	if(SecondAbilityInUse)
 	{
-		SetStrength(GetStrength() + 2);
-		if(Super::DefaultAttack(TargetCharacter))
-		{
-			//SetStrength(GetDefaultStrength());
-			SecondAbilityInUse = false;
-			return true;
-		}
-		return false;
-	}
-	
-	if(Super::DefaultAttack(TargetCharacter))
-	{
-		//IncreaseHealth(2);
-		return true;
+		SecondAbilityInUse = false;
+		return GetStrength() + 2;
 	}
 
-	return false;
+	return GetStrength();
 }
 
 // bool AZakon_Kusznik::ActiveAbility()

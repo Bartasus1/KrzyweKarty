@@ -1,9 +1,8 @@
 ﻿#pragma once
-#include "NativeGameplayTags.h"
-#include "KrzyweKarty/Components/AbilityHelperComponent.h"
 #include "CharacterStructs.generated.h"
 
-class AAbilityExecutor;
+class AKKCharacter;
+
 USTRUCT(BlueprintType)
 struct FCharacterStats
 {
@@ -60,7 +59,7 @@ enum EMovementType
 };
 
 UENUM()
-enum EAttackResult
+enum class EAttackResult
 {
 	AttackDenied, //No attack conditions met
 	AttackBlocked, //Blocked by another character 
@@ -68,17 +67,51 @@ enum EAttackResult
 };
 
 USTRUCT(BlueprintType)
-struct FAttackResult
+struct FAttackResultInfo
 {
 	GENERATED_BODY()
 	
-	FAttackResult() {}
-	FAttackResult(EAttackResult InAttackResult, FText Text): AttackResultEnum(InAttackResult), AttackResultText(Text) { }
+	FAttackResultInfo() {}
+	FAttackResultInfo(EAttackResult InAttackResult, FText Text): AttackStatus(InAttackResult), ErrorMessage(Text) { }
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EAttackResult> AttackResultEnum = AttackConfirmed;
+	EAttackResult AttackStatus = EAttackResult::AttackConfirmed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText AttackResultText;
+	FText ErrorMessage;
 	
 };
+
+UENUM(BlueprintType)
+enum EActionType
+{
+	EAT_None,
+	EAT_SummonedCharacter	UMETA(DisplayName="Summoned Character"),
+	EAT_MovedCharacter		UMETA(DisplayName="Moved Character"),
+	EAT_AttackCharacter		UMETA(DisplayName="Attacked Character")
+};
+
+
+
+
+
+// inline void UAttackAction::BeginAction()
+// {
+// 	if(!Character->MinAttackConditions(TargetCharacter))
+// 	{
+// 		return;
+// 	}
+// 	
+// 	FAttackResultInfo AttackResultInfo;
+//
+// 	int32 Damage = Character->DefineDamageAmount(TargetCharacter);
+//
+// 	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo);
+//
+// 	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
+// 	{
+// 		Character->PlayAnimMontage(Character->CharacterDataAsset->AttackMontage);
+// 		bWasActionSuccessful = true;
+// 	}
+// 	
+// }

@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KKMap.h"
+
+#include "Fraction.h"
 #include "KKTile.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "Net/UnrealNetwork.h"
 
 FDirection FDirection::Rotate(const ERotationDirection Rotation) const
@@ -289,6 +292,38 @@ void AKKMap::RemoveCharacterFromTile(int32 TileID)
 	}
 }
 
+void AKKMap::SpawnFraction(int32 ID, TSubclassOf<AFraction> FractionClass)
+{
+	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		TInlineComponentArray<UFractionComponent*, 2> FractionComponents;
+		GetComponents(FractionComponents);
+
+		if(FractionComponents.IsValidIndex(ID))
+		{
+			UFractionComponent* FractionComponent = FractionComponents[ID];
+			if(FractionClass)
+			{
+				FractionComponent->FractionClass = FractionClass;
+			}
+		
+			AFraction* FractionActor = GetWorld()->SpawnActor<AFraction>(FractionComponent->FractionClass, FractionComponent->GetComponentTransform());
+			FractionActor->ID = FractionComponent->ID;
+
+			TArray<AKKCharacter*> SpawnedCharacters = FractionActor->SpawnCharacters();
+			AKKCharacter* FractionBase = FractionActor->SpawnBase();
+		
+			AssignCharacterToTile(FractionBase, &BaseArray[FractionComponent->ID]);
+			SpawnedCharacters.Add(FractionBase);
+
+			for(AKKCharacter* Character : SpawnedCharacters)
+			{
+				Character->OwningPlayer = GameMode->GetPlayerController(FractionComponent->ID);
+			}
+		}
+	}
+}
+
 void AKKMap::BeginPlay()
 {
 	Super::BeginPlay();
@@ -380,9 +415,6 @@ FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, FDirection Directi
 
 void AKKMap::SetFractionBase(int32 ID, AKKCharacter* Base)
 {
-	// ID comes in 1-2 range -> make it 0-1
-	ID--;
-
 	AssignCharacterToTile(Base, &BaseArray[ID]);
 }
 

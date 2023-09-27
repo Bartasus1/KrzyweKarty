@@ -55,14 +55,6 @@
 // 	}
 // }
 
-bool AZakon_Paladyn::CanBeAttacked(EAttackType AttackType)
-{
-	if(GetHealth() < 15 && (AttackType == EAT_ActiveAbility || AttackType == EAT_PassiveAbility))
-		return false;
-
-	return Super::CanBeAttacked(AttackType);
-}
-
 TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(int32 Index)
 {
 	switch (Index)
