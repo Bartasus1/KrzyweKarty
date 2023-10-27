@@ -4,3 +4,5 @@
 
 #include "CoreMinimal.h"
 
+#define SelectableTraceChannel ECC_GameTraceChannel1
+#define PriorityTraceChannel ECC_GameTraceChannel2

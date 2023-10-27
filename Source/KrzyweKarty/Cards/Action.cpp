@@ -16,6 +16,7 @@ void UAction::TryBeginAction()
 	if(CanCharacterMakeAction())
 	{
 		BeginAction();
+		AddActionToCharacterList();
 		GetWorld()->GetSubsystem<URoundManagerSubsystem>()->RegisterCharacterInSystem(Character);
 	}
 }
@@ -44,6 +45,11 @@ bool UAction::CanCharacterMakeAction() const
 	{
 		return false;
 	}
+
+	if(bRequiresCharacterOnMap && !Character->IsCharacterOnMap())
+	{
+		return false;
+	}
 	
 	return Character->GetTopActionWeight() < ActionWeight;
 }
@@ -58,28 +64,22 @@ AKKMap* UAction::GetMap() const
 	return GetGameState()->Map;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-bool UMapAction::CanCharacterMakeAction() const
-{
-	return (Super::CanCharacterMakeAction() && GetMap()->GetCharacterAtIndex(DestinationTileID) == nullptr);
-	
-}
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 USummonAction::USummonAction()
 {
 	ActionWeight = 1;
+	bRequiresCharacterOnMap = false;
 }
 
 bool USummonAction::CanCharacterMakeAction() const
 {
-	return (Super::CanCharacterMakeAction() && !Character->IsCharacterOnMap());
+	return Super::CanCharacterMakeAction() && GetMap()->GetCharacterAtIndex(DestinationTileID) == nullptr;
 }
 
 void USummonAction::BeginAction()
 {
 	GetMap()->AddCharacterToMap(Character, DestinationTileID);
-	AddActionToCharacterList();
 }
 
 void USummonAction::ShowActionAffectedTiles() const
@@ -95,17 +95,17 @@ void USummonAction::ShowActionAffectedTiles() const
 UMoveAction::UMoveAction()
 {
 	ActionWeight = 2;
+	bRequiresCharacterOnMap = true;
 }
 
 bool UMoveAction::CanCharacterMakeAction() const
 {
-	return (Super::CanCharacterMakeAction() && Character->IsCharacterOnMap());
+	return Super::CanCharacterMakeAction() && GetMap()->GetCharacterAtIndex(DestinationTileID) == nullptr;
 }
 
 void UMoveAction::BeginAction()
 {
 	GetMap()->MoveCharacter(Character, DestinationTileID);
-	AddActionToCharacterList();
 }
 
 void UMoveAction::ShowActionAffectedTiles() const
@@ -123,26 +123,25 @@ void UMoveAction::ShowActionAffectedTiles() const
 UAttackAction::UAttackAction()
 {
 	ActionWeight = 3;
+	bRequiresCharacterOnMap = true;
 }
 
-void UAttackAction::TryBeginAction()
+bool UAttackAction::CanCharacterMakeAction() const
 {
-	if(!CanCharacterMakeAction() || !Character->IsCharacterOnMap() || TargetCharacter == nullptr || TargetCharacter == Character)
+	if(Super::CanCharacterMakeAction() == false && TargetCharacter == nullptr)
 	{
-		return;
+		return false;
 	}
 
-	if(!Character->IsInTheSameTeam(TargetCharacter))
-	{
-		BeginAction();
-	}
+	const bool bAreBothCharactersOnMap = TargetCharacter->IsCharacterOnMap() && Character->IsCharacterOnMap();
+	const bool bIsTargetCharacterValid = TargetCharacter != Character && !Character->IsInTheSameTeam(TargetCharacter);
+	
+	return bIsTargetCharacterValid && bAreBothCharactersOnMap;
 }
 
 void UAttackAction::BeginAction()
 {
 	Character->DefaultAttack(TargetCharacter);
-	
-	AddActionToCharacterList();
 }
 
 void UAttackAction::ShowActionAffectedTiles() const
@@ -154,4 +153,47 @@ void UAttackAction::ShowActionAffectedTiles() const
 			Tile->SetTileColor(Red);
 		}
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+UAbilityAction::UAbilityAction()
+{
+	ActionWeight = 3;
+	bRequiresCharacterOnMap = true;
+}
+
+void UAbilityAction::TryBeginAction()
+{
+	if(CanCharacterMakeAction())
+	{
+		BeginAction();
+	}
+}
+
+bool UAbilityAction::CanCharacterMakeAction() const
+{
+	return Super::CanCharacterMakeAction() && Character->CanUseAbility(Index);
+}
+
+void UAbilityAction::BeginAction()
+{
+	GetCharacterAbilityComponent()->OnAbilityFinished.AddUniqueDynamic(this, &UAbilityAction::OnAbilityFinished);
+	
+	GetCharacterAbilityComponent()->BeginAbility();
+}
+
+void UAbilityAction::OnAbilityFinished()
+{
+	Character->CommitAbilityCost(Index);
+	
+	AddActionToCharacterList();
+	GetWorld()->GetSubsystem<URoundManagerSubsystem>()->RegisterCharacterInSystem(Character);
+
+	GetCharacterAbilityComponent()->OnAbilityFinished.RemoveDynamic(this, &UAbilityAction::OnAbilityFinished);
+}
+
+UCharacterAbilityComponent* UAbilityAction::GetCharacterAbilityComponent() const
+{
+	return Character->GetCharacterAbilityComponent(Index);
 }

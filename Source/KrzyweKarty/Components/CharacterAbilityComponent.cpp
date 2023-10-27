@@ -1,38 +1,56 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AbilityHelperComponent.h"
+#include "CharacterAbilityComponent.h"
 
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
+#include "KrzyweKarty/Gameplay/KKPlayerController.h"
 
 
 // Sets default values for this component's properties
-UAbilityHelperComponent::UAbilityHelperComponent()
+UCharacterAbilityComponent::UCharacterAbilityComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UAbilityHelperComponent::BeginPlay()
+void UCharacterAbilityComponent::BeginAbility_Implementation()
+{
+	OnAbilityStarted.Broadcast();
+}
+
+void UCharacterAbilityComponent::FinishAbility_Implementation(bool bWasCancelled)
+{
+	if(bWasCancelled)
+	{
+		OnAbilityCanceled.Broadcast();
+	}
+	else
+	{
+		OnAbilityFinished.Broadcast();
+	}
+}
+
+void UCharacterAbilityComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	OwnerCharacter = GetOwner<AKKCharacter>();
 }
 
-AKKMap* UAbilityHelperComponent::GetMap()
+AKKMap* UCharacterAbilityComponent::GetMap()
 {
 	return GetWorld()->GetGameState<AKKGameState>()->Map;
 }
 
-AKKGameState* UAbilityHelperComponent::GetGameState()
+AKKGameState* UCharacterAbilityComponent::GetGameState()
 {
 	return GetWorld()->GetGameState<AKKGameState>();
 }
 
-AKKPlayerController* UAbilityHelperComponent::GetPlayerController()
+AKKPlayerController* UCharacterAbilityComponent::GetPlayerController()
 {
 	return OwnerCharacter->OwningPlayer;
 }

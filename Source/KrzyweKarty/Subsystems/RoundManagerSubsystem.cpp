@@ -3,7 +3,12 @@
 
 #include "RoundManagerSubsystem.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
+
+URoundManagerSubsystem::URoundManagerSubsystem()
+{
+}
 
 void URoundManagerSubsystem::RegisterCharacterInSystem(AKKCharacter* Character)
 {
@@ -15,6 +20,8 @@ void URoundManagerSubsystem::RegisterCharacterInSystem(AKKCharacter* Character)
 		CountedMoves = 0;
 		ChangeTurn();
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("CHARACTER REGISTERED"));
 }
 
 void URoundManagerSubsystem::RegisterPlayerInSystem(AKKPlayerController* PlayerController)
@@ -31,8 +38,36 @@ void URoundManagerSubsystem::ChangeTurn()
 
 	for(AKKCharacter* Character : RegisteredCharacters)
 	{
-		Character->CharacterActions.Reset();
+		if(Character != nullptr)
+		{
+			Character->CharacterActions.Reset();
+		}
 	}
 
 	bFirstPlayerTurn = !bFirstPlayerTurn;
+	GetWorld()->GetGameState<AKKGameState>()->TurnChanged.Broadcast();
+}
+
+TArray<AKKCharacter*> URoundManagerSubsystem::GetCharactersForPlayer(int32 PlayerID)
+{
+	TArray<AKKCharacter*> PlayerCharacters;
+
+	for(AKKCharacter* Character : RegisteredCharacters)
+	{
+		if(Character->OwningPlayer == RegisteredPlayers[PlayerID])
+		{
+			PlayerCharacters.Add(Character);
+		}
+	}
+
+	return PlayerCharacters;
+}
+
+bool URoundManagerSubsystem::PlayerHasAnyLegalMoves(AKKPlayerController* PlayerController)
+{
+	TArray<AKKCharacter*> PlayerCharacters = GetCharactersForPlayer(PlayerController->PlayerID);
+
+	//todo:
+	
+	return true;
 }

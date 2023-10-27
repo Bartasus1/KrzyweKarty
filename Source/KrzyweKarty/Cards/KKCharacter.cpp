@@ -3,7 +3,6 @@
 
 
 #include "KKCharacter.h"
-
 #include "Action.h"
 #include "Animation/AnimBlueprint.h"
 #include "Animation/AnimInstance.h"
@@ -17,6 +16,7 @@
 #include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "Core/Public/Containers/Array.h"
+#include "KrzyweKarty/KrzyweKarty.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
@@ -48,14 +48,13 @@ AKKCharacter::AKKCharacter()
 	
 	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
-
-	OnRoundEnd.AddUniqueDynamic(this, &AKKCharacter::OnRoundEnded);
 }
 
 void AKKCharacter::CharacterDied_Implementation()
 {
 	OnCharacterDeath.Broadcast();
 }
+
 
 int32 AKKCharacter::GetTilePositionID()
 {
@@ -114,10 +113,6 @@ int32 AKKCharacter::GetTopActionWeight()
 	return CharacterActions.Top();
 }
 
-void AKKCharacter::OnRoundEnded()
-{
-	CharacterActions.Reset();
-}
 
 void AKKCharacter::OnTurnEnded()
 {
@@ -174,6 +169,42 @@ void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Atta
 {
 	DealDamage(this, DamageAmount);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+UCharacterAbilityComponent* AKKCharacter::GetCharacterAbilityComponent_Implementation(int32 Index)
+{
+	TInlineComponentArray<UCharacterAbilityComponent*> CharacterAbilityComponents;
+	GetComponents(CharacterAbilityComponents);
+
+	if(CharacterAbilityComponents.IsValidIndex(Index - 1) && CharacterAbilityComponents[Index - 1]->AbilityIndex == Index)
+	{
+		return CharacterAbilityComponents[Index - 1];
+	}
+	UE_LOG(LogTemp, Warning, TEXT("INVALID INDEX OR LACK OF ABILITY COMPONENT IN %s"), *GetName());
+	return nullptr;
+
+}
+
+bool AKKCharacter::CanUseAbility_Implementation(int32 Index)
+{
+	if(!CharacterDataAsset->ActiveAbilities.IsValidIndex(Index - 1) || GetCharacterAbilityComponent(Index) == nullptr)
+	{
+		return false;
+	}
+	
+	return GetMana() >= GetActiveAbilityCost(Index);
+}
+
+void AKKCharacter::PerformAbility_Implementation(int32 Index)
+{
+}
+
+void AKKCharacter::CommitAbilityCost_Implementation(int32 Index)
+{
+	DecreaseMana(GetActiveAbilityCost(Index));
+}
+
 
 // void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
 // {

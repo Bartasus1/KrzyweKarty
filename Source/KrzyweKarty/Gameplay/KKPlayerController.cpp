@@ -2,8 +2,7 @@
 
 
 #include "KKPlayerController.h"
-#include "KKGameMode.h"
-#include "KKGameState.h"
+#include "KrzyweKarty/KrzyweKarty.h"
 #include "KrzyweKarty/Cards/Action.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
@@ -74,6 +73,14 @@ TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable(b
 	return CastLineTrace((bHigherPriority ? PriorityTraceChannel : SelectableTraceChannel)).GetActor();
 }
 
+void AKKPlayerController::UpdateCharacterInActions()
+{
+	for(auto& Action: CharacterActions)
+	{
+		Action.Value->Character = SelectedCharacter;
+	}
+}
+
 bool AKKPlayerController::SelectCharacter()
 {
 	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
@@ -83,10 +90,7 @@ bool AKKPlayerController::SelectCharacter()
 			SelectedCharacter = TracedCharacter;
 			ShowCharacterStats(SelectedCharacter);
 
-			for(auto& Action: CharacterActions)
-			{
-				Action.Value->Character = SelectedCharacter;
-			}
+			UpdateCharacterInActions();
 			
 			return true;
 		}

@@ -16,7 +16,8 @@ enum ETileColor
 	None,
 	Red,
 	Blue,
-	Yellow
+	Yellow,
+	Grey
 };
 
 UCLASS()
@@ -40,8 +41,10 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TEnumAsByte<ETileColor> TileColor;
 
+#if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere)
 	UTextRenderComponent* TextRenderComponent;
+#endif
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;

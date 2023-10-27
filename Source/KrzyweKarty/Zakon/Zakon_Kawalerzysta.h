@@ -15,6 +15,12 @@ class KRZYWEKARTY_API AZakon_Kawalerzysta : public AZakon
 	GENERATED_BODY()
 public:
 
+	virtual bool CanUseAbility_Implementation(int32 Index) override;
+
 	virtual TArray<FDirection> GetPossibleMoveTiles() override;
+
+private:
+
+	TArray<FMapCell*> GetAbilityMapCells(int32 Index);
 	
 };

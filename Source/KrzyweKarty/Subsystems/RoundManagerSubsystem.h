@@ -17,6 +17,8 @@ class KRZYWEKARTY_API URoundManagerSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 public:
 
+	URoundManagerSubsystem();
+
 	UFUNCTION(BlueprintAuthorityOnly)
 	void RegisterCharacterInSystem(AKKCharacter* Character);
 	
@@ -26,9 +28,13 @@ public:
 	UFUNCTION(BlueprintAuthorityOnly)
 	void ChangeTurn();
 
+	TArray<AKKCharacter*> GetCharactersForPlayer(int32 PlayerID);
+
 private:
 
-	UPROPERTY(VisibleAnywhere)
+	bool PlayerHasAnyLegalMoves(AKKPlayerController* PlayerController);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TArray<AKKPlayerController*> RegisteredPlayers;
 
 	UPROPERTY(VisibleAnywhere)

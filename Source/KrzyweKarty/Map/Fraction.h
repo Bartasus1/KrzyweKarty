@@ -47,9 +47,7 @@ public:
 	int32 ID;
 protected:
 	
-	
 	virtual void OnConstruction(const FTransform& Transform) override;
-
 
 	UFUNCTION()
 	void SpawnComponents();

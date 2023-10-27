@@ -45,6 +45,7 @@ TArray<AKKCharacter*> AFraction::SpawnCharacters()
 
 			SpawnedCharacters.Add(GetWorld()->SpawnActor<AKKCharacter>(CharactersToSpawn[i], SpawnLocation, SpawnRotation));
 			SpawnedCharacters[i]->Direction = (ID == 0) ? 1 : -1;
+			SpawnedCharacters[i]->CharacterID = i + 1;
 		}
 	}
 
@@ -63,7 +64,6 @@ void AFraction::OnConstruction(const FTransform& Transform)
 
 	RemoveComponents();
 	GetWorldTimerManager().SetTimerForNextTick(this, &AFraction::SpawnComponents);
-	
 }
 
 void AFraction::RemoveComponents()
@@ -90,7 +90,6 @@ void AFraction::RemoveComponents()
 		FSubobjectDataHandle Dummy;
 		DataSubsystem->DeleteSubobjects(ParentHandle, ObjectsToDelete,Dummy, UBlueprint::GetBlueprintFromClass(GetClass()), true);
 	}
-	
 }
 
 void AFraction::SpawnComponents()

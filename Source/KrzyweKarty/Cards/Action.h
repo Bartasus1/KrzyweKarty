@@ -7,6 +7,7 @@
 #include "UObject/Object.h"
 #include "Action.generated.h"
 
+class UCharacterAbilityComponent;
 class AKKMap;
 class AKKGameState;
 /**
@@ -35,6 +36,7 @@ public:
 
 protected:
 	int32 ActionWeight = 0;
+	bool bRequiresCharacterOnMap = false;
 
 	UFUNCTION(BlueprintAuthorityOnly)
 	void AddActionToCharacterList() const;
@@ -44,43 +46,37 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////
-UCLASS(Abstract)
-class UMapAction : public UAction
+/// SUMMON ACTION
+UCLASS()
+class USummonAction : public UAction
 {
 	GENERATED_BODY()
+
 public:
-	
+	USummonAction();
+
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
 	int32 DestinationTileID = -1;
-
-	virtual bool CanCharacterMakeAction() const override;
-};
-//////////////////////////////////////////////////////////////////////////////////
-
-UCLASS()
-class USummonAction : public UMapAction
-{
-	GENERATED_BODY()
-
-public:
-
-	USummonAction();
 
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
 
 	virtual void ShowActionAffectedTiles() const override;
 };
+
 /////////////////////////////////////////////////////////////////////////////
+/// MOVE ACTION
 UCLASS()
-class UMoveAction : public UMapAction
+class UMoveAction : public UAction
 {
 	GENERATED_BODY()
 
 public:
-
 	UMoveAction();
 
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
+	int32 DestinationTileID = -1;
+	
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
 
@@ -88,7 +84,7 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
-
+/// ATTACK ACTION
 UCLASS()
 class UAttackAction : public UAction
 {
@@ -100,9 +96,36 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
 	AKKCharacter* TargetCharacter = nullptr;
-
-	virtual void TryBeginAction() override;
+	
+	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
 
 	virtual void ShowActionAffectedTiles() const override;
+};
+
+//////////////////////////////////////////////////////////////////////////////////
+/// ABILITY ACTION
+UCLASS()
+class UAbilityAction : public UAction
+{
+	GENERATED_BODY()
+
+public:
+
+	UAbilityAction();
+
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
+	int32 Index = 0;
+
+	virtual void TryBeginAction() override;
+	
+	virtual bool CanCharacterMakeAction() const override;
+	virtual void BeginAction() override;
+
+private:
+
+	UFUNCTION()
+	void OnAbilityFinished();
+
+	UCharacterAbilityComponent* GetCharacterAbilityComponent() const;
 };

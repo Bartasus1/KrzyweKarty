@@ -11,9 +11,6 @@ class AKKCharacter;
 class AKKTile;
 class ISelectableInterface;
 
-#define SelectableTraceChannel ECC_GameTraceChannel1
-#define PriorityTraceChannel ECC_GameTraceChannel2
-
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayerController : public APlayerController
@@ -49,6 +46,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TScriptInterface<ISelectableInterface> TraceForSelectable(bool bHigherPriority = false) const;
+	void UpdateCharacterInActions();
 
 	UFUNCTION(BlueprintCallable)
 	bool SelectCharacter();

@@ -2,9 +2,8 @@
 
 
 #include "KKTile.h"
-
 #include "Components/BoxComponent.h"
-#include "KrzyweKarty/Gameplay/KKPlayerController.h"
+#include "KrzyweKarty/KrzyweKarty.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -21,16 +20,19 @@ AKKTile::AKKTile()
 	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxCollision->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 
+#if WITH_EDITORONLY_DATA
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>("TextRender");
 	TextRenderComponent->SetupAttachment(BoxCollision);
 	
 	TextRenderComponent->SetRelativeLocation(FVector(0, 0, 50));
-
+#endif
 }
 
 void AKKTile::OnRep_TileID()
 {
+#if WITH_EDITORONLY_DATA
 	TextRenderComponent->SetText(FText::FromString(FString::FromInt(TileID)));
+#endif
 }
 
 int32 AKKTile::GetTilePositionID()

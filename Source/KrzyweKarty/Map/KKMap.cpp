@@ -53,11 +53,15 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
 {
 	FMapCell* Destination = GetCellAtIndex(TileID);
 
-	GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
-	AssignCharacterToTile(Character, Destination);
+	if(Destination && Destination->Character == nullptr)
+	{
+		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
+        AssignCharacterToTile(Character, Destination);
+        
+		return true;
+	}
 
-	return true;
-	
+	return false;
 }
 
 TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy)
@@ -66,7 +70,7 @@ TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, 
 	
 	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(RelativeTiles)))
 	{
-		if(MapCell.Character != nullptr)
+		if(MapCell.Character == nullptr)
 		{
 			continue;
 		}
@@ -139,19 +143,22 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDi
 {
 	TArray<FMapCell> FoundCells;
 
-	const int32 X = GetX(Character->OwnedTileID);
-	const int32 Y = GetY(Character->OwnedTileID);
-
-	const int32 Direction = Character->Direction;
-	
-	for(FDirection& Tile : RelativeTiles)
+	if(Character)
 	{
-		const int32 NextX = X + (Direction * Tile.X);
-		const int32 NextY = Y + (Direction * Tile.Y);
-		
-		if(IsValidIndex(NextX, NextY))
+		const int32 X = GetX(Character->OwnedTileID);
+		const int32 Y = GetY(Character->OwnedTileID);
+
+		const int32 Direction = Character->Direction;
+	
+		for(FDirection& Tile : RelativeTiles)
 		{
-			FoundCells.Add(MapArray[NextX].MapRows[NextY]);
+			const int32 NextX = X + (Direction * Tile.X);
+			const int32 NextY = Y + (Direction * Tile.Y);
+		
+			if(IsValidIndex(NextX, NextY))
+			{
+				FoundCells.Add(MapArray[NextX].MapRows[NextY]);
+			}
 		}
 	}
 
@@ -160,17 +167,18 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDi
 
 TArray<AKKTile*> AKKMap::GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID)
 {
-	check(Character); //todo: fix bug when clicking on empty tile and no character is selected
-	
 	TArray<AKKTile*> FoundTiles;
-	
-	for(int32& TileID : TilesID)
-	{
-		FMapCell* MapCell = GetCellAtIndex((Character->Direction == 1) ? TileID : 19 - TileID);
 
-		if(MapCell->Character == nullptr)
+	if(Character)
+	{
+		for(int32& TileID : TilesID)
 		{
-			FoundTiles.Add(MapCell->Tile);
+			FMapCell* MapCell = GetCellAtIndex((Character->Direction == 1) ? TileID : 19 - TileID);
+
+			if(MapCell->Character == nullptr)
+			{
+				FoundTiles.Add(MapCell->Tile);
+			}
 		}
 	}
 	
@@ -232,7 +240,7 @@ TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 {
 	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
 	{
-		return (Character != AnotherCharacter) && (!Character->IsInTheSameTeam(AnotherCharacter));
+		return (Character != AnotherCharacter && !Character->IsInTheSameTeam(AnotherCharacter));
 	});
 }
 
@@ -270,8 +278,13 @@ AKKTile* AKKMap::GetTileAtIndex(int32 TileID)
 	{
 		return BaseArray[INT32_MAX - TileID].Tile;
 	}
+
+	if(const FMapCell* MapCell = GetCellAtIndex(TileID))
+	{
+		return MapCell->Tile;
+	}
 	
-	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Tile : nullptr;
+	return nullptr;
 }
 
 AKKCharacter* AKKMap::GetCharacterAtIndex(int32 TileID)

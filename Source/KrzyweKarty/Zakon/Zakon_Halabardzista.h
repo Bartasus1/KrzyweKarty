@@ -22,5 +22,5 @@ public:
 	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter) override;
 	
 
-	TArray<FDirection> GetAffectedTiles_Implementation(int32 Index) override;	
+	virtual TArray<FDirection> GetAffectedTiles_Implementation(int32 Index) override;	
 };

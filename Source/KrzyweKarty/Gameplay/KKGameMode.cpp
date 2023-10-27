@@ -11,6 +11,7 @@
 #include "KrzyweKarty/UI/PlayerHUD.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "Kismet/GameplayStatics.h"
+#include "KrzyweKarty/Subsystems/RoundManagerSubsystem.h"
 
 
 AKKGameMode::AKKGameMode()
@@ -31,8 +32,9 @@ APlayerController* AKKGameMode::Login(UPlayer* NewPlayer, ENetRole InRemoteRole,
 	if (AKKPlayerController* KKPlayerController = Cast<AKKPlayerController>(PlayerController))
 	{
 		Players.Add(KKPlayerController);
-
 		KKPlayerController->PlayerID = Players.Num();
+		
+		GetWorld()->GetSubsystem<URoundManagerSubsystem>()->RegisterPlayerInSystem(KKPlayerController);
 		GetWorldTimerManager().SetTimerForNextTick(this, &AKKGameMode::SpawnCharacterForPlayer);
 	}
 
@@ -71,16 +73,7 @@ void AKKGameMode::BeginPlay()
 
 void AKKGameMode::ChangeTurn()
 {
-	Players[0]->bIsMyTurn = bFirstPlayerTurn;
-	Players[1]->bIsMyTurn = !bFirstPlayerTurn;
-
-	Players[0]->OnRep_TurnChanged();
-
-	bFirstPlayerTurn = !bFirstPlayerTurn;
-	
-	GetGameState<AKKGameState>()->bFirstPlayerTurn = bFirstPlayerTurn;
-	GetGameState<AKKGameState>()->OnRep_TurnChanged();
-	
+	GetWorld()->GetSubsystem<URoundManagerSubsystem>()->ChangeTurn();
 }
 
 void AKKGameMode::SpawnCharacterForPlayer()

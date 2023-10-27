@@ -43,8 +43,6 @@ protected:
 	void SpawnCharacterForPlayer();
 
 private:
-	bool bFirstPlayerTurn = true;
-
 	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 protected:

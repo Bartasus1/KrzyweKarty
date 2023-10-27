@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CharacterDataAsset.h"
 #include "GameFramework/Actor.h"
+#include "KrzyweKarty/Components/CharacterAbilityComponent.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KKCharacter.generated.h"
@@ -21,8 +22,6 @@ class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UTextRenderComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTurnEndDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRoundEndDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
 
 
@@ -63,12 +62,6 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
-
-	UPROPERTY(BlueprintAssignable)
-	FTurnEndDelegate OnTurnEnd;
-	
-	UPROPERTY(BlueprintAssignable)
-	FRoundEndDelegate OnRoundEnd;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	TArray<int32> CharacterActions;
@@ -92,10 +85,7 @@ public:
 /////////////////////////////////////////////////////////////
 	// Actions & Rounds
 	int32 GetTopActionWeight();
-
-	UFUNCTION()
-	virtual void OnRoundEnded();
-
+	
 	UFUNCTION()
 	virtual void OnTurnEnded();
 	
@@ -115,6 +105,18 @@ public:
 	
 //////////////////////////////////////////////////////////////////////////////////////////////
 	// Abilities Actions
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UCharacterAbilityComponent* GetCharacterAbilityComponent(int32 Index);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool CanUseAbility(int32 Index);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void PerformAbility(int32 Index); // actual implementation of ability, how many damage it deals etc.
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void CommitAbilityCost(int32 Index);
 	
 	// UFUNCTION(BlueprintCallable)
 	// virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
@@ -182,7 +184,7 @@ public:
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	 { SetDefence(GetDefence() + InDefence); }
 
 	FORCEINLINE int32 GetActiveAbilityCost(int32 Index) const
-	{ check(&CharacterDataAsset->ActiveAbilities[Index]) return CharacterDataAsset->ActiveAbilities[Index].AbilityCost; }
+	{ return CharacterDataAsset->ActiveAbilities[Index - 1].AbilityCost; }
 	FORCEINLINE int32 GetFirstAbilityManaCost() const
 	{ check(&CharacterDataAsset->ActiveAbilities[0]) return CharacterDataAsset->ActiveAbilities[0].AbilityCost; }
 	FORCEINLINE int32 GetSecondAbilityManaCost() const

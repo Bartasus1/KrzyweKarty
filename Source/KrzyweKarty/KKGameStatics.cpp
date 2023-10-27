@@ -9,13 +9,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Map/KKMap.h"
 
-int32 UKKGameStatics::GetMapSize(const UObject* WorldContextObject)
+AKKMap* UKKGameStatics::GetMap(const UObject* WorldContextObject)
 {
-	if(AKKGameMode* GameMode = Cast<AKKGameMode>(UGameplayStatics::GetGameMode(WorldContextObject)))
-	{
-		return GameMode->GetMap()->GetMapSize();
-	}
-	return 0;
+	return WorldContextObject->GetWorld()->GetGameState<AKKGameState>()->Map;
 }
 
 void UKKGameStatics::AddActionLog( AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action)
@@ -41,4 +37,17 @@ TArray<FDirection> UKKGameStatics::RotateDirections(TArray<FDirection> Direction
 	}
 
 	return Directions;
+}
+
+void UKKGameStatics::ShowTiles(TArray<AKKTile*> Tiles, ETileColor Color)
+{
+	for(auto& Tile : Tiles)
+	{
+		Tile->SetTileColor(Color);
+	}
+}
+
+void UKKGameStatics::HideTiles(const UObject* WorldContextObject)
+{
+	GetMap(WorldContextObject)->ClearTilesHighlights();
 }
