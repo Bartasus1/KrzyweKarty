@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "CharacterAbilityComponent.generated.h"
 
 class AKKPlayerController;
