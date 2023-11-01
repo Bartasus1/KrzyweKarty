@@ -16,21 +16,13 @@ UCharacterAbilityComponent::UCharacterAbilityComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UCharacterAbilityComponent::BeginAbility_Implementation()
+void UCharacterAbilityComponent::OnBeginAbility_Implementation()
 {
-	OnAbilityStarted.Broadcast();
 }
 
-void UCharacterAbilityComponent::FinishAbility_Implementation(bool bWasCancelled)
+void UCharacterAbilityComponent::OnFinishAbility_Implementation()
 {
-	if(bWasCancelled)
-	{
-		OnAbilityCanceled.Broadcast();
-	}
-	else
-	{
-		OnAbilityFinished.Broadcast();
-	}
+	
 }
 
 void UCharacterAbilityComponent::BeginPlay()
@@ -40,17 +32,17 @@ void UCharacterAbilityComponent::BeginPlay()
 	OwnerCharacter = GetOwner<AKKCharacter>();
 }
 
-AKKMap* UCharacterAbilityComponent::GetMap()
+AKKMap* UCharacterAbilityComponent::GetMap() const
 {
 	return GetWorld()->GetGameState<AKKGameState>()->Map;
 }
 
-AKKGameState* UCharacterAbilityComponent::GetGameState()
+AKKGameState* UCharacterAbilityComponent::GetGameState() const
 {
 	return GetWorld()->GetGameState<AKKGameState>();
 }
 
-AKKPlayerController* UCharacterAbilityComponent::GetPlayerController()
+AKKPlayerController* UCharacterAbilityComponent::GetPlayerController() const
 {
 	return OwnerCharacter->OwningPlayer;
 }

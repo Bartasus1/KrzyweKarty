@@ -163,11 +163,31 @@ UAbilityAction::UAbilityAction()
 	bRequiresCharacterOnMap = true;
 }
 
+void UAbilityAction::OnAbilityConfirmed()
+{
+	if(Character->CanFinishAbility(Index))
+	{
+		Character->PerformAbility(Index);
+		Character->CommitAbilityCost(Index);
+
+		Character->OnFinishAbility(Index);
+	
+		AddActionToCharacterList();
+		GetWorld()->GetSubsystem<URoundManagerSubsystem>()->RegisterCharacterInSystem(Character);
+	}
+}
+
+void UAbilityAction::OnAbilityAborted()
+{
+	Character->OnFinishAbility(Index);
+}
+
 void UAbilityAction::TryBeginAction()
 {
 	if(CanCharacterMakeAction())
 	{
 		BeginAction();
+		// don't add action to character's action list yet
 	}
 }
 
@@ -178,22 +198,5 @@ bool UAbilityAction::CanCharacterMakeAction() const
 
 void UAbilityAction::BeginAction()
 {
-	GetCharacterAbilityComponent()->OnAbilityFinished.AddUniqueDynamic(this, &UAbilityAction::OnAbilityFinished);
-	
-	GetCharacterAbilityComponent()->BeginAbility();
-}
-
-void UAbilityAction::OnAbilityFinished()
-{
-	Character->CommitAbilityCost(Index);
-	
-	AddActionToCharacterList();
-	GetWorld()->GetSubsystem<URoundManagerSubsystem>()->RegisterCharacterInSystem(Character);
-
-	GetCharacterAbilityComponent()->OnAbilityFinished.RemoveDynamic(this, &UAbilityAction::OnAbilityFinished);
-}
-
-UCharacterAbilityComponent* UAbilityAction::GetCharacterAbilityComponent() const
-{
-	return Character->GetCharacterAbilityComponent(Index);
+	Character->OnBeginAbility(Index);
 }

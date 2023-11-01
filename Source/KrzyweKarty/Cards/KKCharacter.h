@@ -107,14 +107,20 @@ public:
 	// Abilities Actions
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	UCharacterAbilityComponent* GetCharacterAbilityComponent(int32 Index);
+	bool CanUseAbility(int32 Index);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool CanUseAbility(int32 Index);
+	bool CanFinishAbility(int32 Index);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void PerformAbility(int32 Index); // actual implementation of ability, how many damage it deals etc.
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnBeginAbility(int32 Index); //start ability components, show ability effects etc.
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnFinishAbility(int32 Index); //stop ability components, clean up effects etc.
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CommitAbilityCost(int32 Index);
 	
@@ -184,14 +190,7 @@ public:
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	 { SetDefence(GetDefence() + InDefence); }
 
 	FORCEINLINE int32 GetActiveAbilityCost(int32 Index) const
-	{ return CharacterDataAsset->ActiveAbilities[Index - 1].AbilityCost; }
-	FORCEINLINE int32 GetFirstAbilityManaCost() const
-	{ check(&CharacterDataAsset->ActiveAbilities[0]) return CharacterDataAsset->ActiveAbilities[0].AbilityCost; }
-	FORCEINLINE int32 GetSecondAbilityManaCost() const
-	{ check(&CharacterDataAsset->ActiveAbilities[1]) return CharacterDataAsset->ActiveAbilities[1].AbilityCost; }
-
-	FORCEINLINE void DecreaseManaForFirstAbility() { DecreaseMana(GetFirstAbilityManaCost()); }
-	FORCEINLINE void DecreaseManaForSecondAbility() { DecreaseMana(GetSecondAbilityManaCost()); }
+	{ return CharacterDataAsset->ActiveAbilities[Index].AbilityCost; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }

@@ -11,9 +11,6 @@ class AKKGameState;
 class AKKMap;
 class AKKCharacter;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterAbilityEvent);
-
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable, BlueprintType, Abstract)
 class KRZYWEKARTY_API UCharacterAbilityComponent : public UActorComponent
 {
@@ -24,22 +21,13 @@ public:
 	UCharacterAbilityComponent();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void BeginAbility();
+	void OnBeginAbility();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void FinishAbility(bool bWasCancelled);
-
-	UPROPERTY(BlueprintAssignable)
-	FCharacterAbilityEvent OnAbilityStarted;
-
-	UPROPERTY(BlueprintAssignable)
-	FCharacterAbilityEvent OnAbilityCanceled;
-
-	UPROPERTY(BlueprintAssignable)
-	FCharacterAbilityEvent OnAbilityFinished;
-
+	void OnFinishAbility();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 AbilityIndex = 1;
+	int32 AbilityIndex = 0;
 
 protected:
 	
@@ -47,13 +35,13 @@ protected:
 	AKKCharacter* OwnerCharacter = nullptr;
 
 	UFUNCTION(BlueprintPure)
-	AKKMap* GetMap();
+	AKKMap* GetMap() const;
 
 	UFUNCTION(BlueprintPure)
-	AKKGameState* GetGameState();
+	AKKGameState* GetGameState() const;
 
 	UFUNCTION(BlueprintPure)
-	AKKPlayerController* GetPlayerController();
+	AKKPlayerController* GetPlayerController() const;
 
 public:
 	virtual void BeginPlay() override;

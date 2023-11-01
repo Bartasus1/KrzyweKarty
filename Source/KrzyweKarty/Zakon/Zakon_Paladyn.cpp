@@ -59,7 +59,7 @@ TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(int32 Index)
 {
 	switch (Index)
 	{
-	case 1:
+	case 0:
 		return {
 			{-1, 0},
 			{1, -1},
@@ -73,7 +73,7 @@ TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(int32 Index)
 			 O
 			 #
 		*/
-	case 2:
+	case 1:
 		return {
 			{1, -1},
 			{1, 1}

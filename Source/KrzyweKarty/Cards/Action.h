@@ -117,15 +117,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
 	int32 Index = 0;
 
+	UFUNCTION(BlueprintCallable)
+	void OnAbilityConfirmed();
+
+	UFUNCTION(BlueprintCallable)
+	void OnAbilityAborted();
+
 	virtual void TryBeginAction() override;
 	
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
-
-private:
-
-	UFUNCTION()
-	void OnAbilityFinished();
-
-	UCharacterAbilityComponent* GetCharacterAbilityComponent() const;
+	
 };

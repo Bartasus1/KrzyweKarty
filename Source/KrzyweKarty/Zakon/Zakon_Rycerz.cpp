@@ -30,3 +30,8 @@ void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Att
 		Super::ApplyDamageToSelf(DamageAmount, AttackResultInfo);
 	}
 }
+
+void AZakon_Rycerz::PerformAbility_Implementation(int32 Index)
+{
+	IncreaseHealth(4);
+}
