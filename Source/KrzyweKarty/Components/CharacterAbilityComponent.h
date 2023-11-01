@@ -14,7 +14,7 @@ class AKKCharacter;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterAbilityEvent);
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable, BlueprintType)
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable, BlueprintType, Abstract)
 class KRZYWEKARTY_API UCharacterAbilityComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -38,7 +38,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FCharacterAbilityEvent OnAbilityFinished;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 AbilityIndex = 1;
 
 protected:

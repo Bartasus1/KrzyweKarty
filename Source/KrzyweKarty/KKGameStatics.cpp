@@ -29,14 +29,12 @@ void UKKGameStatics::AddActionLog( AKKCharacter* Character, AKKCharacter* Target
 	}
 }
 
-TArray<FDirection> UKKGameStatics::RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection)
+void UKKGameStatics::RotateDirections(IN TArray<FDirection>& Directions, ERotationDirection RotationDirection)
 {
 	for(FDirection& InDirection : Directions)
 	{
 		InDirection = InDirection.Rotate(RotationDirection);
 	}
-
-	return Directions;
 }
 
 void UKKGameStatics::ShowTiles(TArray<AKKTile*> Tiles, ETileColor Color)

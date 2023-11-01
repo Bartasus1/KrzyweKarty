@@ -24,7 +24,7 @@ public:
 	static void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 	UFUNCTION(BlueprintCallable)
-	static TArray<FDirection> RotateDirections(TArray<FDirection> Directions, ERotationDirection RotationDirection);
+	static void RotateDirections(UPARAM(ref) TArray<FDirection>& Directions, ERotationDirection RotationDirection);
 
 	UFUNCTION(BlueprintCallable)
 	static void ShowTiles(TArray<AKKTile*> Tiles, ETileColor Color);
