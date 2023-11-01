@@ -55,7 +55,6 @@ void AKKCharacter::CharacterDied_Implementation()
 	OnCharacterDeath.Broadcast();
 }
 
-
 int32 AKKCharacter::GetTilePositionID()
 {
 	return OwnedTileID;
@@ -144,6 +143,8 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	FAttackResultInfo AttackResultInfo;
@@ -172,23 +173,14 @@ void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Atta
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-UCharacterAbilityComponent* AKKCharacter::GetCharacterAbilityComponent_Implementation(int32 Index)
+bool AKKCharacter::CanFinishAbility_Implementation(int32 Index)
 {
-	TInlineComponentArray<UCharacterAbilityComponent*> CharacterAbilityComponents;
-	GetComponents(CharacterAbilityComponents);
-
-	if(CharacterAbilityComponents.IsValidIndex(Index - 1) && CharacterAbilityComponents[Index - 1]->AbilityIndex == Index)
-	{
-		return CharacterAbilityComponents[Index - 1];
-	}
-	UE_LOG(LogTemp, Warning, TEXT("INVALID INDEX OR LACK OF ABILITY COMPONENT IN %s"), *GetName());
-	return nullptr;
-
+	return true;
 }
 
 bool AKKCharacter::CanUseAbility_Implementation(int32 Index)
 {
-	if(!CharacterDataAsset->ActiveAbilities.IsValidIndex(Index - 1) || GetCharacterAbilityComponent(Index) == nullptr)
+	if(!CharacterDataAsset->ActiveAbilities.IsValidIndex(Index))
 	{
 		return false;
 	}
@@ -200,20 +192,20 @@ void AKKCharacter::PerformAbility_Implementation(int32 Index)
 {
 }
 
+void AKKCharacter::OnBeginAbility_Implementation(int32 Index)
+{
+}
+
+void AKKCharacter::OnFinishAbility_Implementation(int32 Index)
+{
+}
+
 void AKKCharacter::CommitAbilityCost_Implementation(int32 Index)
 {
 	DecreaseMana(GetActiveAbilityCost(Index));
 }
 
-
-// void AKKCharacter::ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject)
-// {
-// 	if(CanUseActiveAbility(Index))
-// 	{
-// 		ActiveAbility_Internal(Index, SelectableObject);
-// 		ConsumeActiveAbilityCost(Index);
-// 	}
-// }
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 void AKKCharacter::PlayAnimMontage_Implementation(UAnimMontage* AnimMontage)
 {
@@ -281,15 +273,12 @@ AKKMap* AKKCharacter::GetMap() const
 	return GetWorld()->GetGameState<AKKGameState>()->Map;
 }
 
-
 // Called when the game starts or when spawned
 void AKKCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-
+	
 }
-
 
 void AKKCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
