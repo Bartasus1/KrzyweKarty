@@ -28,4 +28,7 @@ class KRZYWEKARTY_API IAreaModifierInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	TArray<FDirection> GetAffectedTiles(int32 Index = 0);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	TArray<FDirection> GetFinalAffectedTiles(int32 Index);
 };

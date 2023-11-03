@@ -23,6 +23,7 @@ class USkeletalMeshComponent;
 class UTextRenderComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterAbilityAction, int32, Index);
 
 
 UCLASS(Abstract)
@@ -93,8 +94,9 @@ public:
 
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
-
 public:
+	virtual void SetOwner(AActor* NewOwner) override;
+
 ///////////////////////////////////////////////////////////////////////
 	//Attacking Actions
 
@@ -123,6 +125,18 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CommitAbilityCost(int32 Index);
+
+	UPROPERTY(BlueprintAssignable)
+	FCharacterAbilityAction OnBeginAbilityDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FCharacterAbilityAction OnFinishAbilityDelegate;
+
+	UFUNCTION(Client, Reliable)
+	void Client_OnBeginAbilityDelegate(int32 Index);
+
+	UFUNCTION(Client, Reliable)
+	void Client_OnFinishAbilityDelegate(int32 Index);
 	
 	// UFUNCTION(BlueprintCallable)
 	// virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);

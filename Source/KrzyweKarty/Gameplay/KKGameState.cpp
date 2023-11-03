@@ -44,6 +44,7 @@ void AKKGameState::ChangeTurn_Implementation()
 	}
 
 	bFirstPlayerTurn = !bFirstPlayerTurn;
+	CountedMoves = 0;
 }
 
 TArray<AKKCharacter*> AKKGameState::GetCharactersForPlayer(int32 PlayerID)

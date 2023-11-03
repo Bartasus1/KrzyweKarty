@@ -143,6 +143,16 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 	}
 }
 
+void AKKCharacter::SetOwner(AActor* NewOwner)
+{
+	Super::SetOwner(NewOwner);
+
+	if(AKKPlayerController* PlayerControllerOwner = Cast<AKKPlayerController>(NewOwner))
+	{
+		OwningPlayer = PlayerControllerOwner;
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
@@ -194,15 +204,27 @@ void AKKCharacter::PerformAbility_Implementation(int32 Index)
 
 void AKKCharacter::OnBeginAbility_Implementation(int32 Index)
 {
+	Client_OnBeginAbilityDelegate(Index);
 }
 
 void AKKCharacter::OnFinishAbility_Implementation(int32 Index)
 {
+	Client_OnFinishAbilityDelegate(Index);
 }
 
 void AKKCharacter::CommitAbilityCost_Implementation(int32 Index)
 {
 	DecreaseMana(GetActiveAbilityCost(Index));
+}
+
+void AKKCharacter::Client_OnBeginAbilityDelegate_Implementation(int32 Index)
+{
+	OnBeginAbilityDelegate.Broadcast(Index);
+}
+
+void AKKCharacter::Client_OnFinishAbilityDelegate_Implementation(int32 Index)
+{
+	OnFinishAbilityDelegate.Broadcast(Index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

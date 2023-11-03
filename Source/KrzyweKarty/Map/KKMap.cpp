@@ -331,7 +331,7 @@ void AKKMap::SpawnFraction(int32 ID, TSubclassOf<AFraction> FractionClass)
 
 			for(AKKCharacter* Character : SpawnedCharacters)
 			{
-				Character->OwningPlayer = GameMode->GetPlayerController(FractionComponent->ID);
+				Character->SetOwner(GameMode->GetPlayerController(FractionComponent->ID));
 			}
 		}
 	}
