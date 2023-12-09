@@ -11,7 +11,7 @@
 class UBoxComponent;
 
 UENUM(BlueprintType)
-enum ETileColor
+enum class ETileColor : uint8
 {
 	None,
 	Red,

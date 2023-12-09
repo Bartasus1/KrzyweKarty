@@ -57,6 +57,7 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
 	{
 		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
         AssignCharacterToTile(Character, Destination);
+		
         
 		return true;
 	}
@@ -263,12 +264,12 @@ void AKKMap::ClearTilesHighlights()
 {
 	for(int i = 0; i < 20; i++)
 	{
-		GetCellAtIndex(i)->Tile->SetTileColor(None);
+		GetCellAtIndex(i)->Tile->SetTileColor(ETileColor::None);
 	}
 
 	for(auto& BaseTile: BaseArray)
 	{
-		BaseTile.Tile->SetTileColor(None);
+		BaseTile.Tile->SetTileColor(ETileColor::None);
 	}
 }
 

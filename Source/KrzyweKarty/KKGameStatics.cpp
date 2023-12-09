@@ -24,7 +24,7 @@ void UKKGameStatics::AddActionLog( AKKCharacter* Character, AKKCharacter* Target
 
 			FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1}({2}) {3} {4}") , FText::FromString(PlayerName), Character->GetCharacterName(), Character->CharacterID , Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
 
-			GameState->AddActionLog(Log);
+			GameState->Server_AddActionLog(Log);
 		}
 	}
 }

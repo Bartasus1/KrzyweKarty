@@ -90,28 +90,3 @@ enum EActionType
 	EAT_MovedCharacter		UMETA(DisplayName="Moved Character"),
 	EAT_AttackCharacter		UMETA(DisplayName="Attacked Character")
 };
-
-
-
-
-
-// inline void UAttackAction::BeginAction()
-// {
-// 	if(!Character->MinAttackConditions(TargetCharacter))
-// 	{
-// 		return;
-// 	}
-// 	
-// 	FAttackResultInfo AttackResultInfo;
-//
-// 	int32 Damage = Character->DefineDamageAmount(TargetCharacter);
-//
-// 	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo);
-//
-// 	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
-// 	{
-// 		Character->PlayAnimMontage(Character->CharacterDataAsset->AttackMontage);
-// 		bWasActionSuccessful = true;
-// 	}
-// 	
-// }

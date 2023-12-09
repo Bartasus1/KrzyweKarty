@@ -10,20 +10,8 @@ class AKKCharacter;
 class AKKPlayerController;
 class AKKMap;
 
-USTRUCT(BlueprintType)
-struct FLogStruct
-{
-	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadOnly)
-	FText LogText;
-
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsSentByServer = true;
-	
-};
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActionLogAdded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionLogAdded, const FText&, InText, bool, bIsFromServer);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTurnChanged);
 
 UCLASS()
@@ -34,22 +22,15 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	AKKMap* Map;
-
-	///////////////////////////////////////////
-	UPROPERTY(ReplicatedUsing="OnRep_ActionLogs", Transient)
-	TArray<FLogStruct> ActionLogs;
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnActionLogAdded ActionAdded;
-	
-	UFUNCTION()
-	void OnRep_ActionLogs();
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void AddActionLog(const FText& NewAction);
+	void Server_AddActionLog(const FText& NewAction);
 
-	UFUNCTION(BlueprintCallable)
-	TArray<FLogStruct>& GetActionLogs();
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void Multicast_AddActionLog(const FText& NewAction, bool bIsFromServer = false);
 
 	//////////////////////////////////////////////////////
 	UPROPERTY(Replicated, BlueprintReadOnly)

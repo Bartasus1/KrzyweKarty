@@ -91,6 +91,6 @@ void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetChar
 
 		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1}({2}) {3} {4}") , FText::FromString(PlayerName), Character->GetCharacterName(), Character->CharacterID , Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
 
-		GetGameState<AKKGameState>()->AddActionLog(Log);
+		GetGameState<AKKGameState>()->Server_AddActionLog(Log);
 	}
 }

@@ -269,7 +269,7 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 	int32 TargetTileID = TargetCharacter->OwnedTileID;
 	int32 OwnerID = OwningPlayer->PlayerID;
 
-	if (TargetCharacter->Implements<UBaseInterface>())
+	if (TargetCharacter->Implements<UBaseInterface>()) // todo: Probably can remove it
 	{
 		int32 TileOneID = (OwnerID == 1) ? 17 : 1;
 		int32 TileTwoID = (OwnerID == 2) ? 18 : 2;
@@ -288,6 +288,11 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
 
 	return FVector2D::Distance(PositionOne, PositionTwo);
+}
+
+AKKGameState* AKKCharacter::GetGameState() const
+{
+	return GetWorld()->GetGameState<AKKGameState>();
 }
 
 AKKMap* AKKCharacter::GetMap() const

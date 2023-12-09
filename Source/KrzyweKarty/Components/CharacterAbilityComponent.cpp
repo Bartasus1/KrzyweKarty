@@ -17,6 +17,7 @@ UCharacterAbilityComponent::UCharacterAbilityComponent()
 
 void UCharacterAbilityComponent::OnBeginAbility_Implementation(int32 Index)
 {
+	AbilityIndex = Index;
 }
 
 void UCharacterAbilityComponent::OnFinishAbility_Implementation(int32 Index)

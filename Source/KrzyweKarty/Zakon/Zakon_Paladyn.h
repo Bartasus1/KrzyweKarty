@@ -17,5 +17,7 @@ class KRZYWEKARTY_API AZakon_Paladyn : public AZakon, public IAreaModifierInterf
 	
 public:
 
+	virtual void PerformAbility_Implementation(int32 Index) override;
+
 	TArray<FDirection> GetAffectedTiles_Implementation(int32 Index) override;
 };

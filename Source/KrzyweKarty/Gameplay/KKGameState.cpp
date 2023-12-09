@@ -6,10 +6,6 @@
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "Net/UnrealNetwork.h"
 
-TArray<FLogStruct>& AKKGameState::GetActionLogs()
-{
-	return ActionLogs;
-}
 
 void AKKGameState::RegisterCharacterInSystem_Implementation(AKKCharacter* Character)
 {
@@ -62,15 +58,15 @@ TArray<AKKCharacter*> AKKGameState::GetCharactersForPlayer(int32 PlayerID)
 	return PlayerCharacters;
 }
 
-void AKKGameState::OnRep_ActionLogs()
+
+void AKKGameState::Server_AddActionLog_Implementation(const FText& NewAction)
 {
-	ActionAdded.Broadcast();
+	Multicast_AddActionLog(NewAction, true);
 }
 
-void AKKGameState::AddActionLog_Implementation(const FText& NewAction)
+void AKKGameState::Multicast_AddActionLog_Implementation(const FText& NewAction, bool bIsFromServer)
 {
-	ActionLogs.Add({NewAction, true});
-	OnRep_ActionLogs();
+	ActionAdded.Broadcast(NewAction, bIsFromServer);
 }
 
 void AKKGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -78,6 +74,5 @@ void AKKGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AKKGameState, Map);
-	DOREPLIFETIME(AKKGameState, ActionLogs);
 	DOREPLIFETIME(AKKGameState, bFirstPlayerTurn);
 }

@@ -3,6 +3,8 @@
 
 #include "Zakon_Rycerz.h"
 
+#include "KrzyweKarty/Gameplay/KKGameState.h"
+
 // bool AZakon_Rycerz::ActiveAbility()
 // {
 // 	if (GetMana() < GetFirstAbilityManaCost())
@@ -22,8 +24,7 @@ void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Att
 	{
 		ReceivedAttacksCounter = 0;
 		
-		AttackResultInfo.AttackStatus = EAttackResult::AttackBlocked;
-		AttackResultInfo.ErrorMessage = FText::FromString("Knight blocked the attack with his Passive Ability");
+		GetGameState()->Multicast_AddActionLog(FText::FromString("Rycerz zablokowal atak dzieki swojej umiejetnosci"));
 	}
 	else
 	{

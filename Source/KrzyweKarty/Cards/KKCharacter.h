@@ -126,6 +126,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CommitAbilityCost(int32 Index);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UCharacterAbilityComponent* GetCharacterAbilityComponent(int32 Index);
+
 	UPROPERTY(BlueprintAssignable)
 	FCharacterAbilityAction OnBeginAbilityDelegate;
 
@@ -171,6 +174,7 @@ protected:
 
 ////////////////////////////////////////////////////////////////
 
+	AKKGameState* GetGameState() const;
 	AKKMap* GetMap() const;
 
 ////////////////////////////////////////////////////////////////

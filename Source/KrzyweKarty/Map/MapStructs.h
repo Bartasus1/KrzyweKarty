@@ -58,7 +58,7 @@ struct FDirection
 UENUM(BlueprintType)
 enum ETileSelectionPolicy
 {
-	TSP_AllTiles				UMETA(DisplayName="None"),
+	TSP_AllTiles			UMETA(DisplayName="AllTiles"),
 	TSP_NoCharacters		UMETA(DisplayName="No Characters"),
 	TSP_AllyCharactersOnly	UMETA(DisplayName="Ally Characters Only"),
 	TSP_EnemyCharactersOnly UMETA(DisplayName="Enemy Characters Only")

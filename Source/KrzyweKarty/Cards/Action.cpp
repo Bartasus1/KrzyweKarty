@@ -85,7 +85,7 @@ void USummonAction::ShowActionAffectedTiles() const
 {
 	for(AKKTile* Tile: GetMap()->GetTilesForSpawn(Character, Character->GetPossibleSpawnTiles()))
 	{
-		Tile->SetTileColor(Blue);
+		Tile->SetTileColor(ETileColor::Blue);
 	}
 }
 
@@ -113,7 +113,7 @@ void UMoveAction::ShowActionAffectedTiles() const
 	{
 		for(AKKTile* Tile: Character->GetMoveTiles())
 		{
-			Tile->SetTileColor(Yellow);
+			Tile->SetTileColor(ETileColor::Yellow);
 		}
 	}
 }
@@ -149,7 +149,7 @@ void UAttackAction::ShowActionAffectedTiles() const
 	{
 		for(AKKTile* Tile: Character->GetAttackTiles())
 		{
-			Tile->SetTileColor(Red);
+			Tile->SetTileColor(ETileColor::Red);
 		}
 	}
 }
