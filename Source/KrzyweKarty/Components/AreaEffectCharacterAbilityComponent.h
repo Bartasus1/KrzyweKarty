@@ -41,7 +41,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	ETileColor TileColor = ETileColor::Red;
 
+private:
+	UFUNCTION(Client, Reliable)
+	void ShowAreaTiles();
+
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

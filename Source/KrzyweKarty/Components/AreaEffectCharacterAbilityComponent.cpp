@@ -12,24 +12,17 @@
 // Sets default values for this component's properties
 UAreaEffectCharacterAbilityComponent::UAreaEffectCharacterAbilityComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-	PrimaryComponentTick.bStartWithTickEnabled = false;
-	
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
+	//PrimaryComponentTick.bStartWithTickEnabled = false;
+
 }
 
 void UAreaEffectCharacterAbilityComponent::OnBeginAbility_Implementation(int32 Index)
 {
 	Super::OnBeginAbility_Implementation(Index);
-
-	if(OwnerCharacter->Implements<UAreaModifierInterface>())
-	{
-		Server_SetAffectedTiles(IAreaModifierInterface::Execute_GetAffectedTiles(OwnerCharacter, Index));
-
-		SetComponentTickEnabled(true);
-	}
+	
+	Server_SetAffectedTiles(IAreaModifierInterface::Execute_GetAffectedTiles(OwnerCharacter, Index));
+	ShowAreaTiles();
 }
 
 void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(int32 Index)
@@ -37,7 +30,6 @@ void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(int32 
 	Super::OnFinishAbility_Implementation(Index);
 
 	GetMap()->ClearTilesHighlights();
-	SetComponentTickEnabled(false);
 }
 
 void UAreaEffectCharacterAbilityComponent::Server_SetAffectedTiles_Implementation(const TArray<FDirection>& InAffectedTiles)
@@ -59,8 +51,18 @@ void UAreaEffectCharacterAbilityComponent::RotateSelectedTiles(ERotationDirectio
 	}
 
 	Server_SetAffectedTiles(Directions);
+
+	GetMap()->ClearTilesHighlights();
+	ShowAreaTiles();
 }
 
+void UAreaEffectCharacterAbilityComponent::ShowAreaTiles_Implementation()
+{
+	for(AKKTile* Tile: GetMap()->GetTilesByDirection(OwnerCharacter, AffectedTiles, TileSelectionPolicy))
+ 	{
+ 		Tile->SetTileColor(TileColor);
+ 	}
+}
 
 void UAreaEffectCharacterAbilityComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -69,15 +71,4 @@ void UAreaEffectCharacterAbilityComponent::GetLifetimeReplicatedProps(TArray<FLi
 	DOREPLIFETIME(UAreaEffectCharacterAbilityComponent, AffectedTiles);
 }
 
-void UAreaEffectCharacterAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	GetMap()->ClearTilesHighlights();
-
-	for(AKKTile* Tile: GetMap()->GetTilesByDirection(OwnerCharacter, AffectedTiles, TileSelectionPolicy))
-	{
-		Tile->SetTileColor(TileColor);
-	}
-}
 

@@ -8,6 +8,7 @@
 #include "Map/KKTile.h"
 #include "KKGameStatics.generated.h"
 
+class AKKPlayerController;
 /**
  * 
  */
@@ -16,6 +17,9 @@ class KRZYWEKARTY_API UKKGameStatics : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
+
+	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
+	static AKKPlayerController* GetKKPlayerController(const UObject* WorldContextObject);
 	
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
 	static AKKMap* GetMap(const UObject* WorldContextObject);

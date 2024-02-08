@@ -24,7 +24,7 @@ void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Att
 	{
 		ReceivedAttacksCounter = 0;
 		
-		GetGameState()->Multicast_AddActionLog(FText::FromString("Rycerz zablokowal atak dzieki swojej umiejetnosci"));
+		GetGameState()->Multicast_AddActionLog(FText::FromString("Rycerz zablokowal atak dzieki swojej umiejetnosci pasywnej: Fechtunek")); //todo: move it to some kind of DataTable
 	}
 	else
 	{

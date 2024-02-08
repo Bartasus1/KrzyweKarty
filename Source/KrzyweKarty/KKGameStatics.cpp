@@ -9,6 +9,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Map/KKMap.h"
 
+AKKPlayerController* UKKGameStatics::GetKKPlayerController(const UObject* WorldContextObject)
+{
+	return Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
+}
+
 AKKMap* UKKGameStatics::GetMap(const UObject* WorldContextObject)
 {
 	return WorldContextObject->GetWorld()->GetGameState<AKKGameState>()->Map;
