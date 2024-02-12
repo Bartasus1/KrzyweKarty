@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KKPlayerController.generated.h"
 
+class UPlayerInputDataAsset;
 class UAction;
 class AKKCharacter;
 class AKKTile;
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(ReplicatedUsing="OnRep_TurnChanged", BlueprintReadOnly)
 	bool bIsMyTurn = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPlayerInputDataAsset* PlayerInputDataAsset;
 	
 protected:
 	UFUNCTION(BlueprintCallable)

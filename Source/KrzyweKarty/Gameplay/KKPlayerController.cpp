@@ -92,7 +92,7 @@ bool AKKPlayerController::SelectCharacter()
 
 			UpdateCharacterInActions();
 			
-			return true;
+			return bIsMyTurn; //dont use character if its not my turn
 		}
 	}
 
