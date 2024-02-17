@@ -35,7 +35,7 @@ void AKKTile::OnRep_TileID()
 #endif
 }
 
-int32 AKKTile::GetTilePositionID()
+int32 AKKTile::GetTilePositionID() const
 {
 	return TileID;
 }

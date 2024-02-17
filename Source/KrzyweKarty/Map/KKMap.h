@@ -60,7 +60,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
 
-	TArray<AKKTile*> CanAttackBase(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles);
+	TArray<AKKTile*> GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles);
+	
+	bool CanAttackBase(const AKKCharacter* Character) const;
 	
 	UFUNCTION(BlueprintCallable)
 	void ClearTilesHighlights();
@@ -104,8 +106,12 @@ private:
 	const uint8 TotalMapSize = 20;
 	const uint8 BaseRow = 5;
 
+	const int32 FirstBaseAttackTiles[2] = {1, 2};
+	const int32 SecondBaseAttackTiles[2] = {17, 18};
+	
+
 	UPROPERTY(Replicated)
-	TArray<FMapCell> BaseArray;
+	TArray<FMapCell> BaseArray; //complimentary to MapArray
 
 public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }

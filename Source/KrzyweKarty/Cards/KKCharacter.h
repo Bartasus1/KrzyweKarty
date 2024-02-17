@@ -145,7 +145,7 @@ public:
 	// Tiles
 
 	UFUNCTION(BlueprintCallable)
-	virtual int32 GetTilePositionID() override;
+	virtual int32 GetTilePositionID() const override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<AKKTile*> GetMoveTiles();
@@ -169,7 +169,7 @@ protected:
 	void KillCharacter(AKKCharacter* TargetCharacter) const;
 	void DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const;
 
-	int32 GetDistanceTo(AKKCharacter* TargetCharacter) const;
+	int32 GetDistanceTo(const TScriptInterface<ISelectableInterface>& SelectableInterface) const;
 
 ////////////////////////////////////////////////////////////////
 
@@ -183,8 +183,8 @@ protected:
 public:
 	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
 	
-	FORCEINLINE int32 GetStat(int32 FCharacterStats::*MemberField) const { return CharacterStats.*MemberField; }
-	FORCEINLINE int32 GetDefaultStat(int32 FCharacterStats::*MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
+	FORCEINLINE int32 GetStat(int32 FCharacterStats::* MemberField) const { return CharacterStats.*MemberField; }
+	FORCEINLINE int32 GetDefaultStat(int32 FCharacterStats::* MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
 	
 	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
 	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }

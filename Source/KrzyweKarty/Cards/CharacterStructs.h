@@ -9,16 +9,16 @@ struct FCharacterStats
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Strength;
+	int32 Strength = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Defence;
+	int32 Defence = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Health;
+	int32 Health = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Mana;
+	int32 Mana = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxAttackRange = 1;

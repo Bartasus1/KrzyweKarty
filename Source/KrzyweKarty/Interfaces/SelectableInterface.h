@@ -24,5 +24,5 @@ class KRZYWEKARTY_API ISelectableInterface
 public:
 
 	UFUNCTION(BlueprintCallable)
-	virtual int32 GetTilePositionID() = 0;
+	virtual int32 GetTilePositionID() const = 0;
 };

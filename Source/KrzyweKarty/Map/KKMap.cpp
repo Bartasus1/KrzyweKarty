@@ -245,19 +245,29 @@ TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 	});
 }
 
-TArray<AKKTile*> AKKMap::CanAttackBase(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles)
+TArray<AKKTile*> AKKMap::GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles)
 {
-	const bool bIsForwardFacing = Character->Direction == 1;
-	int32 BaseAttackTiles[2] = {bIsForwardFacing ? 17: 1, bIsForwardFacing ? 18: 2};
-	int32 BaseIndex = bIsForwardFacing ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
+	const int32 BaseIndex = Character->Direction == 1 ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
 	
-
-	if(Character->OwnedTileID == BaseAttackTiles[0] || Character->OwnedTileID == BaseAttackTiles[1])
+	if(CanAttackBase(Character))
 	{
 		InDefaultAttackTiles.Add(BaseArray[BaseIndex].Tile);
 	}
 
 	return InDefaultAttackTiles;
+}
+
+bool AKKMap::CanAttackBase(const AKKCharacter* Character) const
+{
+	const int32* BaseAttackTiles = (Character->Direction == 1) ? SecondBaseAttackTiles : FirstBaseAttackTiles;
+	const int32 TileID = Character->GetTilePositionID();
+
+	if(TileID == BaseAttackTiles[0] || TileID == BaseAttackTiles[1])
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void AKKMap::ClearTilesHighlights()

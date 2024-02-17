@@ -55,7 +55,7 @@ void AKKCharacter::CharacterDied_Implementation()
 	OnCharacterDeath.Broadcast();
 }
 
-int32 AKKCharacter::GetTilePositionID()
+int32 AKKCharacter::GetTilePositionID() const
 {
 	return OwnedTileID;
 }
@@ -85,7 +85,7 @@ TArray<FDirection> AKKCharacter::GetPossibleAttackTiles()
 		if(i == 0)
 			continue;
 		
-		DefaultAttackTiles.Add({i, 0});
+		DefaultAttackTiles.Add({i, 0}); //cross pattern
 		DefaultAttackTiles.Add({0, i});
 	}
 	
@@ -99,7 +99,7 @@ TArray<AKKTile*> AKKCharacter::GetMoveTiles()
 
 TArray<AKKTile*> AKKCharacter::GetAttackTiles()
 {
-	return GetMap()->CanAttackBase(this, GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), TSP_EnemyCharactersOnly));
+	return GetMap()->GetTilesForBaseAttack(this, GetMap()->GetTilesByDirection(this, GetPossibleAttackTiles(), TSP_EnemyCharactersOnly));
 }
 
 int32 AKKCharacter::GetTopActionWeight()
@@ -264,17 +264,11 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 }
 
 
-int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
+int32 AKKCharacter::GetDistanceTo(const TScriptInterface<ISelectableInterface>& SelectableInterface) const
 {
-	int32 TargetTileID = TargetCharacter->OwnedTileID;
-	int32 OwnerID = OwningPlayer->PlayerID;
-
-	if (TargetCharacter->Implements<UBaseInterface>()) // todo: Probably can remove it
+	if (SelectableInterface.GetObject()->Implements<UBaseInterface>())
 	{
-		int32 TileOneID = (OwnerID == 1) ? 17 : 1;
-		int32 TileTwoID = (OwnerID == 2) ? 18 : 2;
-		
-		if (OwnedTileID == TileOneID || OwnedTileID == TileTwoID )
+		if(GetMap()->CanAttackBase(this))
 		{
 			return 0;
 		}
@@ -282,8 +276,11 @@ int32 AKKCharacter::GetDistanceTo(AKKCharacter* TargetCharacter) const
 		return MAX_int32;
 	}
 
-	FVector2D PositionOne = FVector2D(OwnedTileID / 4, OwnedTileID % 4);
-	FVector2D PositionTwo = FVector2D(TargetTileID / 4, TargetTileID % 4);
+	const int32 TargetTileID = SelectableInterface->GetTilePositionID();
+	const int32 MapSize = GetMap()->GetMapSize();
+
+	const FVector2D PositionOne = FVector2D(OwnedTileID / MapSize, OwnedTileID % MapSize);
+	const FVector2D PositionTwo = FVector2D(TargetTileID / MapSize, TargetTileID % MapSize);
 
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
 

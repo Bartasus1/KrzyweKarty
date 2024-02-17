@@ -26,8 +26,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	UUserWidget* ChangeTurnWidget;
-
-
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnTurnChange(bool bIsMyTurn);

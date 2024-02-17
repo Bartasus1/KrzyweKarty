@@ -42,7 +42,7 @@ public:
 	UFUNCTION(Server, Reliable)
 	void RegisterPlayerInSystem(AKKPlayerController* PlayerController);
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ChangeTurn();
 
 private:

@@ -47,7 +47,7 @@ public:
 #endif
 
 	UFUNCTION(BlueprintCallable)
-	virtual int32 GetTilePositionID() override;
+	virtual int32 GetTilePositionID() const override;
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetTileColor(ETileColor NewTileColor);

@@ -11,7 +11,7 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
 	if(NewCharacter == nullptr)
 	{
-		RemoveFromParent();
+		SetVisibility(ESlateVisibility::Collapsed);
 		return;
 	}
 	
@@ -72,7 +72,7 @@ void UCharacterStatsWidget::UpdateImageProperty(FName PropertyName, float BaseVa
 {
 	if(StatImage)
 	{
-		const float Value = BaseValue / MaxValue;
+		const float Value = (MaxValue == 0) ? 0 : BaseValue / MaxValue;
 		StatImage->GetDynamicMaterial()->SetScalarParameterValue(PropertyName, Value);
 	}
 }
@@ -80,7 +80,7 @@ void UCharacterStatsWidget::UpdateImageProperty(FName PropertyName, float BaseVa
 void UCharacterStatsWidget::RemoveCharacter()
 {
 	Character = nullptr;
-	RemoveFromParent();
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 FText UCharacterStatsWidget::GetTextForStat(int32 FCharacterStats::* MemberField, UImage* StatImage) const
@@ -90,8 +90,8 @@ FText UCharacterStatsWidget::GetTextForStat(int32 FCharacterStats::* MemberField
 		return FText();
 	}
 
-	const float BaseValue = Character->GetStat(MemberField);
-	const float MaxValue = Character->GetDefaultStat(MemberField);
+	const int32 BaseValue = Character->GetStat(MemberField);
+	const int32 MaxValue = Character->GetDefaultStat(MemberField);
 	
 	UpdateImageProperty("Progress", BaseValue, MaxValue, StatImage);
 
