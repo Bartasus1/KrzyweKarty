@@ -31,16 +31,11 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnTurnChange(bool bIsMyTurn);
-
+	
 	void ShowCharacterStats(AKKCharacter* Character, bool bIsCurrentCharacter);
+	void ShowCharacterStatsPreview(AKKCharacter* Character, bool bIsCurrentCharacter);
 
 protected:
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
-	TSubclassOf<UCharacterStatsWidget> SelectedCharacterWidgetClass;
-
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess="true"))
-	TSubclassOf<UCharacterStatsWidget> TargetCharacterWidgetClass;
-	
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

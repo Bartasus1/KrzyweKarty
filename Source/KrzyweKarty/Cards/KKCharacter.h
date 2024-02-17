@@ -11,7 +11,6 @@
 #include "KKCharacter.generated.h"
 
 class UAction;
-struct FMapCell;
 enum ERotationDirection : int;
 class AKKTile;
 class AKKMap;
@@ -91,10 +90,8 @@ public:
 	virtual void OnTurnEnded();
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-
-protected:
+	
 	virtual void OnConstruction(const FTransform& Transform) override;
-public:
 	virtual void SetOwner(AActor* NewOwner) override;
 
 ///////////////////////////////////////////////////////////////////////
@@ -143,10 +140,9 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void Client_OnFinishAbilityDelegate(int32 Index);
-	
-	// UFUNCTION(BlueprintCallable)
-	// virtual void ActiveAbility(int32 Index, TScriptInterface<ISelectableInterface> SelectableObject);
-	
+
+	//////////////////////////////////////////////////////
+	// Tiles
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() override;
@@ -186,6 +182,9 @@ protected:
 
 public:
 	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
+	
+	FORCEINLINE int32 GetStat(int32 FCharacterStats::*MemberField) const { return CharacterStats.*MemberField; }
+	FORCEINLINE int32 GetDefaultStat(int32 FCharacterStats::*MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
 	
 	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
 	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }

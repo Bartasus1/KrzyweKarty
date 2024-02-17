@@ -18,20 +18,17 @@ void APlayerHUD::ShowCharacterStats(AKKCharacter* Character, bool bIsCurrentChar
 	UCharacterStatsWidget* CharacterWidget = bIsCurrentCharacter ? SelectedCharacterWidget : TargetCharacterWidget;
 	
 	CharacterWidget->ShowStats(Character);
+	CharacterWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void APlayerHUD::ShowCharacterStatsPreview(AKKCharacter* Character, bool bIsCurrentCharacter)
+{
+	UCharacterStatsWidget* CharacterWidget = bIsCurrentCharacter ? SelectedCharacterWidget : TargetCharacterWidget;
 }
 
 // Called when the game starts or when spawned
 void APlayerHUD::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if(GetOwningPlayerController()->IsLocalController())
-	{
-		if(SelectedCharacterWidgetClass)
-			SelectedCharacterWidget = CreateWidget<UCharacterStatsWidget>(GetOwningPlayerController(), SelectedCharacterWidgetClass);
-
-		if(TargetCharacterWidgetClass)
-			TargetCharacterWidget = CreateWidget<UCharacterStatsWidget>(GetOwningPlayerController(), TargetCharacterWidgetClass);
-	}
 	
 }

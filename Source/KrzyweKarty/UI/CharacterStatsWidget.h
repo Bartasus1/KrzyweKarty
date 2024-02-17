@@ -9,6 +9,7 @@
 /**
  * 
  */
+struct FCharacterStats;
 class AKKCharacter;
 class UTextBlock;
 class UImage;
@@ -21,6 +22,9 @@ class KRZYWEKARTY_API UCharacterStatsWidget : public UUserWidget
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	void ShowStats(AKKCharacter* NewCharacter);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void ShowStatsPreview(const FCharacterStats& PreviewStats);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
@@ -69,8 +73,10 @@ public:
 
 	UFUNCTION()
 	void RemoveCharacter();
+	
 
 private:
 
-	FText GetTextForStat(float BaseValue, float MaxValue, UImage* StatImage) const;
+	FText GetTextForStat(int32 FCharacterStats::* MemberField, UImage* StatImage) const;
+	void UpdateImageProperty(FName PropertyName, float BaseValue, float MaxValue, UImage* StatImage) const;
 };

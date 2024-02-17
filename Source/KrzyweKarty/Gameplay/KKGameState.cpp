@@ -9,7 +9,7 @@
 
 void AKKGameState::RegisterCharacterInSystem_Implementation(AKKCharacter* Character)
 {
-	RegisteredCharacters.Add(Character);
+	RegisteredCharacters.Add(Character); // Set -> no duplicates
 	CountedMoves++;
 
 	if(CountedMoves >= MovesPerTurn)
