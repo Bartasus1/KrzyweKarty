@@ -9,7 +9,9 @@
 #include "AreaEffectCharacterAbilityComponent.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), Blueprintable)
+struct FInputActionInstance;
+
+UCLASS(ClassGroup=(Custom), Blueprintable, meta=(BlueprintSpawnableComponent))
 class KRZYWEKARTY_API UAreaEffectCharacterAbilityComponent : public UCharacterAbilityComponent
 {
 	GENERATED_BODY()
@@ -28,7 +30,7 @@ public:
 	const TArray<FDirection>& GetFinalAffectedTiles() const;
 	
 	UFUNCTION(BlueprintCallable)
-	void RotateSelectedTiles(ERotationDirection RotationDirection);
+	void RotateSelectedTiles(const FInputActionInstance& InputAction);
 
 protected:
 

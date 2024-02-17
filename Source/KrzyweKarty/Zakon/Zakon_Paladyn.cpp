@@ -11,7 +11,7 @@ void AZakon_Paladyn::PerformAbility_Implementation(int32 Index)
 {
 	if(Index == 0)
 	{
-		UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = Cast<UAreaEffectCharacterAbilityComponent>(GetCharacterAbilityComponent(Index));
+		UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = GetCharacterAbilityComponent<UAreaEffectCharacterAbilityComponent>(Index);
 		TArray<AKKCharacter*> AffectedCharacters = GetMap()->GetCharactersByDirection(this, CharacterAbilityComponent->GetFinalAffectedTiles());
 
 		for(AKKCharacter* Character : AffectedCharacters)

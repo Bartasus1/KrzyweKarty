@@ -2,7 +2,6 @@
 
 
 #include "Zakon_Rycerz.h"
-
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 
 // bool AZakon_Rycerz::ActiveAbility()

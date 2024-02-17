@@ -8,6 +8,7 @@
 #include "Gameplay/KKGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Map/KKMap.h"
+#include "Map/KKTile.h"
 
 AKKPlayerController* UKKGameStatics::GetKKPlayerController(const UObject* WorldContextObject)
 {

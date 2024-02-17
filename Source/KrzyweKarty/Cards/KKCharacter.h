@@ -129,6 +129,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	UCharacterAbilityComponent* GetCharacterAbilityComponent(int32 Index);
 
+	template<typename T>
+	T* GetCharacterAbilityComponent(int32 Index);
+
 	UPROPERTY(BlueprintAssignable)
 	FCharacterAbilityAction OnBeginAbilityDelegate;
 
@@ -216,3 +219,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }
 };
+
+template <typename T>
+T* AKKCharacter::GetCharacterAbilityComponent(int32 Index)
+{
+	return Cast<T>(GetCharacterAbilityComponent(Index));
+}

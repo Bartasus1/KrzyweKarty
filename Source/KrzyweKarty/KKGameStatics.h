@@ -4,11 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "Map/KKMap.h"
-#include "Map/KKTile.h"
 #include "KKGameStatics.generated.h"
 
+
+enum class ETileColor : uint8;
+enum ERotationDirection : int;
+struct FDirection;
+class AKKTile;
+class AKKCharacter;
+class AKKMap;
 class AKKPlayerController;
+
 /**
  * 
  */

@@ -3,7 +3,11 @@
 
 #include "AreaEffectCharacterAbilityComponent.h"
 
+#include "EnhancedInputComponent.h"
+#include "KrzyweKarty/KKGameStatics.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+#include "KrzyweKarty/Gameplay/KKPlayerController.h"
+#include "KrzyweKarty/Gameplay/Input/PlayerInputDataAsset.h"
 #include "KrzyweKarty/Interfaces/AreaModifierInterface.h"
 #include "KrzyweKarty/Map/KKTile.h"
 #include "Net/UnrealNetwork.h"
@@ -23,6 +27,12 @@ void UAreaEffectCharacterAbilityComponent::OnBeginAbility_Implementation(int32 I
 	
 	Server_SetAffectedTiles(IAreaModifierInterface::Execute_GetAffectedTiles(OwnerCharacter, Index));
 	ShowAreaTiles();
+
+	AKKPlayerController* PlayerController = UKKGameStatics::GetKKPlayerController(this);
+	UPlayerInputDataAsset* PlayerInput = PlayerController->PlayerInputDataAsset;
+
+	UEnhancedInputComponent* InputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
+	InputComponent->BindAction(PlayerInput->RotateDirections, ETriggerEvent::Triggered, this, &UAreaEffectCharacterAbilityComponent::RotateSelectedTiles);
 }
 
 void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(int32 Index)
@@ -42,8 +52,11 @@ const TArray<FDirection>& UAreaEffectCharacterAbilityComponent::GetFinalAffected
 	return AffectedTiles;
 }
 
-void UAreaEffectCharacterAbilityComponent::RotateSelectedTiles(ERotationDirection RotationDirection)
+void UAreaEffectCharacterAbilityComponent::RotateSelectedTiles(const FInputActionInstance& InputAction)
 {
+	int32 Value = InputAction.GetValue().Get<float>() - 1;
+	const ERotationDirection RotationDirection = static_cast<ERotationDirection>(Value);
+	
 	TArray<FDirection> Directions = IAreaModifierInterface::Execute_GetAffectedTiles(OwnerCharacter, AbilityIndex);
 	for(FDirection& Direction : Directions)
 	{

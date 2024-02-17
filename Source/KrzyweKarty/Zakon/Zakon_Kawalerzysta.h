@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Zakon.h"
+#include "../Cards/KKCharacter.h"
 #include "Zakon_Kawalerzysta.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class KRZYWEKARTY_API AZakon_Kawalerzysta : public AZakon
+class KRZYWEKARTY_API AZakon_Kawalerzysta : public AKKCharacter
 {
 	GENERATED_BODY()
 public:

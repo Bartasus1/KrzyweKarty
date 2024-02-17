@@ -50,6 +50,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TScriptInterface<ISelectableInterface> TraceForSelectable(bool bHigherPriority = false) const;
+	
 	void UpdateCharacterInActions();
 
 	UFUNCTION(BlueprintCallable)

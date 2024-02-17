@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Zakon.h"
+#include "../Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/AreaModifierInterface.h"
 #include "Zakon_Halabardzista.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class KRZYWEKARTY_API AZakon_Halabardzista : public AZakon, public IAreaModifierInterface
+class KRZYWEKARTY_API AZakon_Halabardzista : public AKKCharacter, public IAreaModifierInterface
 {
 
 

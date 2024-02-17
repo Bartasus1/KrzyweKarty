@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Zakon.h"
+#include "../Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/AreaModifierInterface.h"
 #include "Zakon_Lucznik.generated.h"
 
@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class KRZYWEKARTY_API AZakon_Lucznik : public AZakon, public IAreaModifierInterface
+class KRZYWEKARTY_API AZakon_Lucznik : public AKKCharacter, public IAreaModifierInterface
 {
 	GENERATED_BODY()
 

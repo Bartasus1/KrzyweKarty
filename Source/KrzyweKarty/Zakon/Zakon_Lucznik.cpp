@@ -26,7 +26,7 @@ FAttackResultInfo AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 void AZakon_Lucznik::PerformAbility_Implementation(int32 Index)
 {
-	UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = Cast<UAreaEffectCharacterAbilityComponent>(GetCharacterAbilityComponent(Index));
+	UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = GetCharacterAbilityComponent<UAreaEffectCharacterAbilityComponent>(Index);
 	
 	for(AKKCharacter* Character : GetMap()->GetCharactersByDirection(this, CharacterAbilityComponent->GetFinalAffectedTiles(), CSP_EnemyCharactersOnly))
 	{

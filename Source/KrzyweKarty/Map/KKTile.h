@@ -39,7 +39,7 @@ public:
 	void OnRep_TileID();
 
 	UPROPERTY(BlueprintReadWrite)
-	TEnumAsByte<ETileColor> TileColor;
+	ETileColor TileColor;
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere)
