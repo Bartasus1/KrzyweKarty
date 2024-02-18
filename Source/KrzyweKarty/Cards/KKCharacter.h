@@ -147,6 +147,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() const override;
 
+	virtual void OnSelectableHighlighted() override;
+
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<AKKTile*> GetMoveTiles();
 

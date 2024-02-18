@@ -48,6 +48,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() const override;
+
+	virtual void OnSelectableHighlighted() override;
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetTileColor(ETileColor NewTileColor);

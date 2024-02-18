@@ -18,7 +18,6 @@ void APlayerHUD::ShowCharacterStats(AKKCharacter* Character, bool bIsCurrentChar
 	UCharacterStatsWidget* CharacterWidget = bIsCurrentCharacter ? SelectedCharacterWidget : TargetCharacterWidget;
 	
 	CharacterWidget->ShowStats(Character);
-	CharacterWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void APlayerHUD::ShowCharacterStatsPreview(AKKCharacter* Character, bool bIsCurrentCharacter)

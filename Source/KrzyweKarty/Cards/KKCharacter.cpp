@@ -60,6 +60,11 @@ int32 AKKCharacter::GetTilePositionID() const
 	return OwnedTileID;
 }
 
+void AKKCharacter::OnSelectableHighlighted()
+{
+	CharacterMesh->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
+}
+
 TArray<int32> AKKCharacter::GetPossibleSpawnTiles()
 {
 	return { 0, 1, 2 ,3};

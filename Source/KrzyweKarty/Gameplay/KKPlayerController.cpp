@@ -89,8 +89,6 @@ bool AKKPlayerController::SelectCharacter()
 		{
 			SelectedCharacter = TracedCharacter;
 			ShowCharacterStats(SelectedCharacter);
-
-			UpdateCharacterInActions();
 			
 			return bIsMyTurn; //dont use character if its not my turn
 		}
@@ -101,6 +99,8 @@ bool AKKPlayerController::SelectCharacter()
 
 void AKKPlayerController::OnCharacterSelection()
 {
+	UpdateCharacterInActions();
+	
 	if(SelectedCharacter->IsCharacterOnMap())
 	{
 		CharacterActions[UMoveAction::StaticClass()]->ShowActionAffectedTiles();

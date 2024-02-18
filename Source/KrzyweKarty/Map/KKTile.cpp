@@ -40,6 +40,11 @@ int32 AKKTile::GetTilePositionID() const
 	return TileID;
 }
 
+void AKKTile::OnSelectableHighlighted()
+{
+	BoxCollision->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
+}
+
 // Called when the game starts or when spawned
 void AKKTile::BeginPlay()
 {

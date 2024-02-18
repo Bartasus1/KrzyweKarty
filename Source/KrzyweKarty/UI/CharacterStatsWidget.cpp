@@ -9,9 +9,10 @@
 
 void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 {
+	SetVisibility(NewCharacter ? ESlateVisibility::Visible: ESlateVisibility::Collapsed);
+	
 	if(NewCharacter == nullptr)
 	{
-		SetVisibility(ESlateVisibility::Collapsed);
 		return;
 	}
 	
@@ -23,11 +24,6 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 	Character = NewCharacter; // assign new character
 	CharacterNameText->SetText(Character->GetCharacterName());
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
-
-	if(!IsInViewport())
-	{
-		AddToViewport();
-	}
 }
 
 void UCharacterStatsWidget::ShowStatsPreview_Implementation(const FCharacterStats& PreviewStats)

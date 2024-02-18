@@ -26,10 +26,13 @@ void AKKGameState::RegisterPlayerInSystem_Implementation(AKKPlayerController* Pl
 
 void AKKGameState::ChangeTurn_Implementation()
 {
-	RegisteredPlayers[0]->bIsMyTurn = bFirstPlayerTurn;
-	RegisteredPlayers[1]->bIsMyTurn = !bFirstPlayerTurn;
-
+	bFirstPlayerTurn = !bFirstPlayerTurn;
+	
+	RegisteredPlayers[0]->bIsMyTurn = !bFirstPlayerTurn;
+	RegisteredPlayers[1]->bIsMyTurn = bFirstPlayerTurn;
+	
 	RegisteredPlayers[0]->OnRep_TurnChanged();
+	RegisteredPlayers[1]->OnRep_TurnChanged();
 
 	for(AKKCharacter* Character : RegisteredCharacters)
 	{
@@ -38,8 +41,7 @@ void AKKGameState::ChangeTurn_Implementation()
 			Character->CharacterActions.Reset();
 		}
 	}
-
-	bFirstPlayerTurn = !bFirstPlayerTurn;
+	
 	CountedMoves = 0;
 }
 
