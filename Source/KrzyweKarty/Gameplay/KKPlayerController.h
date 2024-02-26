@@ -70,4 +70,7 @@ protected:
 
 	UFUNCTION(BlueprintPure)
 	bool MinMoveRequirements();
+
+private:
+	TScriptInterface<ISelectableInterface> CachedTracedSelectableInterface;
 };

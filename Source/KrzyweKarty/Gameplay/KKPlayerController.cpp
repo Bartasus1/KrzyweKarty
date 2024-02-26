@@ -26,9 +26,12 @@ void AKKPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -70;
 	PlayerCameraManager->ViewPitchMax = 10;
 
-	CharacterActions.Add(USummonAction::StaticClass(), NewObject<USummonAction>(this, "Summon Action"));
-	CharacterActions.Add(UMoveAction::StaticClass(), NewObject<UMoveAction>(this, "Move Action"));
-	CharacterActions.Add(UAttackAction::StaticClass(), NewObject<UAttackAction>(this, "Attack Action"));
+	if(IsLocalPlayerController())
+	{
+		CharacterActions.Add(USummonAction::StaticClass(), NewObject<USummonAction>(this, "Summon Action"));
+		CharacterActions.Add(UMoveAction::StaticClass(), NewObject<UMoveAction>(this, "Move Action"));
+		CharacterActions.Add(UAttackAction::StaticClass(), NewObject<UAttackAction>(this, "Attack Action"));
+	}
 }
 
 void AKKPlayerController::Tick(float DeltaSeconds)

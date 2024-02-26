@@ -274,12 +274,12 @@ void AKKMap::ClearTilesHighlights()
 {
 	for(int i = 0; i < 20; i++)
 	{
-		GetCellAtIndex(i)->Tile->SetTileColor(ETileColor::None);
+		GetCellAtIndex(i)->Tile->SetTileState(ETileState::None);
 	}
 
 	for(auto& BaseTile: BaseArray)
 	{
-		BaseTile.Tile->SetTileColor(ETileColor::None);
+		BaseTile.Tile->SetTileState(ETileState::None);
 	}
 }
 

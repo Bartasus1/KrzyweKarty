@@ -20,6 +20,7 @@ AKKTile::AKKTile()
 	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	BoxCollision->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 
+
 #if WITH_EDITORONLY_DATA
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>("TextRender");
 	TextRenderComponent->SetupAttachment(BoxCollision);
@@ -40,9 +41,29 @@ int32 AKKTile::GetTilePositionID() const
 	return TileID;
 }
 
+bool AKKTile::IsSelectable() const
+{
+	return TileState != ETileState::None;
+}
+
 void AKKTile::OnSelectableHighlighted()
 {
 	BoxCollision->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
+}
+
+void AKKTile::SetTileState_Implementation(ETileState NewTileState)
+{
+	TileState = NewTileState;
+	
+	if(TileState == ETileState::None)
+	{
+		BoxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		OnSelectableHighlighted();
+	}
 }
 
 // Called when the game starts or when spawned

@@ -11,13 +11,13 @@
 class UBoxComponent;
 
 UENUM(BlueprintType)
-enum class ETileColor : uint8
+enum class ETileState : uint8
 {
 	None,
-	Red,
-	Blue,
-	Yellow,
-	Grey
+	Attack,
+	Summon,
+	Movement,
+	InActive // ability tile, that is not occupied by anyone
 };
 
 UCLASS()
@@ -39,7 +39,7 @@ public:
 	void OnRep_TileID();
 
 	UPROPERTY(BlueprintReadWrite)
-	ETileColor TileColor;
+	ETileState TileState;
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere)
@@ -49,10 +49,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() const override;
 
+	virtual bool IsSelectable() const override;
+
 	virtual void OnSelectableHighlighted() override;
 	
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void SetTileColor(ETileColor NewTileColor);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetTileState(ETileState NewTileState);
 
 
 protected:

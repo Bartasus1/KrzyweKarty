@@ -7,7 +7,7 @@
 #include "KKGameStatics.generated.h"
 
 
-enum class ETileColor : uint8;
+enum class ETileState : uint8;
 enum ERotationDirection : int;
 struct FDirection;
 class AKKTile;
@@ -37,7 +37,7 @@ public:
 	static void RotateDirections(UPARAM(ref) TArray<FDirection>& Directions, ERotationDirection RotationDirection);
 
 	UFUNCTION(BlueprintCallable)
-	static void ShowTiles(TArray<AKKTile*> Tiles, ETileColor Color);
+	static void ShowTiles(TArray<AKKTile*> Tiles, ETileState Color);
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
 	static void HideTiles(const UObject* WorldContextObject);

@@ -41,7 +41,7 @@ protected:
 	TEnumAsByte<ETileSelectionPolicy> TileSelectionPolicy = TSP_AllTiles;
 
 	UPROPERTY(EditAnywhere)
-	ETileColor TileColor = ETileColor::Red;
+	ETileState TileColor = ETileState::Attack;
 
 private:
 	UFUNCTION(Client, Reliable)

@@ -43,11 +43,11 @@ void UKKGameStatics::RotateDirections(IN TArray<FDirection>& Directions, ERotati
 	}
 }
 
-void UKKGameStatics::ShowTiles(TArray<AKKTile*> Tiles, ETileColor Color)
+void UKKGameStatics::ShowTiles(TArray<AKKTile*> Tiles, ETileState Color)
 {
 	for(auto& Tile : Tiles)
 	{
-		Tile->SetTileColor(Color);
+		Tile->SetTileState(Color);
 	}
 }
 

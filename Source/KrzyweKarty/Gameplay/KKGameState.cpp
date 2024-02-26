@@ -14,7 +14,6 @@ void AKKGameState::RegisterCharacterInSystem_Implementation(AKKCharacter* Charac
 
 	if(CountedMoves >= MovesPerTurn)
 	{
-		CountedMoves = 0;
 		ChangeTurn();
 	}
 }

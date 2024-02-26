@@ -147,6 +147,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() const override;
 
+	virtual bool IsSelectable() const override;
+
 	virtual void OnSelectableHighlighted() override;
 
 	UFUNCTION(BlueprintCallable)
@@ -183,7 +185,7 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
 public:
-	FORCEINLINE FText GetCharacterName() const { return CharacterDataAsset->CharacterName; }
+	FORCEINLINE FText GetCharacterName() const { return FText::Join(FText::FromString(""), CharacterDataAsset->CharacterName, FText::FromString("(") ,FText::AsNumber(CharacterID),FText::FromString(")")); }
 	
 	FORCEINLINE int32 GetStat(int32 FCharacterStats::* MemberField) const { return CharacterStats.*MemberField; }
 	FORCEINLINE int32 GetDefaultStat(int32 FCharacterStats::* MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }

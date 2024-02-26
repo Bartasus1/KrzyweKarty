@@ -60,6 +60,11 @@ int32 AKKCharacter::GetTilePositionID() const
 	return OwnedTileID;
 }
 
+bool AKKCharacter::IsSelectable() const
+{
+	return true;
+}
+
 void AKKCharacter::OnSelectableHighlighted()
 {
 	CharacterMesh->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);

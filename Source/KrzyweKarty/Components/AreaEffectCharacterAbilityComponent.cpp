@@ -73,7 +73,7 @@ void UAreaEffectCharacterAbilityComponent::ShowAreaTiles_Implementation()
 {
 	for(AKKTile* Tile: GetMap()->GetTilesByDirection(OwnerCharacter, AffectedTiles, TileSelectionPolicy))
  	{
- 		Tile->SetTileColor(TileColor);
+ 		Tile->SetTileState(TileColor);
  	}
 }
 
