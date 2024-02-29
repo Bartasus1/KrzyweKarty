@@ -12,7 +12,7 @@ UCharacterAbilityComponent::UCharacterAbilityComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	SetIsReplicated(true);
+	SetIsReplicatedByDefault(true);
 }
 
 void UCharacterAbilityComponent::OnBeginAbility_Implementation(int32 Index)
