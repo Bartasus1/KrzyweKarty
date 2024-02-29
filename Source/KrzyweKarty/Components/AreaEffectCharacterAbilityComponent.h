@@ -40,9 +40,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TEnumAsByte<ETileSelectionPolicy> TileSelectionPolicy = TSP_AllTiles;
 
-	UPROPERTY(EditAnywhere)
-	ETileState TileColor = ETileState::Attack;
-
 private:
 	UFUNCTION(Client, Reliable)
 	void ShowAreaTiles();

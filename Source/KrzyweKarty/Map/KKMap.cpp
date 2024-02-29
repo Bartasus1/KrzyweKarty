@@ -76,7 +76,7 @@ void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
 
 	for(AKKTile* Tile : InitialTiles)
 	{
-		Tile->SetTileState(ETileState::Attack);
+		Tile->SetTileStatus(nullptr);
 	}
 	
 }
@@ -288,12 +288,12 @@ void AKKMap::ClearTilesHighlights()
 {
 	for(int i = 0; i < 20; i++)
 	{
-		GetCellAtIndex(i)->Tile->SetTileState(ETileState::None);
+		GetCellAtIndex(i)->Tile->SetTileStatus(nullptr);
 	}
 
 	for(auto& BaseTile: BaseArray)
 	{
-		BaseTile.Tile->SetTileState(ETileState::None);
+		BaseTile.Tile->SetTileStatus(nullptr);
 	}
 }
 

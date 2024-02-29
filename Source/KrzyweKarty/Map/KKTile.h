@@ -8,17 +8,9 @@
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKTile.generated.h"
 
+class UTileStatus;
 class UBoxComponent;
 
-UENUM(BlueprintType)
-enum class ETileState : uint8
-{
-	None,
-	Attack,
-	Summon,
-	Movement,
-	InActive // ability tile, that is not occupied by anyone
-};
 
 UCLASS()
 class KRZYWEKARTY_API AKKTile : public AActor, public ISelectableInterface
@@ -35,11 +27,11 @@ public:
 	UPROPERTY(ReplicatedUsing="OnRep_TileID", VisibleAnywhere, BlueprintReadOnly)
 	int32 TileID;
 
+	UPROPERTY()
+	UTileStatus* TileStatus;
+
 	UFUNCTION()
 	void OnRep_TileID();
-
-	UPROPERTY(BlueprintReadWrite)
-	ETileState TileState;
 
 #if WITH_EDITORONLY_DATA
 	UPROPERTY(EditAnywhere)
@@ -55,11 +47,14 @@ public:
 	virtual void OnSelectableLostFocus() override;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void SetTileState(ETileState NewTileState);
+	void SetTileStatus(UTileStatus* InTileStatus);
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	};
+
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	UMaterialInstanceDynamic* DynamicInstaceMaterial;
+};

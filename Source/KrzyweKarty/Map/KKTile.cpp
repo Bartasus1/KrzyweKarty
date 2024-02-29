@@ -2,8 +2,14 @@
 
 
 #include "KKTile.h"
+
+#include "TileStatus.h"
+
 #include "Components/BoxComponent.h"
 #include "KrzyweKarty/KrzyweKarty.h"
+
+#include "Materials/MaterialInstanceDynamic.h"
+
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -32,7 +38,7 @@ AKKTile::AKKTile()
 void AKKTile::OnRep_TileID()
 {
 #if WITH_EDITORONLY_DATA
-	TextRenderComponent->SetText(FText::FromString(FString::FromInt(TileID)));
+	TextRenderComponent->SetText(FText::AsNumber(TileID));
 #endif
 }
 
@@ -54,19 +60,19 @@ void AKKTile::OnSelectableLostFocus()
 {
 }
 
-void AKKTile::SetTileState_Implementation(ETileState NewTileState)
+void AKKTile::SetTileStatus_Implementation(UTileStatus* InTileStatus)
 {
-	TileState = NewTileState;
+	TileStatus = InTileStatus;
 	
-	if(TileState == ETileState::None)
+	if(TileStatus == nullptr || TileStatus->bEnableCollision == false)
 	{
 		BoxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		DynamicInstaceMaterial->SetVectorParameterValue("Color", FLinearColor(0,0,0,0));
+		return;
 	}
-	else
-	{
-		BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		OnSelectableHighlighted();
-	}
+
+	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	DynamicInstaceMaterial->SetVectorParameterValue("Color", TileStatus->StatusColor);
 }
 
 // Called when the game starts or when spawned

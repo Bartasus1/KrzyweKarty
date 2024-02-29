@@ -43,14 +43,6 @@ void UKKGameStatics::RotateDirections(IN TArray<FDirection>& Directions, ERotati
 	}
 }
 
-void UKKGameStatics::ShowTiles(TArray<AKKTile*> Tiles, ETileState Color)
-{
-	for(auto& Tile : Tiles)
-	{
-		Tile->SetTileState(Color);
-	}
-}
-
 void UKKGameStatics::HideTiles(const UObject* WorldContextObject)
 {
 	GetMap(WorldContextObject)->ClearTilesHighlights();

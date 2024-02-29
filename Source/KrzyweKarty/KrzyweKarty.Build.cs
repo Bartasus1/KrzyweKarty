@@ -11,7 +11,7 @@ public class KrzyweKarty : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "EnhancedInput"});
 		if (base.Target.bBuildEditor)
 		{
-			PublicDependencyModuleNames.Add("SubobjectDataInterface");
+			PublicDependencyModuleNames.AddRange(new string[] {"SubobjectDataInterface", "UnrealEd"});
 		}
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "OnlineSubsystemNull", "OnlineSubsystemSteam"});

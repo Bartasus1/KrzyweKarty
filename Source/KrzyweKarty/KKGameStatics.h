@@ -35,9 +35,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	static void RotateDirections(UPARAM(ref) TArray<FDirection>& Directions, ERotationDirection RotationDirection);
-
-	UFUNCTION(BlueprintCallable)
-	static void ShowTiles(TArray<AKKTile*> Tiles, ETileState Color);
+	
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))
 	static void HideTiles(const UObject* WorldContextObject);
