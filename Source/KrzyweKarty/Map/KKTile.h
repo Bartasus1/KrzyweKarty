@@ -49,9 +49,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() const override;
 
-	virtual bool IsSelectable() const override;
-
 	virtual void OnSelectableHighlighted() override;
+
+	virtual void OnSelectableGainFocus() override;
+	virtual void OnSelectableLostFocus() override;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetTileState(ETileState NewTileState);
@@ -61,5 +62,4 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-};
+	};

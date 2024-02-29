@@ -41,14 +41,17 @@ int32 AKKTile::GetTilePositionID() const
 	return TileID;
 }
 
-bool AKKTile::IsSelectable() const
-{
-	return TileState != ETileState::None;
-}
-
 void AKKTile::OnSelectableHighlighted()
 {
 	BoxCollision->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
+}
+
+void AKKTile::OnSelectableGainFocus()
+{
+}
+
+void AKKTile::OnSelectableLostFocus()
+{
 }
 
 void AKKTile::SetTileState_Implementation(ETileState NewTileState)

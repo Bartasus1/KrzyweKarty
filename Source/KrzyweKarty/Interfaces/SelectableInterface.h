@@ -27,8 +27,8 @@ public:
 	virtual int32 GetTilePositionID() const = 0;
 
 	UFUNCTION(BlueprintCallable)
-	virtual bool IsSelectable() const = 0;
-
-	UFUNCTION(BlueprintCallable)
 	virtual void OnSelectableHighlighted() = 0;
+
+	virtual void OnSelectableGainFocus() = 0;
+	virtual void OnSelectableLostFocus() = 0;
 };

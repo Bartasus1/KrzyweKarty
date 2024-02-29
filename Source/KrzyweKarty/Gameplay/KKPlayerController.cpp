@@ -38,9 +38,24 @@ void AKKPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
+	if(const TScriptInterface<ISelectableInterface> TracedSelectable = TraceForSelectable())
 	{
-		ShowTargetStats(TracedCharacter);
+		if(CachedTracedSelectableInterface != TracedSelectable)
+		{
+			if(CachedTracedSelectableInterface != nullptr)
+			{
+				CachedTracedSelectableInterface->OnSelectableLostFocus();
+			}
+			
+			CachedTracedSelectableInterface = TracedSelectable;
+			CachedTracedSelectableInterface->OnSelectableGainFocus();
+		}
+
+		if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TracedSelectable.GetObject()))
+		{
+			ShowTargetStats(TracedCharacter);
+		}
+		
 	}
 }
 

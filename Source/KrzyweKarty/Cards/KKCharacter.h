@@ -147,15 +147,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual int32 GetTilePositionID() const override;
 
-	virtual bool IsSelectable() const override;
-
 	virtual void OnSelectableHighlighted() override;
+
+	virtual void OnSelectableGainFocus() override;
+	virtual void OnSelectableLostFocus() override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<AKKTile*> GetMoveTiles();
-
-	UFUNCTION(BlueprintCallable)
-	virtual TArray<AKKTile*> GetAttackTiles();
 
 
 /////////////////////////////////////////////////////////
@@ -217,7 +215,7 @@ public:
 	{ return CharacterDataAsset->ActiveAbilities[Index].AbilityCost; }
 
 	UFUNCTION(BlueprintPure)
-	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->OwningPlayer == OwningPlayer; }
+	FORCEINLINE bool IsInTheSameTeam(AKKCharacter* TargetCharacter) const { return TargetCharacter->Direction == Direction; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE bool IsCharacterOnMap() const { return OwnedTileID != -1; }

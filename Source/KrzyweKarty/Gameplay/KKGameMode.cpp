@@ -79,7 +79,8 @@ void AKKGameMode::SpawnCharacterForPlayer()
 {
 	if(Map)
 	{
-		Map->SpawnFraction(Players.Num() - 1, nullptr); //todo: find a way to allow player to choose a fraction in previous level and pass it here
+		const int32 PlayerID = Players.Num() - 1;
+		Map->SpawnFraction(PlayerID, PlayersFractions[PlayerID]);
 	}
 }
 

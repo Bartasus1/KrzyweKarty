@@ -32,15 +32,18 @@ public:
 	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID); //todo: change those to void (later)
 	bool MoveCharacter(AKKCharacter* Character, int32 TileID);
 	//bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
+
+	UFUNCTION(Client, Reliable)
+	void ShowTilesForAttack(AKKCharacter* Character);
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
+	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles);
+	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> Directions);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID);
@@ -60,7 +63,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
 
-	TArray<AKKTile*> GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles);
+	void GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*>& InitialAttackTiles);
 	
 	bool CanAttackBase(const AKKCharacter* Character) const;
 	

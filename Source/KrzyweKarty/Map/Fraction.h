@@ -9,6 +9,7 @@
 #include "Fraction.generated.h"
 
 
+class UCharacterDataAsset;
 class UArrowComponent;
 class AKKCharacter;
 
@@ -40,6 +41,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AKKCharacter> BaseClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UCharacterDataAsset* FractionDataAsset;
 
 	TArray<AKKCharacter*> SpawnCharacters();
 	AKKCharacter* SpawnBase() const;

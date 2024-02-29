@@ -7,6 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "KKGameMode.generated.h"
 
+class AFraction;
 class UActionLog;
 class AKKMap;
 class AKKCharacter;
@@ -51,6 +52,9 @@ protected:
 
 	UPROPERTY(Transient)
 	TArray<AKKPlayerController*> Players;
+
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
+	TArray<TSubclassOf<AFraction>> PlayersFractions;
 
 public:
 	FORCEINLINE AKKMap* GetMap() const { return Map; }

@@ -33,7 +33,7 @@ void UAction::OnActionCompleted()
 	ConditionalBeginDestroy();
 }
 
-void UAction::BeginAction() const
+void UAction::BeginAction()
 {
 }
 
@@ -41,7 +41,7 @@ void UAction::ShowActionAffectedTiles() const
 {
 }
 
-FString UAction::GetLogMessage() const
+FString UAction::GetLogMessage()
 {
 	return FString();
 }
@@ -94,7 +94,7 @@ bool USummonAction::CanCharacterMakeAction() const
 	return Super::CanCharacterMakeAction() && GetMap()->GetCharacterAtIndex(DestinationTileID) == nullptr;
 }
 
-void USummonAction::BeginAction() const
+void USummonAction::BeginAction()
 {
 	GetMap()->AddCharacterToMap(Character, DestinationTileID);
 }
@@ -107,7 +107,7 @@ void USummonAction::ShowActionAffectedTiles() const
 	}
 }
 
-FString USummonAction::GetLogMessage() const
+FString USummonAction::GetLogMessage()
 {
 	return "Summoned " + Character->GetCharacterName().ToString();
 }
@@ -125,7 +125,7 @@ bool UMoveAction::CanCharacterMakeAction() const
 	return Super::CanCharacterMakeAction() && GetMap()->GetCharacterAtIndex(DestinationTileID) == nullptr;
 }
 
-void UMoveAction::BeginAction() const
+void UMoveAction::BeginAction()
 {
 	GetMap()->MoveCharacter(Character, DestinationTileID);
 }
@@ -141,7 +141,7 @@ void UMoveAction::ShowActionAffectedTiles() const
 	}
 }
 
-FString UMoveAction::GetLogMessage() const
+FString UMoveAction::GetLogMessage()
 {
 	return "Moved " + Character->GetCharacterName().ToString();
 }
@@ -166,7 +166,7 @@ bool UAttackAction::CanCharacterMakeAction() const
 	return bIsTargetCharacterValid && bAreBothCharactersOnMap;
 }
 
-void UAttackAction::BeginAction() const
+void UAttackAction::BeginAction()
 {
 	Character->DefaultAttack(TargetCharacter);
 }
@@ -175,14 +175,11 @@ void UAttackAction::ShowActionAffectedTiles() const
 {
 	if(Character->GetTopActionWeight() < ActionWeight)
 	{
-		for(AKKTile* Tile: Character->GetAttackTiles())
-		{
-			Tile->SetTileState(ETileState::Attack);
-		}
+		GetMap()->ShowTilesForAttack(Character);
 	}
 }
 
-FString UAttackAction::GetLogMessage() const
+FString UAttackAction::GetLogMessage()
 {
 	return Character->GetCharacterName().ToString() + " attacked " + TargetCharacter->GetCharacterName().ToString();
 }
@@ -227,12 +224,12 @@ bool UAbilityAction::CanCharacterMakeAction() const
 	return Super::CanCharacterMakeAction() && Character->CanUseAbility(Index);
 }
 
-void UAbilityAction::BeginAction() const
+void UAbilityAction::BeginAction()
 {
 	Character->OnBeginAbility(Index);
 }
 
-FString UAbilityAction::GetLogMessage() const
+FString UAbilityAction::GetLogMessage()
 {
 	return Character->GetCharacterName().ToString() + " used ability " + Character->CharacterDataAsset->ActiveAbilities[Index].AbilityName.ToString();
 }

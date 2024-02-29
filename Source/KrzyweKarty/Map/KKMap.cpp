@@ -65,11 +65,27 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
 	return false;
 }
 
-TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ECharacterSelectionPolicy CharacterSelectionPolicy)
+void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
+{
+	TArray<AKKTile*> InitialTiles = GetTilesByDirection(Character, Character->GetPossibleAttackTiles(), TSP_EnemyCharactersOnly);
+
+	if(CanAttackBase(Character))
+	{
+		GetTilesForBaseAttack(Character, InitialTiles);
+	}
+
+	for(AKKTile* Tile : InitialTiles)
+	{
+		Tile->SetTileState(ETileState::Attack);
+	}
+	
+}
+
+TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ECharacterSelectionPolicy CharacterSelectionPolicy)
 {
 	TArray<AKKCharacter*> FoundCharacters;
 	
-	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(RelativeTiles)))
+	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(Directions)))
 	{
 		if(MapCell.Character == nullptr)
 		{
@@ -101,11 +117,11 @@ TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, 
 	return FoundCharacters;
 }
 
-TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles, ETileSelectionPolicy TileSelectionPolicy)
+TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ETileSelectionPolicy TileSelectionPolicy)
 {
 	TArray<AKKTile*> FoundTiles;
 	
-	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(RelativeTiles))) 
+	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(Directions))) 
 	{
 		
 		switch (TileSelectionPolicy)
@@ -140,7 +156,7 @@ TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDi
 	return FoundTiles;
 }
 
-TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> RelativeTiles)
+TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> Directions)
 {
 	TArray<FMapCell> FoundCells;
 
@@ -151,7 +167,7 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDi
 
 		const int32 Direction = Character->Direction;
 	
-		for(FDirection& Tile : RelativeTiles)
+		for(FDirection& Tile : Directions)
 		{
 			const int32 NextX = X + (Direction * Tile.X);
 			const int32 NextY = Y + (Direction * Tile.Y);
@@ -245,16 +261,14 @@ TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 	});
 }
 
-TArray<AKKTile*> AKKMap::GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*> InDefaultAttackTiles)
+void AKKMap::GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*>& InitialAttackTiles)
 {
 	const int32 BaseIndex = Character->Direction == 1 ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
 	
 	if(CanAttackBase(Character))
 	{
-		InDefaultAttackTiles.Add(BaseArray[BaseIndex].Tile);
+		InitialAttackTiles.Add(BaseArray[BaseIndex].Tile);
 	}
-
-	return InDefaultAttackTiles;
 }
 
 bool AKKMap::CanAttackBase(const AKKCharacter* Character) const

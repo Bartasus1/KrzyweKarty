@@ -25,7 +25,7 @@ AFraction::AFraction()
 	PrimaryActorTick.bCanEverTick = false;
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>("Arrow");
-	ArrowComponent->SetupAttachment(RootComponent);
+	SetRootComponent(ArrowComponent);
 }
 
 TArray<AKKCharacter*> AFraction::SpawnCharacters()
@@ -61,9 +61,12 @@ AKKCharacter* AFraction::SpawnBase() const
 void AFraction::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-
-	RemoveComponents();
-	GetWorldTimerManager().SetTimerForNextTick(this, &AFraction::SpawnComponents);
+	
+	if(ArrowComponent->GetAttachChildren().Num() != CharactersToSpawn.Num())
+	{
+		RemoveComponents();
+		GetWorldTimerManager().SetTimerForNextTick(this, &AFraction::SpawnComponents); // don't allow spawning the components in the same frame as OnConstruction
+	}
 }
 
 void AFraction::RemoveComponents()

@@ -29,12 +29,12 @@ public:
 	void OnActionCompleted();
 
 	virtual bool CanCharacterMakeAction() const;
-	virtual void BeginAction() const;
+	virtual void BeginAction();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ShowActionAffectedTiles() const;
 
-	virtual FString GetLogMessage() const;
+	virtual FString GetLogMessage();
 	
 	int32 GetActionWeight() const;
 
@@ -63,11 +63,11 @@ public:
 	int32 DestinationTileID = -1;
 
 	virtual bool CanCharacterMakeAction() const override;
-	virtual void BeginAction() const override;
+	virtual void BeginAction() override;
 
 	virtual void ShowActionAffectedTiles() const override;
 
-	virtual FString GetLogMessage() const override;
+	virtual FString GetLogMessage() override;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -84,11 +84,11 @@ public:
 	int32 DestinationTileID = -1;
 	
 	virtual bool CanCharacterMakeAction() const override;
-	virtual void BeginAction() const override;
+	virtual void BeginAction() override;
 
 	virtual void ShowActionAffectedTiles() const override;
 
-	virtual FString GetLogMessage() const override;
+	virtual FString GetLogMessage() override;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -106,11 +106,11 @@ public:
 	AKKCharacter* TargetCharacter = nullptr;
 	
 	virtual bool CanCharacterMakeAction() const override;
-	virtual void BeginAction() const override;
+	virtual void BeginAction() override;
 
 	virtual void ShowActionAffectedTiles() const override;
 
-	virtual FString GetLogMessage() const override;
+	virtual FString GetLogMessage() override;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -136,8 +136,8 @@ public:
 	virtual void TryBeginAction() override;
 	
 	virtual bool CanCharacterMakeAction() const override;
-	virtual void BeginAction() const override;
+	virtual void BeginAction() override;
 	
-	virtual FString GetLogMessage() const override;
+	virtual FString GetLogMessage() override;
 	
 };
