@@ -2,11 +2,14 @@
 
 
 #include "Fraction.h"
-#include "SubobjectDataHandle.h"
-#include "SubobjectDataSubsystem.h"
 #include "Components/ArrowComponent.h"
 #include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
+
+#if WITH_EDITOR
+	#include "SubobjectDataHandle.h"
+	#include "SubobjectDataSubsystem.h"
+#endif
 
 
 USpawnIndicator::USpawnIndicator()
@@ -61,16 +64,20 @@ AKKCharacter* AFraction::SpawnBase() const
 void AFraction::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	
+
+#if WITH_EDITOR
 	if(ArrowComponent->GetAttachChildren().Num() != CharactersToSpawn.Num())
 	{
 		RemoveComponents();
 		GetWorldTimerManager().SetTimerForNextTick(this, &AFraction::SpawnComponents); // don't allow spawning the components in the same frame as OnConstruction
 	}
+#endif
+	
 }
 
 void AFraction::RemoveComponents()
 {
+#if WITH_EDITOR
 	const TArray<TObjectPtr<USceneComponent>> ExistingComponents = ArrowComponent->GetAttachChildren();
 	
 	if(CharactersToSpawn.Num() < ExistingComponents.Num())
@@ -93,10 +100,13 @@ void AFraction::RemoveComponents()
 		FSubobjectDataHandle Dummy;
 		DataSubsystem->DeleteSubobjects(ParentHandle, ObjectsToDelete,Dummy, UBlueprint::GetBlueprintFromClass(GetClass()), true);
 	}
+#endif
+	
 }
 
 void AFraction::SpawnComponents()
 {
+#if WITH_EDITOR
 	const TArray<TObjectPtr<USceneComponent>> ExistingComponents = ArrowComponent->GetAttachChildren();
 	
 	for(int i = 0; i < CharactersToSpawn.Num(); i++)
@@ -135,6 +145,7 @@ void AFraction::SpawnComponents()
 			}
 		}
 	}
+#endif
 }
 
 void AFraction::BeginPlay()
