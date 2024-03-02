@@ -2,6 +2,7 @@
 
 
 #include "CharacterDataAsset.h"
+#include "KrzyweKarty/CharacterHelpersSettings.h"
 
 TArray<FName> UCharacterDataAsset::GetFractions()
 {
@@ -17,4 +18,13 @@ TArray<FName> UCharacterDataAsset::GetFractions()
 		"Forgerin",
 		"Robo"
 	};
+}
+
+void UCharacterDataAsset::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+	
+	const UCharacterHelpersSettings* CharacterHelpersSettings = UCharacterHelpersSettings::Get();
+	CharacterFractionText = CharacterHelpersSettings->FractionTextMap[CharacterFraction];
+	
 }

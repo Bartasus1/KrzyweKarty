@@ -39,7 +39,7 @@ struct FAbilityDescription
 	int32 AbilityCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* AbilityImage;
+	TSoftObjectPtr<UTexture2D> AbilityImage;
 };
 
 UENUM()

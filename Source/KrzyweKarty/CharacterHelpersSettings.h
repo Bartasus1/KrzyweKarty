@@ -16,6 +16,8 @@ class KRZYWEKARTY_API UCharacterHelpersSettings : public UDeveloperSettings
 	GENERATED_BODY()
 
 public:
+
+	UCharacterHelpersSettings();
 	
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Character Visuals")
 	TSoftObjectPtr<UStaticMesh> PlatformMesh;
@@ -23,15 +25,11 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Character Visuals")
 	TSoftObjectPtr<UMaterial> TextRenderMaterial;
 
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category="Fractions")
+	TMap<FName, FText> FractionTextMap;
+
 	static const UCharacterHelpersSettings* Get()
 	{
-		if(Instance == nullptr)
-		{
-			Instance = GetDefault<UCharacterHelpersSettings>();
-		}
-		return Instance;
+		return GetDefault<UCharacterHelpersSettings>();
 	}
-private:
-
-	static const inline UCharacterHelpersSettings* Instance = nullptr;
 };

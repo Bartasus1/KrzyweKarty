@@ -7,13 +7,12 @@
 		{
 			"Name": "KrzyweKarty",
 			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"UMG",
-				"GameplayAbilities",
-				"DeveloperSettings"
-			]
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "KrzyweKartyEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -28,10 +27,6 @@
 		},
 		{
 			"Name": "OnlineSubsystemSteam",
-			"Enabled": true
-		},
-		{
-			"Name": "GameplayAbilities",
 			"Enabled": true
 		}
 	]

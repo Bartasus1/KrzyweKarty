@@ -68,7 +68,6 @@ void AKKCharacter::OnSelectableHighlighted()
 
 void AKKCharacter::OnSelectableGainFocus()
 {
-	//todo: add UI on hover
 }
 
 void AKKCharacter::OnSelectableLostFocus()
@@ -142,12 +141,12 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 		TextRenderName->SetText(CharacterDataAsset->CharacterName);
 		
 		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
-		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture);
+		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture.LoadSynchronous());
 		
 		
 		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
 		{
-			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
+			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh.LoadSynchronous());
 			CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
 		}
 	}
@@ -175,7 +174,7 @@ FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 
 	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
 	{
-		PlayAnimMontage(CharacterDataAsset->AttackMontage);
+		PlayAnimMontage(CharacterDataAsset->AttackMontage.LoadSynchronous());
 	}
 	
 	return AttackResultInfo;

@@ -15,37 +15,42 @@ class KRZYWEKARTY_API UCharacterDataAsset : public UDataAsset
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FText CharacterName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(GetOptions="GetFractions"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(GetOptions="GetFractions"))
 	FName CharacterFraction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* CharacterCardTexture;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FText CharacterFractionText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSoftObjectPtr<UTexture2D> CharacterCardTexture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ShowOnlyInnerProperties))
 	FCharacterStats CharacterStats;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName}  ( {AbilityCost} PM )  --> {AbilityDescription}"), Category="Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(TitleProperty="{AbilityName}  ( {AbilityCost} PM )  --> {AbilityDescription}"), Category="Abilities")
 	TArray<FAbilityDescription> ActiveAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty="{AbilityName} --> {AbilityDescription}"), Category="Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(TitleProperty="{AbilityName} --> {AbilityDescription}"), Category="Abilities")
 	TArray<FAbilityDescription> PassiveAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
-	USkeletalMesh* SkeletalMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh and Animations")
+	TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh and Animations")
+	TSoftObjectPtr<UAnimBlueprint> AnimBlueprint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
-	UAnimBlueprint* AnimBlueprint;
+	TSoftObjectPtr<UAnimMontage> SummonMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
-	UAnimMontage* SummonMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
-	UAnimMontage* AttackMontage;
+	TSoftObjectPtr<UAnimMontage> AttackMontage;
 	
 	
 	UFUNCTION(BlueprintPure)
 	TArray<FName> GetFractions();
+
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 };

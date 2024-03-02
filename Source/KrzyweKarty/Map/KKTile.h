@@ -30,6 +30,9 @@ public:
 	UPROPERTY()
 	UTileStatus* TileStatus;
 
+	UFUNCTION(BlueprintCallable)
+	void ExecuteTileState();
+	
 	UFUNCTION()
 	void OnRep_TileID();
 

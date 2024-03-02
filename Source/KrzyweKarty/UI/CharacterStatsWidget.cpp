@@ -23,6 +23,7 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 	
 	Character = NewCharacter; // assign new character
 	CharacterNameText->SetText(Character->GetCharacterName());
+	CharacterImage->SetBrushFromSoftTexture(Character->CharacterDataAsset->CharacterCardTexture);
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
 }
 

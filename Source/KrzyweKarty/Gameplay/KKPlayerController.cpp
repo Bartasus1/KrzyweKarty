@@ -9,7 +9,7 @@
 #include "KrzyweKarty/UI/PlayerHUD.h"
 #include "Net/UnrealNetwork.h"
 
-AKKPlayerController::AKKPlayerController()
+AKKPlayerController::AKKPlayerController(): PlayerInputDataAsset(nullptr)
 {
 	bReplicates = true;
 

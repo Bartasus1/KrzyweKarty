@@ -48,6 +48,9 @@ protected:
 	UTextBlock* CharacterStrengthText;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
+	UImage* CharacterImage;
+
+	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))
 	UImage* DefenceImage;
 
 	UPROPERTY(BlueprintReadWrite, meta=(BindWidget))

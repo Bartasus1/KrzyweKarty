@@ -2,14 +2,10 @@
 
 
 #include "KKTile.h"
-
 #include "TileStatus.h"
-
 #include "Components/BoxComponent.h"
 #include "KrzyweKarty/KrzyweKarty.h"
-
 #include "Materials/MaterialInstanceDynamic.h"
-
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -33,6 +29,11 @@ AKKTile::AKKTile()
 	
 	TextRenderComponent->SetRelativeLocation(FVector(0, 0, 50));
 #endif
+}
+
+void AKKTile::ExecuteTileState()
+{
+	
 }
 
 void AKKTile::OnRep_TileID()
@@ -79,6 +80,8 @@ void AKKTile::SetTileStatus_Implementation(UTileStatus* InTileStatus)
 void AKKTile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetTileStatus(nullptr);
 }
 
 void AKKTile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
