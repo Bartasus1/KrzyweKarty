@@ -1,6 +1,6 @@
 ﻿#include "KrzyweKartyEditor.h"
 
-#include "TileStatus/TileStatusAssetTypeActions.h"
+#include "TileStatus/TileStatusFactory.h"
 
 #define LOCTEXT_NAMESPACE "FKrzyweKartyEditorModule"
 

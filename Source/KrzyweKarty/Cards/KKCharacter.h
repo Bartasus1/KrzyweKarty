@@ -7,7 +7,6 @@
 #include "GameFramework/Actor.h"
 #include "KrzyweKarty/Components/CharacterAbilityComponent.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
-#include "KrzyweKarty/Map/KKMap.h"
 #include "KKCharacter.generated.h"
 
 class UAction;
@@ -64,7 +63,7 @@ public:
 	FCharacterDiedDelegate OnCharacterDeath;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	TArray<int32> CharacterActions;
+	int32 CharacterActions;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
@@ -183,10 +182,10 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
 public:
-	FORCEINLINE FText GetCharacterName() const { return FText::Join(FText::FromString(""), CharacterDataAsset->CharacterName, FText::FromString("(") ,FText::AsNumber(CharacterID),FText::FromString(")")); }
+	FORCEINLINE FText GetCharacterName() const { return FText::FromString(FString("").Appendf("%s (%d)", CharacterDataAsset->CharacterName, CharacterID)); }
 	
-	FORCEINLINE int32 GetStat(int32 FCharacterStats::* MemberField) const { return CharacterStats.*MemberField; }
-	FORCEINLINE int32 GetDefaultStat(int32 FCharacterStats::* MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
+	FORCEINLINE int32 GetCharacterStatistic(int32 FCharacterStats::* MemberField) const { return CharacterStats.*MemberField; }
+	FORCEINLINE int32 GetCharacterDefaultStatistic(int32 FCharacterStats::* MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
 	
 	FORCEINLINE int32 GetHealth()	const { return CharacterStats.Health; }
 	FORCEINLINE int32 GetMana()		const { return CharacterStats.Mana; }

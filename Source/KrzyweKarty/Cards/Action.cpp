@@ -7,6 +7,7 @@
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Map/KKTile.h"
+#include "KrzyweKarty/Map/KKMap.h"
 
 UAction::UAction()
 {
@@ -53,7 +54,11 @@ int32 UAction::GetActionWeight() const
 
 void UAction::AddActionToCharacterList() const
 {
-	Character->CharacterActions.AddUnique(ActionWeight);
+	if(Character->CharacterActions < ActionWeight)
+	{
+		Character->CharacterActions = ActionWeight;
+	}
+	
 }
 
 bool UAction::CanCharacterMakeAction() const

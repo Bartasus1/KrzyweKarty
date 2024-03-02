@@ -87,8 +87,8 @@ FText UCharacterStatsWidget::GetTextForStat(int32 FCharacterStats::* MemberField
 		return FText();
 	}
 
-	const int32 BaseValue = Character->GetStat(MemberField);
-	const int32 MaxValue = Character->GetDefaultStat(MemberField);
+	const int32 BaseValue = Character->GetCharacterStatistic(MemberField);
+	const int32 MaxValue = Character->GetCharacterDefaultStatistic(MemberField);
 	
 	UpdateImageProperty("Progress", BaseValue, MaxValue, StatImage);
 

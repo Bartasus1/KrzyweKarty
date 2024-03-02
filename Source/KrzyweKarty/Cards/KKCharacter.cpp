@@ -113,12 +113,7 @@ TArray<AKKTile*> AKKCharacter::GetMoveTiles()
 
 int32 AKKCharacter::GetTopActionWeight()
 {
-	if(CharacterActions.IsEmpty())
-	{
-		return 0;
-	}
-
-	return CharacterActions.Top();
+	return CharacterActions;
 }
 
 

@@ -37,7 +37,7 @@ void AKKGameState::ChangeTurn_Implementation()
 	{
 		if(Character != nullptr)
 		{
-			Character->CharacterActions.Reset();
+			Character->CharacterActions = 0;
 		}
 	}
 	
