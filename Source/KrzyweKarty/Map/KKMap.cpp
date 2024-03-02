@@ -4,6 +4,8 @@
 
 #include "Fraction.h"
 #include "KKTile.h"
+
+#include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
 #include "Net/UnrealNetwork.h"
@@ -76,7 +78,7 @@ void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
 
 	for(AKKTile* Tile : InitialTiles)
 	{
-		Tile->SetTileStatus(nullptr);
+		Tile->SetTileStatus(UTileStatusSettings::Get()->AttackTileStatus);
 	}
 	
 }

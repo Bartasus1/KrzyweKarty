@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Object.h"
 #include "TileStatus.generated.h"
 
@@ -18,9 +19,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	FLinearColor StatusColor = FLinearColor(0,0,0,1);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, meta=(ToolTip="Is this status used later in deciding character action?"))
 	bool bEnableCollision = false; // can be selected? (no for ability status)
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UAction> StatusAction;
+	FGameplayTag TileStatusTag;
 };

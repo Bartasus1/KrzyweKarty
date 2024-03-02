@@ -4,6 +4,8 @@
 #include "Action.h"
 #include "KKCharacter.h"
 #include "GameFramework/PlayerState.h"
+
+#include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Map/KKTile.h"
@@ -108,7 +110,7 @@ void USummonAction::ShowActionAffectedTiles() const
 {
 	for(AKKTile* Tile: GetMap()->GetTilesForSpawn(Character, Character->GetPossibleSpawnTiles()))
 	{
-		Tile->SetTileStatus(nullptr);
+		Tile->SetTileStatus(UTileStatusSettings::Get()->SummonTileStatus);
 	}
 }
 
@@ -141,7 +143,7 @@ void UMoveAction::ShowActionAffectedTiles() const
 	{
 		for(AKKTile* Tile: Character->GetMoveTiles())
 		{
-			Tile->SetTileStatus(nullptr);
+			Tile->SetTileStatus(UTileStatusSettings::Get()->MovementTileStatus);
 		}
 	}
 }

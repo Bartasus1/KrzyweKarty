@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KKPlayerController.generated.h"
 
+class UTileStatus;
 class UPlayerInputDataAsset;
 class UAction;
 class AKKCharacter;

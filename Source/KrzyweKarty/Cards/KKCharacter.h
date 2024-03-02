@@ -182,7 +182,7 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& LifetimeProps) const override;
 
 public:
-	FORCEINLINE FText GetCharacterName() const { return FText::FromString(FString("").Appendf("%s (%d)", CharacterDataAsset->CharacterName, CharacterID)); }
+	FORCEINLINE FText GetCharacterName() const { return FText::Join(FText::FromString(""), CharacterDataAsset->CharacterName, FText::FromString("(") ,FText::AsNumber(CharacterID),FText::FromString(")")); }
 	
 	FORCEINLINE int32 GetCharacterStatistic(int32 FCharacterStats::* MemberField) const { return CharacterStats.*MemberField; }
 	FORCEINLINE int32 GetCharacterDefaultStatistic(int32 FCharacterStats::* MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
