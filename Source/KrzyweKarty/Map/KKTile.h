@@ -27,11 +27,8 @@ public:
 	UPROPERTY(ReplicatedUsing="OnRep_TileID", VisibleAnywhere, BlueprintReadOnly)
 	int32 TileID;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	UTileStatus* TileStatus;
-
-	UFUNCTION(BlueprintCallable)
-	void ExecuteTileState();
 	
 	UFUNCTION()
 	void OnRep_TileID();

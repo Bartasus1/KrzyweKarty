@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
-#include "Map/TileStatus.h"
+#include "TileStatus/TileStatusDataAsset.h"
+
 #include "TileStatusSettings.generated.h"
 
 /**
@@ -13,23 +14,19 @@
 UCLASS(Config=Game, defaultconfig, meta = (DisplayName="Tile Status Settings"))
 class KRZYWEKARTY_API UTileStatusSettings : public UDeveloperSettings
 {
-	GENERATED_BODY() //todo: objects cannot be assigned :/
+	GENERATED_BODY() 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTileStatus* AttackTileStatus;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTileStatus* MovementTileStatus;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTileStatus* SummonTileStatus;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTileStatus* InActiveTileStatus;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly)
+	TSoftObjectPtr<UTileStatusDataAsset> TileStatusDataAsset;
 
 	static const UTileStatusSettings* Get()
 	{
 		return GetDefault<UTileStatusSettings>();
+	}
+
+	static const UTileStatusDataAsset* GetDataAsset()
+	{
+		return GetDefault<UTileStatusSettings>()->TileStatusDataAsset.LoadSynchronous();
 	}
 };

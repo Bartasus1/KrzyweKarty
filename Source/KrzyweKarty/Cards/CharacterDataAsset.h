@@ -37,10 +37,10 @@ public:
 	TArray<FAbilityDescription> PassiveAbilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh and Animations")
-	TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
+	USkeletalMesh* SkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh and Animations")
-	TSoftObjectPtr<UAnimBlueprint> AnimBlueprint;
+	UAnimBlueprint* AnimBlueprint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
 	TSoftObjectPtr<UAnimMontage> SummonMontage;

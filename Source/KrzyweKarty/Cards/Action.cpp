@@ -110,7 +110,7 @@ void USummonAction::ShowActionAffectedTiles() const
 {
 	for(AKKTile* Tile: GetMap()->GetTilesForSpawn(Character, Character->GetPossibleSpawnTiles()))
 	{
-		Tile->SetTileStatus(UTileStatusSettings::Get()->SummonTileStatus);
+		Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->SummonTileStatus);
 	}
 }
 
@@ -143,7 +143,7 @@ void UMoveAction::ShowActionAffectedTiles() const
 	{
 		for(AKKTile* Tile: Character->GetMoveTiles())
 		{
-			Tile->SetTileStatus(UTileStatusSettings::Get()->MovementTileStatus);
+			Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->MovementTileStatus);
 		}
 	}
 }

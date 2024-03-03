@@ -78,7 +78,7 @@ void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
 
 	for(AKKTile* Tile : InitialTiles)
 	{
-		Tile->SetTileStatus(UTileStatusSettings::Get()->AttackTileStatus);
+		Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->AttackTileStatus);
 	}
 	
 }

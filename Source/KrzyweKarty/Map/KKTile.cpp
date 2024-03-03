@@ -2,9 +2,9 @@
 
 
 #include "KKTile.h"
-#include "TileStatus.h"
 #include "Components/BoxComponent.h"
 #include "KrzyweKarty/KrzyweKarty.h"
+#include "KrzyweKarty/TileStatus/TileStatus.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Net/UnrealNetwork.h"
 
@@ -29,11 +29,6 @@ AKKTile::AKKTile()
 	
 	TextRenderComponent->SetRelativeLocation(FVector(0, 0, 50));
 #endif
-}
-
-void AKKTile::ExecuteTileState()
-{
-	
 }
 
 void AKKTile::OnRep_TileID()

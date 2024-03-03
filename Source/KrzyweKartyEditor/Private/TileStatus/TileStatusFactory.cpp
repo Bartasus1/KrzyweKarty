@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TileStatus/TileStatusFactory.h"
-#include "KrzyweKarty/Map/TileStatus.h"
+#include "KrzyweKarty/TileStatus/TileStatus.h"
 
 UTileStatusFactory::UTileStatusFactory()
 {

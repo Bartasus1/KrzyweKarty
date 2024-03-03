@@ -141,7 +141,7 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 		
 		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
 		{
-			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh.LoadSynchronous());
+			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
 			CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
 		}
 	}
