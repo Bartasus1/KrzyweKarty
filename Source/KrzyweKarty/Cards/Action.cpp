@@ -49,7 +49,7 @@ FString UAction::GetLogMessage()
 	return FString();
 }
 
-int32 UAction::GetActionWeight() const
+uint8 UAction::GetActionWeight() const
 {
 	return ActionWeight;
 }

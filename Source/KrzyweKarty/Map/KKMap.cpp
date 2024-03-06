@@ -38,7 +38,7 @@ AKKMap::AKKMap()
 	MapMesh->SetRelativeScale3D(FVector(1.072922, 0.949018, 1));
 }
 
-bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
+bool AKKMap::AddCharacterToMap(AKKCharacter* Character, uint8 TileID)
 {
 	FMapCell* Destination = GetCellAtIndex(TileID);
 	
@@ -51,7 +51,7 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, int32 TileID)
 	return false;
 }
 
-bool AKKMap::MoveCharacter(AKKCharacter* Character, int32 TileID)
+bool AKKMap::MoveCharacter(AKKCharacter* Character, uint8 TileID)
 {
 	FMapCell* Destination = GetCellAtIndex(TileID);
 
@@ -83,11 +83,11 @@ void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
 	
 }
 
-TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ECharacterSelectionPolicy CharacterSelectionPolicy)
+TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy)
 {
 	TArray<AKKCharacter*> FoundCharacters;
 	
-	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(Directions)))
+	for(FMapCell& MapCell : GetCellsByDirection(Character, Directions))
 	{
 		if(MapCell.Character == nullptr)
 		{
@@ -119,11 +119,11 @@ TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, 
 	return FoundCharacters;
 }
 
-TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ETileSelectionPolicy TileSelectionPolicy)
+TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ETileSelectionPolicy TileSelectionPolicy)
 {
 	TArray<AKKTile*> FoundTiles;
 	
-	for(FMapCell& MapCell : GetCellsByDirection(Character, MoveTemp(Directions))) 
+	for(FMapCell& MapCell : GetCellsByDirection(Character, Directions)) 
 	{
 		
 		switch (TileSelectionPolicy)
@@ -158,7 +158,7 @@ TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, TArray<FDi
 	return FoundTiles;
 }
 
-TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> Directions)
+TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions)
 {
 	TArray<FMapCell> FoundCells;
 
@@ -169,7 +169,7 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDi
 
 		const int32 Direction = Character->Direction;
 	
-		for(FDirection& Tile : Directions)
+		for(const FDirection& Tile : Directions)
 		{
 			const int32 NextX = X + (Direction * Tile.X);
 			const int32 NextY = Y + (Direction * Tile.Y);
@@ -184,13 +184,13 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, TArray<FDi
 	return FoundCells;
 }
 
-TArray<AKKTile*> AKKMap::GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID)
+TArray<AKKTile*> AKKMap::GetTilesForSpawn(AKKCharacter* Character, TArray<uint8> TilesID)
 {
 	TArray<AKKTile*> FoundTiles;
 
 	if(Character)
 	{
-		for(int32& TileID : TilesID)
+		for(uint8& TileID : TilesID)
 		{
 			FMapCell* MapCell = GetCellAtIndex((Character->Direction == 1) ? TileID : 19 - TileID);
 
@@ -204,11 +204,11 @@ TArray<AKKTile*> AKKMap::GetTilesForSpawn(AKKCharacter* Character, TArray<int32>
 	return FoundTiles;
 }
 
-TArray<AKKTile*> AKKMap::GetTiles(TArray<int32> TilesID)
+TArray<AKKTile*> AKKMap::GetTiles(TArray<uint8> TilesID)
 {
 	TArray<AKKTile*> FoundTiles;
 	
-	for(int32& TileID : TilesID)
+	for(uint8& TileID : TilesID)
     {
         FoundTiles.Add(GetCellAtIndex(TileID)->Tile);
     }
@@ -265,7 +265,7 @@ TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 
 void AKKMap::GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*>& InitialAttackTiles)
 {
-	const int32 BaseIndex = Character->Direction == 1 ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
+	const uint8 BaseIndex = Character->Direction == 1 ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
 	
 	if(CanAttackBase(Character))
 	{
@@ -275,8 +275,8 @@ void AKKMap::GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*>& In
 
 bool AKKMap::CanAttackBase(const AKKCharacter* Character) const
 {
-	const int32* BaseAttackTiles = (Character->Direction == 1) ? SecondBaseAttackTiles : FirstBaseAttackTiles;
-	const int32 TileID = Character->GetTilePositionID();
+	const uint8* BaseAttackTiles = (Character->Direction == 1) ? SecondBaseAttackTiles : FirstBaseAttackTiles;
+	const uint8 TileID = Character->GetTilePositionID();
 
 	if(TileID == BaseAttackTiles[0] || TileID == BaseAttackTiles[1])
 	{
@@ -288,7 +288,7 @@ bool AKKMap::CanAttackBase(const AKKCharacter* Character) const
 
 void AKKMap::ClearTilesHighlights()
 {
-	for(int i = 0; i < 20; i++)
+	for(int i = 0; i < TotalMapSize; i++)
 	{
 		GetCellAtIndex(i)->Tile->SetTileStatus(nullptr);
 	}
@@ -299,11 +299,11 @@ void AKKMap::ClearTilesHighlights()
 	}
 }
 
-AKKTile* AKKMap::GetTileAtIndex(int32 TileID)
+AKKTile* AKKMap::GetTileAtIndex(uint8 TileID)
 {
-	if(TileID == INT32_MAX || TileID == INT32_MAX - 1)
+	if(TileID == UINT8_MAX || TileID == UINT8_MAX - 1)
 	{
-		return BaseArray[INT32_MAX - TileID].Tile;
+		return BaseArray[UINT8_MAX - TileID].Tile;
 	}
 
 	if(const FMapCell* MapCell = GetCellAtIndex(TileID))
@@ -314,17 +314,17 @@ AKKTile* AKKMap::GetTileAtIndex(int32 TileID)
 	return nullptr;
 }
 
-AKKCharacter* AKKMap::GetCharacterAtIndex(int32 TileID)
+AKKCharacter* AKKMap::GetCharacterAtIndex(uint8 TileID)
 {
-	if(TileID == INT32_MAX || TileID == INT32_MAX - 1)
+	if(TileID == UINT8_MAX || TileID == UINT8_MAX - 1)
 	{
-		return BaseArray[INT32_MAX - TileID].Character;
+		return BaseArray[UINT8_MAX - TileID].Character;
 	}
 	
 	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Character : nullptr;
 }
 
-void AKKMap::RemoveCharacterFromTile(int32 TileID)
+void AKKMap::RemoveCharacterFromTile(uint8 TileID)
 {
 	if(FMapCell* MapCell = GetCellAtIndex(TileID))
 	{
@@ -332,7 +332,7 @@ void AKKMap::RemoveCharacterFromTile(int32 TileID)
 	}
 }
 
-void AKKMap::SpawnFraction(int32 ID, TSubclassOf<AFraction> FractionClass)
+void AKKMap::SpawnFraction(uint8 ID, TSubclassOf<AFraction> FractionClass)
 {
 	if(AKKGameMode* GameMode = Cast<AKKGameMode>(GetWorld()->GetAuthGameMode()))
 	{
@@ -378,14 +378,19 @@ void AKKMap::SetupMap()
 {
 	check(TileClass);
 	
-	
-	uint16 SpacingX = 125;
-	uint16 SpacingY = 100;
+	SetupMapTiles();
+	SetupBaseTiles();
+}
+
+void AKKMap::SetupMapTiles()
+{
+	const uint8 SpacingX = 125;
+	const uint8 SpacingY = 100;
 	
 	for (int32 i = 0; i < BaseRow; i++)  // 5
 	{
 		MapArray.Add(FMapRow());
-		
+	
 		for (int j = 0; j < BaseRow - 1; j++) // 4
 		{
 			FVector TileLocation = StartLocation;
@@ -399,20 +404,22 @@ void AKKMap::SetupMap()
 			MapArray[i].MapRows.Add({Tile, nullptr});
 		}
 	}
-	
+}
+
+void AKKMap::SetupBaseTiles()
+{
 	const float BaseLocationX[2] = { -338.f, 338.f};
 	const float BaseRotationYaw[2] = { 90.f, 270.f};
 	
 	for (int32 i = 0; i < 2; i++)
 	{
 		AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, FVector(BaseLocationX[i], 0.f, 0.f), FRotator(0.f, BaseRotationYaw[i], 0.f));
-		Tile->TileID = INT32_MAX - i;
+		Tile->TileID = UINT8_MAX - i;
 		Tile->OnRep_TileID();
 
 		BaseArray.Add({Tile, nullptr});
 	}
 }
-
 
 void AKKMap::AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell)
 {
@@ -420,9 +427,10 @@ void AKKMap::AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell)
 	
 	Character->OwnedTileID = MapCell->Tile->TileID;
 	Character->SetActorLocation(MapCell->Tile->GetActorLocation());
+	Character->SetActorRotation(Character->Direction * MapCell->Tile->GetActorRotation());
 }
 
-FMapCell* AKKMap::GetCellAtIndex(int32 TileID)
+FMapCell* AKKMap::GetCellAtIndex(uint8 TileID)
 {
 	const int32 X = GetX(TileID);
 	const int32 Y = GetY(TileID);
@@ -453,7 +461,7 @@ FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, FDirection Directi
 	return nullptr;
 }
 
-void AKKMap::SetFractionBase(int32 ID, AKKCharacter* Base)
+void AKKMap::SetFractionBase(uint8 ID, AKKCharacter* Base)
 {
 	AssignCharacterToTile(Base, &BaseArray[ID]);
 }

@@ -20,8 +20,8 @@ public:
 	// Sets default values for this component's properties
 	UAreaEffectCharacterAbilityComponent();
 
-	virtual void OnBeginAbility_Implementation(int32 Index) override;
-	virtual void OnFinishAbility_Implementation(int32 Index) override;
+	virtual void OnBeginAbility_Implementation(uint8 Index) override;
+	virtual void OnFinishAbility_Implementation(uint8 Index) override;
 
 	UFUNCTION(Server, Reliable)
 	void Server_SetAffectedTiles(const TArray<FDirection>& InAffectedTiles);

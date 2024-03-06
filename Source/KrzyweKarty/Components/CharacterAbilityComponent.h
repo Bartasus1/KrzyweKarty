@@ -20,13 +20,13 @@ public:
 	UCharacterAbilityComponent();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnBeginAbility(int32 Index);
+	void OnBeginAbility(uint8 Index);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnFinishAbility(int32 Index);
+	void OnFinishAbility(uint8 Index);
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int32 AbilityIndex = 0;
+	uint8 AbilityIndex = 0;
 
 protected:
 	

@@ -20,6 +20,7 @@ TArray<FName> UCharacterDataAsset::GetFractions()
 	};
 }
 
+#if WITH_EDITOR
 void UCharacterDataAsset::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -28,3 +29,4 @@ void UCharacterDataAsset::PostEditChangeProperty(FPropertyChangedEvent& Property
 	CharacterFractionText = CharacterHelpersSettings->FractionTextMap[CharacterFraction];
 	
 }
+#endif

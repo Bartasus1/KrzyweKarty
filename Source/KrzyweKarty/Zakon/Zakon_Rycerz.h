@@ -17,7 +17,7 @@ class KRZYWEKARTY_API AZakon_Rycerz : public AKKCharacter
 protected:
 	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo) override;
 
-	virtual void PerformAbility_Implementation(int32 Index) override;
+	virtual void PerformAbility_Implementation(uint8 Index) override;
 
 private:
 	int8 ReceivedAttacksCounter = 0;

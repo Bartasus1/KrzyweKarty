@@ -15,12 +15,12 @@ UCharacterAbilityComponent::UCharacterAbilityComponent()
 	SetIsReplicatedByDefault(true);
 }
 
-void UCharacterAbilityComponent::OnBeginAbility_Implementation(int32 Index)
+void UCharacterAbilityComponent::OnBeginAbility_Implementation(uint8 Index)
 {
 	AbilityIndex = Index;
 }
 
-void UCharacterAbilityComponent::OnFinishAbility_Implementation(int32 Index)
+void UCharacterAbilityComponent::OnFinishAbility_Implementation(uint8 Index)
 {
 	
 }

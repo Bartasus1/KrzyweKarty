@@ -18,9 +18,9 @@ class KRZYWEKARTY_API AZakon_Lucznik : public AKKCharacter, public IAreaModifier
 public:
 	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter) override;
 
-	virtual void PerformAbility_Implementation(int32 Index) override;
+	virtual void PerformAbility_Implementation(uint8 Index) override;
 	
-	virtual TArray<FDirection> GetAffectedTiles_Implementation(int32 Index) override;
+	virtual TArray<FDirection> GetAffectedTiles_Implementation(uint8 Index) override;
 
 private:
 

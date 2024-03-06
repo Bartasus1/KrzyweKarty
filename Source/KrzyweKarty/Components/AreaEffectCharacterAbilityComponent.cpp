@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "KrzyweKarty/KKGameStatics.h"
+#include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
 #include "KrzyweKarty/Gameplay/Input/PlayerInputDataAsset.h"
@@ -21,7 +22,7 @@ UAreaEffectCharacterAbilityComponent::UAreaEffectCharacterAbilityComponent()
 
 }
 
-void UAreaEffectCharacterAbilityComponent::OnBeginAbility_Implementation(int32 Index)
+void UAreaEffectCharacterAbilityComponent::OnBeginAbility_Implementation(uint8 Index)
 {
 	Super::OnBeginAbility_Implementation(Index);
 	
@@ -35,7 +36,7 @@ void UAreaEffectCharacterAbilityComponent::OnBeginAbility_Implementation(int32 I
 	InputComponent->BindAction(PlayerInput->RotateDirections, ETriggerEvent::Triggered, this, &UAreaEffectCharacterAbilityComponent::RotateSelectedTiles);
 }
 
-void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(int32 Index)
+void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(uint8 Index)
 {
 	Super::OnFinishAbility_Implementation(Index);
 
@@ -54,7 +55,7 @@ const TArray<FDirection>& UAreaEffectCharacterAbilityComponent::GetFinalAffected
 
 void UAreaEffectCharacterAbilityComponent::RotateSelectedTiles(const FInputActionInstance& InputAction)
 {
-	int32 Value = InputAction.GetValue().Get<float>() - 1;
+	int32 Value = InputAction.GetValue().Get<float>();
 	const ERotationDirection RotationDirection = static_cast<ERotationDirection>(Value);
 	
 	TArray<FDirection> Directions = IAreaModifierInterface::Execute_GetAffectedTiles(OwnerCharacter, AbilityIndex);
@@ -73,7 +74,7 @@ void UAreaEffectCharacterAbilityComponent::ShowAreaTiles_Implementation()
 {
 	for(AKKTile* Tile: GetMap()->GetTilesByDirection(OwnerCharacter, AffectedTiles, TileSelectionPolicy))
  	{
- 		Tile->SetTileStatus(nullptr);
+ 		Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->AttackTileStatus); //todo: make special tile status for ability tiles
  	}
 }
 

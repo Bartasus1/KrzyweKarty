@@ -7,7 +7,7 @@
 #include "KrzyweKarty/Map/KKMap.h"
 
 
-void AZakon_Paladyn::PerformAbility_Implementation(int32 Index)
+void AZakon_Paladyn::PerformAbility_Implementation(uint8 Index)
 {
 	if(Index == 0)
 	{
@@ -29,7 +29,7 @@ void AZakon_Paladyn::PerformAbility_Implementation(int32 Index)
 	}
 }
 
-TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(int32 Index)
+TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(uint8 Index)
 {
 	switch (Index)
 	{

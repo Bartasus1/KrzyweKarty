@@ -28,8 +28,8 @@ void UFindSelectableAsync::Activate()
 
 	UEnhancedInputComponent* InputComponent =  Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 
-	InputComponent->BindAction(PlayerInputDataAsset->FindSelectable, ETriggerEvent::Started, this, &UFindSelectableAsync::FindSelectable);
-	InputComponent->BindAction(PlayerInputDataAsset->FindSelectableCancel, ETriggerEvent::Started, this, &UFindSelectableAsync::ReportFail);
+	InputComponent->BindAction(PlayerInputDataAsset->FindSelectable, ETriggerEvent::Triggered, this, &UFindSelectableAsync::FindSelectable);
+	InputComponent->BindAction(PlayerInputDataAsset->FindSelectableCancel, ETriggerEvent::Triggered, this, &UFindSelectableAsync::ReportFail);
 	
 }
 

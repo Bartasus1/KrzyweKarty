@@ -6,6 +6,7 @@
 #include "../Cards/KKCharacter.h"
 #include "Zakon_Kawalerzysta.generated.h"
 
+struct FMapCell;
 /**
  * 
  */
@@ -15,12 +16,12 @@ class KRZYWEKARTY_API AZakon_Kawalerzysta : public AKKCharacter
 	GENERATED_BODY()
 public:
 
-	virtual bool CanUseAbility_Implementation(int32 Index) override;
+	virtual bool CanUseAbility_Implementation(uint8 Index) override;
 
 	virtual TArray<FDirection> GetPossibleMoveTiles() override;
 
 private:
 
-	TArray<FMapCell*> GetAbilityMapCells(int32 Index);
+	TArray<FMapCell*> GetAbilityMapCells(uint8 Index);
 	
 };

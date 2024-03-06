@@ -5,7 +5,7 @@
 #include "KrzyweKarty/Map/KKMap.h"
 
 
-bool AZakon_Kawalerzysta::CanUseAbility_Implementation(int32 Index)
+bool AZakon_Kawalerzysta::CanUseAbility_Implementation(uint8 Index)
 {
 	if(Super::CanUseAbility_Implementation(Index) == false)
 	{
@@ -36,7 +36,7 @@ TArray<FDirection> AZakon_Kawalerzysta::GetPossibleMoveTiles()
 	};
 }
 
-TArray<FMapCell*> AZakon_Kawalerzysta::GetAbilityMapCells(int32 Index)
+TArray<FMapCell*> AZakon_Kawalerzysta::GetAbilityMapCells(uint8 Index)
 {
 	TArray<FMapCell*> MapCells;
 	

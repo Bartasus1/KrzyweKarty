@@ -19,6 +19,8 @@
 #include "KrzyweKarty/KrzyweKarty.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
+#define PrintString(String) GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, String)
+
 // Sets default values
 AKKCharacter::AKKCharacter()
 {
@@ -60,10 +62,9 @@ int32 AKKCharacter::GetTilePositionID() const
 	return OwnedTileID;
 }
 
-
 void AKKCharacter::OnSelectableHighlighted()
 {
-	CharacterMesh->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
+	
 }
 
 void AKKCharacter::OnSelectableGainFocus()
@@ -74,7 +75,7 @@ void AKKCharacter::OnSelectableLostFocus()
 {
 }
 
-TArray<int32> AKKCharacter::GetPossibleSpawnTiles()
+TArray<uint8> AKKCharacter::GetPossibleSpawnTiles()
 {
 	return { 0, 1, 2 ,3};
 }
@@ -111,7 +112,7 @@ TArray<AKKTile*> AKKCharacter::GetMoveTiles()
 	return GetMap()->GetTilesByDirection(this, GetPossibleMoveTiles(), TSP_NoCharacters);
 }
 
-int32 AKKCharacter::GetTopActionWeight()
+uint8 AKKCharacter::GetTopActionWeight()
 {
 	return CharacterActions;
 }
@@ -125,25 +126,26 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
+	if(CharacterDataAsset == nullptr)
+	{
+		return;
+	}
+
 	TextRenderName->SetWorldRotation(FRotator(0.f)); // rotation is handled in text render material
 
 	TextRenderName->SetTextMaterial(UCharacterHelpersSettings::Get()->TextRenderMaterial.LoadSynchronous());
 	Platform->SetStaticMesh(UCharacterHelpersSettings::Get()->PlatformMesh.LoadSynchronous());
 	
-	if(CharacterDataAsset != nullptr)
+	CharacterStats = CharacterDataAsset->CharacterStats;
+	TextRenderName->SetText(CharacterDataAsset->CharacterName);
+	
+	UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
+	DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture.LoadSynchronous());
+	
+	if(!CharacterDataAsset->SkeletalMesh.IsNull() && !CharacterDataAsset->AnimationBlueprint.IsNull())
 	{
-		CharacterStats = CharacterDataAsset->CharacterStats;
-		TextRenderName->SetText(CharacterDataAsset->CharacterName);
-		
-		UMaterialInstanceDynamic* DynamicPlatformMaterial =  Platform->CreateAndSetMaterialInstanceDynamic(0);
-		DynamicPlatformMaterial->SetTextureParameterValue(FName("CharacterTexture"), CharacterDataAsset->CharacterCardTexture.LoadSynchronous());
-		
-		
-		if(CharacterDataAsset->SkeletalMesh && CharacterDataAsset->AnimBlueprint)
-		{
-			CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh);
-			CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimBlueprint->GeneratedClass);
-		}
+		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh.LoadSynchronous());
+		CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimationBlueprint.LoadSynchronous()->GeneratedClass);
 	}
 }
 
@@ -187,12 +189,12 @@ void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Atta
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-bool AKKCharacter::CanFinishAbility_Implementation(int32 Index)
+bool AKKCharacter::CanFinishAbility_Implementation(uint8 Index)
 {
 	return true;
 }
 
-bool AKKCharacter::CanUseAbility_Implementation(int32 Index)
+bool AKKCharacter::CanUseAbility_Implementation(uint8 Index)
 {
 	if(!CharacterDataAsset->ActiveAbilities.IsValidIndex(Index))
 	{
@@ -202,31 +204,31 @@ bool AKKCharacter::CanUseAbility_Implementation(int32 Index)
 	return GetMana() >= GetActiveAbilityCost(Index);
 }
 
-void AKKCharacter::PerformAbility_Implementation(int32 Index)
+void AKKCharacter::PerformAbility_Implementation(uint8 Index)
 {
 }
 
-void AKKCharacter::OnBeginAbility_Implementation(int32 Index)
+void AKKCharacter::OnBeginAbility_Implementation(uint8 Index)
 {
 	Client_OnBeginAbilityDelegate(Index);
 }
 
-void AKKCharacter::OnFinishAbility_Implementation(int32 Index)
+void AKKCharacter::OnFinishAbility_Implementation(uint8 Index)
 {
 	Client_OnFinishAbilityDelegate(Index);
 }
 
-void AKKCharacter::CommitAbilityCost_Implementation(int32 Index)
+void AKKCharacter::CommitAbilityCost_Implementation(uint8 Index)
 {
 	DecreaseMana(GetActiveAbilityCost(Index));
 }
 
-void AKKCharacter::Client_OnBeginAbilityDelegate_Implementation(int32 Index)
+void AKKCharacter::Client_OnBeginAbilityDelegate_Implementation(uint8 Index)
 {
 	OnBeginAbilityDelegate.Broadcast(Index);
 }
 
-void AKKCharacter::Client_OnFinishAbilityDelegate_Implementation(int32 Index)
+void AKKCharacter::Client_OnFinishAbilityDelegate_Implementation(uint8 Index)
 {
 	OnFinishAbilityDelegate.Broadcast(Index);
 }

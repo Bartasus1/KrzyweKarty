@@ -27,6 +27,6 @@ class KRZYWEKARTY_API IAreaModifierInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	TArray<FDirection> GetAffectedTiles(int32 Index = 0);
+	TArray<FDirection> GetAffectedTiles(uint8 Index = 0);
 	
 };

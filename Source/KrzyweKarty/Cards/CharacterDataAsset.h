@@ -37,10 +37,10 @@ public:
 	TArray<FAbilityDescription> PassiveAbilities;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh and Animations")
-	USkeletalMesh* SkeletalMesh;
+	TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh and Animations")
-	UAnimBlueprint* AnimBlueprint;
+	TSoftObjectPtr<UAnimBlueprint> AnimationBlueprint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mesh and Animations")
 	TSoftObjectPtr<UAnimMontage> SummonMontage;
@@ -52,5 +52,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	TArray<FName> GetFractions();
 
+#if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+	
 };

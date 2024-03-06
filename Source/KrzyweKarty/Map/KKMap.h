@@ -29,27 +29,27 @@ public:
 	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadWrite)
 	TArray<FMapRow> MapArray;
 	
-	bool AddCharacterToMap(AKKCharacter* Character, int32 TileID); //todo: change those to void (later)
-	bool MoveCharacter(AKKCharacter* Character, int32 TileID);
+	bool AddCharacterToMap(AKKCharacter* Character, uint8 TileID); //todo: change those to void (later)
+	bool MoveCharacter(AKKCharacter* Character, uint8 TileID);
 	//bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
 
 	UFUNCTION(Client, Reliable)
 	void ShowTilesForAttack(AKKCharacter* Character);
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
+	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, TArray<FDirection> Directions, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, TArray<FDirection> Directions);
+	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<int32> TilesID);
+	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<uint8> TilesID);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTiles(TArray<int32> TilesID);
+	TArray<AKKTile*> GetTiles(TArray<uint8> TilesID);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetAllTilesOnMap();
@@ -71,17 +71,17 @@ public:
 	void ClearTilesHighlights();
 
 	UFUNCTION(BlueprintCallable)
-	AKKTile* GetTileAtIndex(int32 TileID);
+	AKKTile* GetTileAtIndex(uint8 TileID);
 
 	UFUNCTION(BlueprintCallable)
-	AKKCharacter* GetCharacterAtIndex(int32 TileID);
+	AKKCharacter* GetCharacterAtIndex(uint8 TileID);
 
-	void RemoveCharacterFromTile(int32 TileID);
+	void RemoveCharacterFromTile(uint8 TileID);
 
-	void SpawnFraction(int32 ID, TSubclassOf<AFraction> FractionClass);
+	void SpawnFraction(uint8 ID, TSubclassOf<AFraction> FractionClass);
 
 	
-	FMapCell* GetCellAtIndex(int32 TileID);
+	FMapCell* GetCellAtIndex(uint8 TileID);
 	FMapCell* GetCellByDirection(AKKCharacter* Character, FDirection Direction);
 
 protected:
@@ -98,8 +98,11 @@ protected:
 
 private:
 	void SetupMap();
+	void SetupMapTiles();
+	void SetupBaseTiles();
+	
 	void AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell);
-	void SetFractionBase(int32 ID, AKKCharacter* Base);
+	void SetFractionBase(uint8 ID, AKKCharacter* Base);
 	
 	friend class AKKSpawnpoint;
 	
@@ -109,8 +112,8 @@ private:
 	const uint8 TotalMapSize = 20;
 	const uint8 BaseRow = 5;
 
-	const int32 FirstBaseAttackTiles[2] = {1, 2};
-	const int32 SecondBaseAttackTiles[2] = {17, 18};
+	const uint8 FirstBaseAttackTiles[2] = {1, 2};
+	const uint8 SecondBaseAttackTiles[2] = {17, 18};
 	
 
 	UPROPERTY(Replicated)
@@ -120,8 +123,8 @@ public:
 	FORCEINLINE uint8 GetMapSize() const { return MapSize; }
 
 private:
-	FORCEINLINE int32 GetX(int32 TileID) const { return TileID / MapSize; }
-	FORCEINLINE int32 GetY(int32 TileID) const { return TileID % MapSize; }
-	FORCEINLINE int32 GetID(int32 X, int32 Y) const { return Y + (X * MapSize); }
-	FORCEINLINE bool IsValidIndex(int32 X, int32 Y) { return MapArray.IsValidIndex(X) && MapArray[X].MapRows.IsValidIndex(Y); }
+	FORCEINLINE int32 GetX(const uint8 TileID) const { return TileID / MapSize; }
+	FORCEINLINE int32 GetY(const uint8 TileID) const { return TileID % MapSize; }
+	FORCEINLINE int32 GetID(const uint8 X, const uint8 Y) const { return Y + (X * MapSize); }
+	FORCEINLINE bool IsValidIndex(const uint8 X, const uint8 Y) { return MapArray.IsValidIndex(X) && MapArray[X].MapRows.IsValidIndex(Y); }
 };

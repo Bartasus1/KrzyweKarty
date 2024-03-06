@@ -46,7 +46,7 @@ int32 AZakon_Halabardzista::DefineDamageAmount(AKKCharacter* TargetCharacter)
 	}
 }
 
-TArray<FDirection> AZakon_Halabardzista::GetAffectedTiles_Implementation(int32 Index)
+TArray<FDirection> AZakon_Halabardzista::GetAffectedTiles_Implementation(uint8 Index)
 {
 	return {
 		{1, 0},

@@ -10,8 +10,7 @@ public class KrzyweKartyEditor : ModuleRules
             new string[]
             {
                 "Core",
-                "KrzyweKarty",
-                "UnrealEd"
+                "KrzyweKarty"
             }
         );
 
@@ -21,7 +20,8 @@ public class KrzyweKartyEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "UnrealEd"
             }
         );
     }

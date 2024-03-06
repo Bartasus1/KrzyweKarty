@@ -36,10 +36,10 @@ public:
 
 	virtual FString GetLogMessage();
 	
-	int32 GetActionWeight() const;
+	uint8 GetActionWeight() const;
 
 protected:
-	int32 ActionWeight = 0;
+	uint8 ActionWeight = 0;
 	bool bRequiresCharacterOnMap = false;
 
 	UFUNCTION(BlueprintAuthorityOnly)
@@ -60,7 +60,7 @@ public:
 	USummonAction();
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
-	int32 DestinationTileID = -1;
+	uint8 DestinationTileID = -1;
 
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
@@ -81,7 +81,7 @@ public:
 	UMoveAction();
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
-	int32 DestinationTileID = -1;
+	uint8 DestinationTileID = -1;
 	
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
@@ -125,7 +125,7 @@ public:
 	UAbilityAction();
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
-	int32 Index = 0;
+	uint8 Index = 0;
 
 	UFUNCTION(BlueprintCallable)
 	void OnAbilityConfirmed();

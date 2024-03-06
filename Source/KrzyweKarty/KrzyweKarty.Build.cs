@@ -8,8 +8,13 @@ public class KrzyweKarty : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "EnhancedInput", "DeveloperSettings", "GameplayTags", "SubobjectDataInterface"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "EnhancedInput", "DeveloperSettings", "GameplayTags"});
 
+		if (base.Target.bBuildEditor)
+		{
+			PublicDependencyModuleNames.AddRange(new string[] { "SubobjectDataInterface" });
+		}
+		
 		PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystem", "OnlineSubsystemNull", "OnlineSubsystemSteam"});
 		
 		

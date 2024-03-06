@@ -24,7 +24,7 @@ FAttackResultInfo AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 	return AttackResult;
 }
 
-void AZakon_Lucznik::PerformAbility_Implementation(int32 Index)
+void AZakon_Lucznik::PerformAbility_Implementation(uint8 Index)
 {
 	UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = GetCharacterAbilityComponent<UAreaEffectCharacterAbilityComponent>(Index);
 	
@@ -36,7 +36,7 @@ void AZakon_Lucznik::PerformAbility_Implementation(int32 Index)
 }
 
 
-TArray<FDirection> AZakon_Lucznik::GetAffectedTiles_Implementation(int32 Index)
+TArray<FDirection> AZakon_Lucznik::GetAffectedTiles_Implementation(uint8 Index)
 {
 	return {
 		{2, -1},

@@ -21,7 +21,7 @@ class USkeletalMeshComponent;
 class UTextRenderComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterAbilityAction, int32, Index);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterAbilityAction, uint8, Index);
 
 
 UCLASS(Abstract)
@@ -57,13 +57,13 @@ public:
 	int32 Direction = 1;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	int32 CharacterID = 0;
+	uint8 CharacterID = 0;
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	int32 CharacterActions;
+	uint8 CharacterActions;
 protected:
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
@@ -73,7 +73,7 @@ public:
 ///////////////////////////////////////////////////////////////////////	
 	// Interaction with the Map
 	UFUNCTION(BlueprintCallable)
-	virtual TArray<int32> GetPossibleSpawnTiles();
+	virtual TArray<uint8> GetPossibleSpawnTiles();
 	
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<FDirection> GetPossibleMoveTiles();
@@ -83,7 +83,7 @@ public:
 
 /////////////////////////////////////////////////////////////
 	// Actions & Rounds
-	int32 GetTopActionWeight();
+	uint8 GetTopActionWeight();
 	
 	UFUNCTION()
 	virtual void OnTurnEnded();
@@ -105,28 +105,28 @@ public:
 	// Abilities Actions
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool CanUseAbility(int32 Index);
+	bool CanUseAbility(uint8 Index);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool CanFinishAbility(int32 Index);
+	bool CanFinishAbility(uint8 Index);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PerformAbility(int32 Index); // actual implementation of ability, how many damage it deals etc.
+	void PerformAbility(uint8 Index); // actual implementation of ability, how many damage it deals etc.
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnBeginAbility(int32 Index); //start ability components, show ability effects etc.
+	void OnBeginAbility(uint8 Index); //start ability components, show ability effects etc.
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnFinishAbility(int32 Index); //stop ability components, clean up effects etc.
+	void OnFinishAbility(uint8 Index); //stop ability components, clean up effects etc.
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void CommitAbilityCost(int32 Index);
+	void CommitAbilityCost(uint8 Index);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	UCharacterAbilityComponent* GetCharacterAbilityComponent(int32 Index);
+	UCharacterAbilityComponent* GetCharacterAbilityComponent(uint8 Index);
 
 	template<typename T>
-	T* GetCharacterAbilityComponent(int32 Index);
+	T* GetCharacterAbilityComponent(uint8 Index);
 
 	UPROPERTY(BlueprintAssignable)
 	FCharacterAbilityAction OnBeginAbilityDelegate;
@@ -135,10 +135,10 @@ public:
 	FCharacterAbilityAction OnFinishAbilityDelegate;
 
 	UFUNCTION(Client, Reliable)
-	void Client_OnBeginAbilityDelegate(int32 Index);
+	void Client_OnBeginAbilityDelegate(uint8 Index);
 
 	UFUNCTION(Client, Reliable)
-	void Client_OnFinishAbilityDelegate(int32 Index);
+	void Client_OnFinishAbilityDelegate(uint8 Index);
 
 	//////////////////////////////////////////////////////
 	// Tiles
@@ -221,7 +221,7 @@ public:
 };
 
 template <typename T>
-T* AKKCharacter::GetCharacterAbilityComponent(int32 Index)
+T* AKKCharacter::GetCharacterAbilityComponent(uint8 Index)
 {
 	return Cast<T>(GetCharacterAbilityComponent(Index));
 }

@@ -11,7 +11,7 @@ public class KrzyweKartyTarget : TargetRules
 		bUsesSteam = true;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.AddRange( new string[] { "KrzyweKarty" } );
-		RegisterModulesCreatedByRider();
+		//RegisterModulesCreatedByRider();
 	}
 
 	private void RegisterModulesCreatedByRider()
