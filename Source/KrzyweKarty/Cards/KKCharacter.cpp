@@ -19,7 +19,6 @@
 #include "KrzyweKarty/KrzyweKarty.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
-#define PrintString(String) GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, String)
 
 // Sets default values
 AKKCharacter::AKKCharacter()
