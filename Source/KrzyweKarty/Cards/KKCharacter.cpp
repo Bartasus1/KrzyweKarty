@@ -143,8 +143,13 @@ void AKKCharacter::OnConstruction(const FTransform& Transform)
 	
 	if(!CharacterDataAsset->SkeletalMesh.IsNull() && !CharacterDataAsset->AnimationBlueprint.IsNull())
 	{
+		const UAnimBlueprint* AnimBlueprint = CharacterDataAsset->AnimationBlueprint.LoadSynchronous();
+		
 		CharacterMesh->SetSkeletalMesh(CharacterDataAsset->SkeletalMesh.LoadSynchronous());
-		CharacterMesh->SetAnimInstanceClass(CharacterDataAsset->AnimationBlueprint.LoadSynchronous()->GeneratedClass);
+		if(AnimBlueprint) // todo: animBP not loading in packaged game
+		{
+			CharacterMesh->SetAnimInstanceClass(AnimBlueprint->GeneratedClass);
+		}
 	}
 }
 
