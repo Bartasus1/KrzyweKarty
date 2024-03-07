@@ -23,7 +23,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void ShowStats(AKKCharacter* NewCharacter);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void ShowStatsPreview(const FCharacterStats& PreviewStats);
 
 protected:
@@ -82,4 +82,7 @@ private:
 
 	FText GetTextForStat(int32 FCharacterStats::* MemberField, UImage* StatImage) const;
 	void UpdateImageProperty(FName PropertyName, float BaseValue, float MaxValue, UImage* StatImage) const;
+
+	UFUNCTION()
+	void UpdateStatistics();
 };

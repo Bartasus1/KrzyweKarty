@@ -2,10 +2,16 @@
 
 
 #include "KKPlayerController.h"
+#include "KKGameState.h"
+
 #include "KrzyweKarty/KrzyweKarty.h"
 #include "KrzyweKarty/Cards/Action.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
+#include "KrzyweKarty/Map/KKMap.h"
+#include "KrzyweKarty/Map/KKTile.h"
+#include "KrzyweKarty/TileStatus/TileStatus.h"
+#include "KrzyweKarty/UI/CharacterStatsWidget.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
 #include "Net/UnrealNetwork.h"
 
@@ -55,7 +61,6 @@ void AKKPlayerController::Tick(float DeltaSeconds)
 		{
 			ShowTargetStats(TracedCharacter);
 		}
-		
 	}
 }
 
@@ -67,9 +72,14 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AKKPlayerController, bIsMyTurn);
 }
 
-bool AKKPlayerController::MinMoveRequirements()
+bool AKKPlayerController::MinMoveRequirements() const
 {
 	return (SelectedCharacter != nullptr) && bIsMyTurn;
+}
+
+AKKMap* AKKPlayerController::GetMap() const
+{
+	return GetWorld()->GetGameState<AKKGameState>()->Map;
 }
 
 FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel) const

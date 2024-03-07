@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "KKPlayerController.generated.h"
 
+class AKKMap;
 class UTileStatus;
 class UPlayerInputDataAsset;
 class UAction;
@@ -70,8 +71,11 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(BlueprintPure)
-	bool MinMoveRequirements();
+	bool MinMoveRequirements() const;
 
 private:
+
+	AKKMap* GetMap() const;
+	
 	TScriptInterface<ISelectableInterface> CachedTracedSelectableInterface;
 };

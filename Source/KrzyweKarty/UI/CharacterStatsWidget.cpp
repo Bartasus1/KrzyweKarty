@@ -19,12 +19,16 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 	if(Character) //if there was a character already, remove binding to it's death
 	{
 		Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+		Character->OnStatisticsUpdatedDelegate.RemoveDynamic(this, &UCharacterStatsWidget::UpdateStatistics);
 	}
 	
 	Character = NewCharacter; // assign new character
 	CharacterNameText->SetText(Character->GetCharacterName());
 	CharacterImage->SetBrushFromSoftTexture(Character->CharacterDataAsset->CharacterCardTexture);
+	UpdateStatistics();
+	
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
+	Character->OnStatisticsUpdatedDelegate.AddUniqueDynamic(this, &UCharacterStatsWidget::UpdateStatistics);
 }
 
 void UCharacterStatsWidget::ShowStatsPreview_Implementation(const FCharacterStats& PreviewStats)
@@ -33,10 +37,14 @@ void UCharacterStatsWidget::ShowStatsPreview_Implementation(const FCharacterStat
 	{
 		return;
 	}
+
+	UpdateImageProperty("Progress", PreviewStats.Health, Character->GetDefaultHealth(), HealthImage);
+	UpdateImageProperty("Progress", PreviewStats.Mana, Character->GetDefaultMana(), ManaImage);
+	UpdateImageProperty("Progress", PreviewStats.Defence, Character->GetDefaultDefence(), DefenceImage);
 	
-	UpdateImageProperty("Progress Preview", PreviewStats.Health, Character->GetDefaultHealth(), HealthImage);
-	UpdateImageProperty("Progress Preview", PreviewStats.Mana, Character->GetDefaultMana(), ManaImage);
-	UpdateImageProperty("Progress Preview", PreviewStats.Defence, Character->GetDefaultDefence(), DefenceImage);
+	UpdateImageProperty("Progress Preview", Character->GetCharacterStats().Health, Character->GetDefaultHealth(), HealthImage);
+	UpdateImageProperty("Progress Preview", Character->GetCharacterStats().Mana, Character->GetDefaultMana(), ManaImage);
+	UpdateImageProperty("Progress Preview", Character->GetCharacterStats().Defence, Character->GetDefaultDefence(), DefenceImage);
 }
 
 void UCharacterStatsWidget::NativeConstruct()
@@ -72,6 +80,16 @@ void UCharacterStatsWidget::UpdateImageProperty(FName PropertyName, float BaseVa
 		const float Value = (MaxValue == 0) ? 0 : BaseValue / MaxValue;
 		StatImage->GetDynamicMaterial()->SetScalarParameterValue(PropertyName, Value);
 	}
+}
+
+void UCharacterStatsWidget::UpdateStatistics()
+{
+	CharacterHealthText->SetText(HealthText());
+	CharacterDefenceText->SetText(DefenceText());
+	CharacterManaText->SetText(ManaText());
+	CharacterStrengthText->SetText(StrengthText());
+
+	ShowStatsPreview(Character->GetCharacterStats());
 }
 
 void UCharacterStatsWidget::RemoveCharacter()

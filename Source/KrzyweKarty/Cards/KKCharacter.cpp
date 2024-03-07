@@ -17,6 +17,8 @@
 #include "KrzyweKarty/CharacterHelpersSettings.h"
 #include "Core/Public/Containers/Array.h"
 #include "KrzyweKarty/KrzyweKarty.h"
+#include "KrzyweKarty/UI/PlayerHUD.h"
+
 #include "Materials/MaterialInstanceDynamic.h"
 
 
@@ -72,6 +74,11 @@ void AKKCharacter::OnSelectableGainFocus()
 
 void AKKCharacter::OnSelectableLostFocus()
 {
+}
+
+void AKKCharacter::OnRep_CharacterStats() const
+{
+	OnStatisticsUpdatedDelegate.Broadcast();
 }
 
 TArray<uint8> AKKCharacter::GetPossibleSpawnTiles()
@@ -191,6 +198,16 @@ void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Atta
 	DealDamage(this, DamageAmount);
 }
 
+FCharacterStats AKKCharacter::CalculateCharacterStatsAfterAttack(AKKCharacter* TargetCharacter)
+{
+	FCharacterStats CalculatedCharacterStats = TargetCharacter->CharacterStats;
+
+	CalculatedCharacterStats.Defence--;
+	CalculatedCharacterStats.Health -= (DefineDamageAmount(TargetCharacter)- TargetCharacter->GetDefence());
+
+	return CalculatedCharacterStats;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 bool AKKCharacter::CanFinishAbility_Implementation(uint8 Index)
@@ -271,6 +288,8 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 	{
 		KillCharacter(TargetCharacter); // Need to debate about it -> should it maybe be placed in ApplyDamageToSelf?
 	}
+
+	OnRep_CharacterStats();
 }
 
 

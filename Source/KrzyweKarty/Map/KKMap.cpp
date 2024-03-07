@@ -60,7 +60,6 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, uint8 TileID)
 		GetCellAtIndex(Character->OwnedTileID)->Character = nullptr;
         AssignCharacterToTile(Character, Destination);
 		
-        
 		return true;
 	}
 
@@ -427,7 +426,6 @@ void AKKMap::AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell)
 	
 	Character->OwnedTileID = MapCell->Tile->TileID;
 	Character->SetActorLocation(MapCell->Tile->GetActorLocation());
-	Character->SetActorRotation(Character->Direction * MapCell->Tile->GetActorRotation());
 }
 
 FMapCell* AKKMap::GetCellAtIndex(uint8 TileID)

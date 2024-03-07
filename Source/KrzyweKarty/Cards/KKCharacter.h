@@ -21,6 +21,7 @@ class USkeletalMeshComponent;
 class UTextRenderComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStatisticsUpdatedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterAbilityAction, uint8, Index);
 
 
@@ -57,18 +58,23 @@ public:
 	int32 Direction = 1;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	uint8 CharacterID = 0;
+	int32 CharacterID = 0;
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
+
+	UPROPERTY(BlueprintAssignable)
+	FStatisticsUpdatedDelegate OnStatisticsUpdatedDelegate;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	uint8 CharacterActions;
 protected:
 	
-	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
+	UPROPERTY(ReplicatedUsing="OnRep_CharacterStats", BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
-
+	
+	UFUNCTION()
+	void OnRep_CharacterStats() const;
 public:
 ///////////////////////////////////////////////////////////////////////	
 	// Interaction with the Map
@@ -100,6 +106,9 @@ public:
 	
 	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter);
 	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo);
+
+	UFUNCTION(BlueprintCallable)
+	FCharacterStats CalculateCharacterStatsAfterAttack(AKKCharacter* TargetCharacter);
 	
 //////////////////////////////////////////////////////////////////////////////////////////////
 	// Abilities Actions
@@ -183,6 +192,8 @@ protected:
 
 public:
 	FORCEINLINE FText GetCharacterName() const { return FText::Join(FText::FromString(""), CharacterDataAsset->CharacterName, FText::FromString("(") ,FText::AsNumber(CharacterID),FText::FromString(")")); }
+
+	FORCEINLINE const FCharacterStats& GetCharacterStats() const { return  CharacterStats; }
 	
 	FORCEINLINE int32 GetCharacterStatistic(int32 FCharacterStats::* MemberField) const { return CharacterStats.*MemberField; }
 	FORCEINLINE int32 GetCharacterDefaultStatistic(int32 FCharacterStats::* MemberField) const { return CharacterDataAsset->CharacterStats.*MemberField; }
