@@ -49,12 +49,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetTileStatus(UTileStatus* InTileStatus);
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+private:
+	void SetCollisionAndColor(ECollisionEnabled::Type Collision, FLinearColor Color);
+
+protected:
 	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess="true"))
 	UMaterialInstanceDynamic* DynamicInstaceMaterial;
 };

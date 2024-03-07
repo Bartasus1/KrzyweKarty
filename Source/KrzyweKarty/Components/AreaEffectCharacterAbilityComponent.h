@@ -9,6 +9,7 @@
 #include "AreaEffectCharacterAbilityComponent.generated.h"
 
 
+struct FEnhancedInputActionEventBinding;
 struct FInputActionInstance;
 
 UCLASS(ClassGroup=(Custom), Blueprintable, meta=(BlueprintSpawnableComponent))
@@ -43,6 +44,8 @@ protected:
 private:
 	UFUNCTION(Client, Reliable)
 	void ShowAreaTiles();
+
+	FEnhancedInputActionEventBinding* InputActionBinding;
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

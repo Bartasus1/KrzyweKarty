@@ -45,7 +45,7 @@ int32 AKKTile::GetTilePositionID() const
 
 void AKKTile::OnSelectableHighlighted()
 {
-	BoxCollision->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
+	//BoxCollision->SetCollisionResponseToChannel(PriorityTraceChannel, ECR_Block);
 }
 
 void AKKTile::OnSelectableGainFocus()
@@ -56,19 +56,23 @@ void AKKTile::OnSelectableLostFocus()
 {
 }
 
+void AKKTile::SetCollisionAndColor(ECollisionEnabled::Type Collision, FLinearColor Color)
+{
+	BoxCollision->SetCollisionEnabled(Collision);
+	DynamicInstaceMaterial->SetVectorParameterValue("Color", Color);
+}
+
 void AKKTile::SetTileStatus_Implementation(UTileStatus* InTileStatus)
 {
 	TileStatus = InTileStatus;
 	
-	if(TileStatus == nullptr || TileStatus->bEnableCollision == false)
+	if(TileStatus == nullptr)
 	{
-		BoxCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		DynamicInstaceMaterial->SetVectorParameterValue("Color", FLinearColor(0,0,0,0));
+		SetCollisionAndColor(ECollisionEnabled::NoCollision, FLinearColor(ForceInitToZero));
 		return;
 	}
 
-	BoxCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	DynamicInstaceMaterial->SetVectorParameterValue("Color", TileStatus->StatusColor);
+	SetCollisionAndColor(TileStatus->bEnableCollision? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision, TileStatus->StatusColor);
 }
 
 // Called when the game starts or when spawned

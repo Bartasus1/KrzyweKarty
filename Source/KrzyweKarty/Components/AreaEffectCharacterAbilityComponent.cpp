@@ -33,7 +33,7 @@ void UAreaEffectCharacterAbilityComponent::OnBeginAbility_Implementation(uint8 I
 	UPlayerInputDataAsset* PlayerInput = PlayerController->PlayerInputDataAsset;
 
 	UEnhancedInputComponent* InputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
-	InputComponent->BindAction(PlayerInput->RotateDirections, ETriggerEvent::Triggered, this, &UAreaEffectCharacterAbilityComponent::RotateSelectedTiles);
+	InputActionBinding = &InputComponent->BindAction(PlayerInput->RotateDirections, ETriggerEvent::Triggered, this, &UAreaEffectCharacterAbilityComponent::RotateSelectedTiles);
 }
 
 void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(uint8 Index)
@@ -41,6 +41,11 @@ void UAreaEffectCharacterAbilityComponent::OnFinishAbility_Implementation(uint8 
 	Super::OnFinishAbility_Implementation(Index);
 
 	GetMap()->ClearTilesHighlights();
+	AKKPlayerController* PlayerController = UKKGameStatics::GetKKPlayerController(this);
+	UPlayerInputDataAsset* PlayerInput = PlayerController->PlayerInputDataAsset;
+
+	UEnhancedInputComponent* InputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
+	InputComponent->RemoveBinding(*InputActionBinding);
 }
 
 void UAreaEffectCharacterAbilityComponent::Server_SetAffectedTiles_Implementation(const TArray<FDirection>& InAffectedTiles)

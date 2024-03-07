@@ -2,8 +2,8 @@
 
 
 #include "CharacterStatsWidget.h"
-#include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "Materials/MaterialInstanceDynamic.h"
 
@@ -19,7 +19,6 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 	if(Character) //if there was a character already, remove binding to it's death
 	{
 		Character->OnCharacterDeath.RemoveDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
-		Character->OnStatisticsUpdatedDelegate.RemoveDynamic(this, &UCharacterStatsWidget::UpdateStatistics);
 	}
 	
 	Character = NewCharacter; // assign new character
@@ -28,7 +27,6 @@ void UCharacterStatsWidget::ShowStats_Implementation(AKKCharacter* NewCharacter)
 	UpdateStatistics();
 	
 	Character->OnCharacterDeath.AddUniqueDynamic(this, &UCharacterStatsWidget::RemoveCharacter);
-	Character->OnStatisticsUpdatedDelegate.AddUniqueDynamic(this, &UCharacterStatsWidget::UpdateStatistics);
 }
 
 void UCharacterStatsWidget::ShowStatsPreview_Implementation(const FCharacterStats& PreviewStats)
@@ -42,9 +40,9 @@ void UCharacterStatsWidget::ShowStatsPreview_Implementation(const FCharacterStat
 	UpdateImageProperty("Progress", PreviewStats.Mana, Character->GetDefaultMana(), ManaImage);
 	UpdateImageProperty("Progress", PreviewStats.Defence, Character->GetDefaultDefence(), DefenceImage);
 	
-	UpdateImageProperty("Progress Preview", Character->GetCharacterStats().Health, Character->GetDefaultHealth(), HealthImage);
-	UpdateImageProperty("Progress Preview", Character->GetCharacterStats().Mana, Character->GetDefaultMana(), ManaImage);
-	UpdateImageProperty("Progress Preview", Character->GetCharacterStats().Defence, Character->GetDefaultDefence(), DefenceImage);
+	UpdateImageProperty("Progress Preview", Character->GetHealth(), Character->GetDefaultHealth(), HealthImage);
+	UpdateImageProperty("Progress Preview", Character->GetMana(), Character->GetDefaultMana(), ManaImage);
+	UpdateImageProperty("Progress Preview", Character->GetDefence(), Character->GetDefaultDefence(), DefenceImage);
 }
 
 void UCharacterStatsWidget::NativeConstruct()

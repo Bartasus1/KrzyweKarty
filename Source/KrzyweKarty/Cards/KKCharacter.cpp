@@ -76,11 +76,6 @@ void AKKCharacter::OnSelectableLostFocus()
 {
 }
 
-void AKKCharacter::OnRep_CharacterStats() const
-{
-	OnStatisticsUpdatedDelegate.Broadcast();
-}
-
 TArray<uint8> AKKCharacter::GetPossibleSpawnTiles()
 {
 	return { 0, 1, 2 ,3};
@@ -288,8 +283,6 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 	{
 		KillCharacter(TargetCharacter); // Need to debate about it -> should it maybe be placed in ApplyDamageToSelf?
 	}
-
-	OnRep_CharacterStats();
 }
 
 

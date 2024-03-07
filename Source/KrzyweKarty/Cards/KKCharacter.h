@@ -21,7 +21,6 @@ class USkeletalMeshComponent;
 class UTextRenderComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStatisticsUpdatedDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterAbilityAction, uint8, Index);
 
 
@@ -62,19 +61,14 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
-
-	UPROPERTY(BlueprintAssignable)
-	FStatisticsUpdatedDelegate OnStatisticsUpdatedDelegate;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	uint8 CharacterActions;
 protected:
 	
-	UPROPERTY(ReplicatedUsing="OnRep_CharacterStats", BlueprintReadWrite, VisibleAnywhere) // track stats in game
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
-	
-	UFUNCTION()
-	void OnRep_CharacterStats() const;
+
 public:
 ///////////////////////////////////////////////////////////////////////	
 	// Interaction with the Map
