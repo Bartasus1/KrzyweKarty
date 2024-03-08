@@ -2,8 +2,6 @@
 
 
 #include "Zakon_Paladyn.h"
-
-#include "KrzyweKarty/Components/AreaEffectCharacterAbilityComponent.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
 
@@ -11,8 +9,7 @@ void AZakon_Paladyn::PerformAbility_Implementation(uint8 Index)
 {
 	if(Index == 0)
 	{
-		UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = GetCharacterAbilityComponent<UAreaEffectCharacterAbilityComponent>(Index);
-		TArray<AKKCharacter*> AffectedCharacters = GetMap()->GetCharactersByDirection(this, CharacterAbilityComponent->GetFinalAffectedTiles());
+		TArray<AKKCharacter*> AffectedCharacters = GetMap()->GetCharactersByDirection(this, {});
 
 		for(AKKCharacter* Character : AffectedCharacters)
 		{

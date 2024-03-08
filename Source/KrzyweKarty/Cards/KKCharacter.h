@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "CharacterDataAsset.h"
 #include "GameFramework/Actor.h"
-#include "KrzyweKarty/Components/CharacterAbilityComponent.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
 #include "KKCharacter.generated.h"
 
+class AKKGameState;
 class UAction;
 enum ERotationDirection : int;
 class AKKTile;
@@ -124,9 +124,7 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CommitAbilityCost(uint8 Index);
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	UCharacterAbilityComponent* GetCharacterAbilityComponent(uint8 Index);
+	
 
 	template<typename T>
 	T* GetCharacterAbilityComponent(uint8 Index);
