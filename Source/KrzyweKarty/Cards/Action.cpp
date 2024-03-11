@@ -116,7 +116,7 @@ void USummonAction::ShowActionAffectedTiles() const
 
 FString USummonAction::GetLogMessage()
 {
-	return "Summoned " + Character->GetCharacterName().ToString();
+	return "Summoned <Ally>" + Character->GetCharacterName().ToString() + "</>";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,7 +150,7 @@ void UMoveAction::ShowActionAffectedTiles() const
 
 FString UMoveAction::GetLogMessage()
 {
-	return "Moved " + Character->GetCharacterName().ToString();
+	return "Moved <Ally>" + Character->GetCharacterName().ToString() + "</>";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,7 +188,7 @@ void UAttackAction::ShowActionAffectedTiles() const
 
 FString UAttackAction::GetLogMessage()
 {
-	return Character->GetCharacterName().ToString() + " attacked " + TargetCharacter->GetCharacterName().ToString();
+	return "<Ally>" + Character->GetCharacterName().ToString() + "</> attacked <Enemy>" + TargetCharacter->GetCharacterName().ToString() + "</>";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
