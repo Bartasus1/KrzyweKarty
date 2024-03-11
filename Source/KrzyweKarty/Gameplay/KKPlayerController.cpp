@@ -38,7 +38,7 @@ void AKKPlayerController::BeginPlay()
 		CharacterActions.Add(UMoveAction::StaticClass(), NewObject<UMoveAction>(this, "Move Action"));
 		CharacterActions.Add(UAttackAction::StaticClass(), NewObject<UAttackAction>(this, "Attack Action"));
 	}
-} 
+}
 
 void AKKPlayerController::Tick(float DeltaSeconds)
 {

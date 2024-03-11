@@ -2,6 +2,8 @@
 
 
 #include "Zakon_Lucznik.h"
+
+#include "KrzyweKarty/Components/AreaEffectCharacterAbilityComponent.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
 FAttackResultInfo AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
@@ -24,7 +26,9 @@ FAttackResultInfo AZakon_Lucznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 void AZakon_Lucznik::PerformAbility_Implementation(uint8 Index)
 {
-	for(AKKCharacter* Character : GetMap()->GetCharactersByDirection(this, {}, CSP_EnemyCharactersOnly))
+	UAreaEffectCharacterAbilityComponent* CharacterAbilityComponent = GetCharacterAbilityComponent<UAreaEffectCharacterAbilityComponent>(Index);
+	
+	for(AKKCharacter* Character : GetMap()->GetCharactersByDirection(this, CharacterAbilityComponent->GetFinalAffectedTiles(), CSP_EnemyCharactersOnly))
 	{
 		FAttackResultInfo AttackResultInfo;
 		Character->ApplyDamageToSelf(5, AttackResultInfo);
