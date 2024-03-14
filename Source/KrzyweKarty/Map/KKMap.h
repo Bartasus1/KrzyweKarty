@@ -37,13 +37,13 @@ public:
 	void ShowTilesForAttack(AKKCharacter* Character);
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters);
+	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters, bool bBlockDirectionOnFound = false);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles);
+	TArray<AKKTile*> GetTilesByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ETileSelectionPolicy TileSelectionPolicy = TSP_AllTiles, bool bBlockDirectionOnFound = false);
 
 	UFUNCTION(BlueprintCallable)
-	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions);
+	TArray<FMapCell> GetCellsByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, bool bBlockDirectionOnFound = false);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKTile*> GetTilesForSpawn(AKKCharacter* Character, TArray<uint8> TilesID);
@@ -82,7 +82,7 @@ public:
 
 	
 	FMapCell* GetCellAtIndex(uint8 TileID);
-	FMapCell* GetCellByDirection(AKKCharacter* Character, FDirection Direction);
+	FMapCell* GetCellByDirection(AKKCharacter* Character, const FDirection& Direction);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))
@@ -103,8 +103,6 @@ private:
 	
 	void AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell);
 	void SetFractionBase(uint8 ID, AKKCharacter* Base);
-	
-	friend class AKKSpawnpoint;
 	
 	////   Map values   ////
 	const FVector StartLocation = FVector(-250.f, -150.f, 0.1);

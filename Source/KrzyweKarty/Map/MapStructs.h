@@ -33,11 +33,12 @@ enum ERotationDirection
 	ERD_Forward = 1	UMETA(DisplayName = "Forward"),
 	ERD_Right		UMETA(DisplayName = "Right"),
 	ERD_Backward	UMETA(DisplayName = "Backward"),
-	ERD_Left		UMETA(DisplayName = "Left")
+	ERD_Left		UMETA(DisplayName = "Left"),
+	ERD_Max			UMETA(Hidden)
 };
 
 USTRUCT(BlueprintType)
-struct FDirection
+struct FDirection //Relative Direction
 {
 	GENERATED_BODY()
 
@@ -53,6 +54,14 @@ struct FDirection
 	int32 Y; // horizontal
 	
 	FDirection Rotate(const ERotationDirection Rotation) const;
+	ERotationDirection GetDirectionLine() const;
+
+	static TMap<ERotationDirection, TArray<FDirection>> SortDirections(const TArray<FDirection>& Directions);
+
+	bool operator<(const FDirection& Other) const
+	{
+		return FMath::Abs(X) <  FMath::Abs(Other.X) ||  FMath::Abs(Y) <  FMath::Abs(Other.Y);
+	}
 };
 
 UENUM(BlueprintType)

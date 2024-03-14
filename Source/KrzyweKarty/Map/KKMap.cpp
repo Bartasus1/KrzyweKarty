@@ -1,10 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KKMap.h"
-
 #include "Fraction.h"
 #include "KKTile.h"
-
 #include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
@@ -25,6 +23,32 @@ FDirection FDirection::Rotate(const ERotationDirection Rotation) const
 	default:
 		return *this;
 	}
+}
+
+ERotationDirection FDirection::GetDirectionLine() const
+{
+	if(X != 0) // "vertical"
+	{
+		return (X > 0) ? ERD_Forward : ERD_Backward;
+	}
+	else // "horizontal"
+	{
+		return (Y > 0) ? ERD_Right : ERD_Left;
+	}
+}
+
+
+TMap<ERotationDirection, TArray<FDirection>> FDirection::SortDirections(const TArray<FDirection>& Directions)
+{
+	TMap<ERotationDirection, TArray<FDirection>> SortedDirections;
+
+	for (const FDirection& Direction : Directions)
+	{
+		SortedDirections.FindOrAdd(Direction.GetDirectionLine()).Add(Direction);
+		SortedDirections[Direction.GetDirectionLine()].Sort(); // not optimal but whatever
+	}
+
+	return SortedDirections;
 }
 
 // Sets default values
@@ -68,7 +92,7 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, uint8 TileID)
 
 void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
 {
-	TArray<AKKTile*> InitialTiles = GetTilesByDirection(Character, Character->GetPossibleAttackTiles(), TSP_EnemyCharactersOnly);
+	TArray<AKKTile*> InitialTiles = GetTilesByDirection(Character, Character->GetPossibleAttackTiles(), TSP_EnemyCharactersOnly, true);
 
 	if(CanAttackBase(Character))
 	{
@@ -82,11 +106,11 @@ void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
 	
 }
 
-TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy)
+TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy, bool bBlockDirectionOnFound)
 {
 	TArray<AKKCharacter*> FoundCharacters;
 	
-	for(FMapCell& MapCell : GetCellsByDirection(Character, Directions))
+	for(FMapCell& MapCell : GetCellsByDirection(Character, Directions, bBlockDirectionOnFound))
 	{
 		if(MapCell.Character == nullptr)
 		{
@@ -118,11 +142,11 @@ TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, 
 	return FoundCharacters;
 }
 
-TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ETileSelectionPolicy TileSelectionPolicy)
+TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ETileSelectionPolicy TileSelectionPolicy, bool bBlockDirectionOnFound)
 {
 	TArray<AKKTile*> FoundTiles;
 	
-	for(FMapCell& MapCell : GetCellsByDirection(Character, Directions)) 
+	for(FMapCell& MapCell : GetCellsByDirection(Character, Directions, bBlockDirectionOnFound)) 
 	{
 		
 		switch (TileSelectionPolicy)
@@ -157,26 +181,39 @@ TArray<AKKTile*> AKKMap::GetTilesByDirection(AKKCharacter* Character, const TArr
 	return FoundTiles;
 }
 
-TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions)
+TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, bool bBlockDirectionOnFound)
 {
 	TArray<FMapCell> FoundCells;
 
 	if(Character)
 	{
-		const int32 X = GetX(Character->OwnedTileID);
-		const int32 Y = GetY(Character->OwnedTileID);
-
-		const int32 Direction = Character->Direction;
-	
-		for(const FDirection& Tile : Directions)
+		if(bBlockDirectionOnFound)
 		{
-			const int32 NextX = X + (Direction * Tile.X);
-			const int32 NextY = Y + (Direction * Tile.Y);
-		
-			if(IsValidIndex(NextX, NextY))
+			TMap<ERotationDirection, TArray<FDirection>> SortedDirections = FDirection::SortDirections(Directions);
+			for (uint8 i = 1; i < ERD_Max; i++) //for each Direction Line
 			{
-				FoundCells.Add(MapArray[NextX].MapRows[NextY]);
+				for (const FDirection& DirectionLine : SortedDirections[static_cast<ERotationDirection>(i)])
+				{
+					if(const FMapCell* MapCell = GetCellByDirection(Character, DirectionLine))
+					{
+						FoundCells.Add(*MapCell);
+						if(MapCell->Character)
+						{
+							break;
+						}
+					}
+				}
 			}
+		}
+		else
+		{
+			for(const FDirection& Direction : Directions)
+            {
+				if(const FMapCell* MapCell = GetCellByDirection(Character, Direction))
+				{
+					FoundCells.Add(*MapCell);
+				}
+            }
 		}
 	}
 
@@ -441,7 +478,7 @@ FMapCell* AKKMap::GetCellAtIndex(uint8 TileID)
 	return nullptr;
 }
 
-FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, FDirection Direction)
+FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, const FDirection& Direction)
 {
 	const int32 X = GetX(Character->OwnedTileID);
 	const int32 Y = GetY(Character->OwnedTileID);
@@ -463,7 +500,6 @@ void AKKMap::SetFractionBase(uint8 ID, AKKCharacter* Base)
 {
 	AssignCharacterToTile(Base, &BaseArray[ID]);
 }
-
 
 void AKKMap::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
