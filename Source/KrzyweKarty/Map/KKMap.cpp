@@ -190,7 +190,7 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, const TArr
 		if(bBlockDirectionOnFound)
 		{
 			TMap<ERotationDirection, TArray<FDirection>> SortedDirections = FDirection::SortDirections(Directions);
-			for (uint8 i = 1; i < ERD_Max; i++) //for each Direction Line
+			for (uint8 i = ERD_Forward; i < ERD_Max; i++) //for each Direction Line
 			{
 				for (const FDirection& DirectionLine : SortedDirections[static_cast<ERotationDirection>(i)])
 				{
