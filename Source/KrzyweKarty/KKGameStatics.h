@@ -34,7 +34,7 @@ public:
 	static void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
 
 	UFUNCTION(BlueprintCallable)
-	static void RotateDirections(UPARAM(ref) TArray<FDirection>& Directions, ERotationDirection RotationDirection);
+	static TArray<FDirection> RotateDirections(const TArray<FDirection>& Directions, ERotationDirection RotationDirection);
 	
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"))

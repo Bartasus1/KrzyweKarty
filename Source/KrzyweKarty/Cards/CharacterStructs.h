@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CharacterStructs.generated.h"
 
+class AAbilityActor;
 class AKKCharacter;
 
 USTRUCT(BlueprintType)
@@ -40,6 +41,9 @@ struct FAbilityDescription
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UTexture2D> AbilityImage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftClassPtr<AAbilityActor> AbilityClass;
 };
 
 UENUM()

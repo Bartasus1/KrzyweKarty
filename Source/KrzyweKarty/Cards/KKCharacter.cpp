@@ -3,6 +3,7 @@
 
 
 #include "KKCharacter.h"
+#include "AbilityActor.h"
 #include "Action.h"
 #include "Animation/AnimBlueprint.h"
 #include "Animation/AnimInstance.h"
@@ -56,6 +57,18 @@ AKKCharacter::AKKCharacter()
 void AKKCharacter::CharacterDied_Implementation()
 {
 	OnCharacterDeath.Broadcast();
+}
+
+TSubclassOf<AAbilityActor> AKKCharacter::GetAbilityClass(uint8 Index) const
+{
+	const TSoftClassPtr<AAbilityActor> AbilityClass = CharacterDataAsset->ActiveAbilities[Index].AbilityClass;
+
+	if(!AbilityClass.IsNull())
+	{
+		return AbilityClass.LoadSynchronous();
+	}
+
+	return AAbilityActor::StaticClass();
 }
 
 int32 AKKCharacter::GetTilePositionID() const

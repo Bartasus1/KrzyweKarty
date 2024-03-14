@@ -137,6 +137,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_OnFinishAbilityDelegate(uint8 Index);
 
+	UFUNCTION(BlueprintPure)
+	TSubclassOf<AAbilityActor> GetAbilityClass(uint8 Index) const;
+
 	//////////////////////////////////////////////////////
 	// Tiles
 
@@ -209,7 +212,7 @@ public:
 	FORCEINLINE void IncreaseMana(int32 InMana = 1)			 { SetMana(GetMana() + InMana); }
 	FORCEINLINE void IncreaseDefence(int32 InDefence = 1)	 { SetDefence(GetDefence() + InDefence); }
 
-	FORCEINLINE int32 GetActiveAbilityCost(int32 Index) const
+	FORCEINLINE int32 GetActiveAbilityCost(uint8 Index) const
 	{ return CharacterDataAsset->ActiveAbilities[Index].AbilityCost; }
 
 	UFUNCTION(BlueprintPure)

@@ -35,12 +35,15 @@ void UKKGameStatics::AddActionLog( AKKCharacter* Character, AKKCharacter* Target
 	}
 }
 
-void UKKGameStatics::RotateDirections(IN TArray<FDirection>& Directions, ERotationDirection RotationDirection)
+TArray<FDirection> UKKGameStatics::RotateDirections(const TArray<FDirection>& Directions, ERotationDirection RotationDirection)
 {
-	for(FDirection& InDirection : Directions)
+	TArray<FDirection> RotatedDirections;
+	for(const FDirection& InDirection : Directions)
 	{
-		InDirection = InDirection.Rotate(RotationDirection);
+		RotatedDirections.Add(InDirection.Rotate(RotationDirection));
 	}
+	
+	return RotatedDirections;
 }
 
 void UKKGameStatics::HideTiles(const UObject* WorldContextObject)

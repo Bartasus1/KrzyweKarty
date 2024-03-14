@@ -17,19 +17,29 @@ class KRZYWEKARTY_API AAbilityActor : public AActor
 public:
 	AAbilityActor();
 
-	UFUNCTION(Blueprintable)
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void BeginAbility();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnBeginAbility();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnFinishAbility();
+	
+	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ConfirmAbility();
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void AbortAbility();
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void SetOwner(AActor* NewOwner) override;
-
 public:
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(ExposeOnSpawn))
 	AKKCharacter* Character;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(ExposeOnSpawn))
 	uint8 AbilityIndex = 0;
 
 	UPROPERTY(VisibleAnywhere)
