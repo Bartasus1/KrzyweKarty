@@ -57,7 +57,7 @@ public:
 	int32 Direction = 1;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
-	int32 CharacterID = 0;
+	uint8 CharacterID = 0;
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;

@@ -4,12 +4,11 @@
 #include "Action.h"
 #include "KKCharacter.h"
 #include "GameFramework/PlayerState.h"
-
 #include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
-#include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/Map/KKMap.h"
+#include "KrzyweKarty/Map/KKTile.h"
 
 UAction::UAction()
 {
@@ -30,7 +29,7 @@ void UAction::OnActionCompleted()
 	GetGameState()->RegisterCharacterInSystem(Character);
 
 	FString PlayerName = Character->OwningPlayer->PlayerState->GetPlayerName();
-	FString Log = PlayerName + ": " + GetLogMessage();
+	FString Log = "<PlayerName>" + PlayerName + ":</> " + GetLogMessage();
 	GetGameState()->Server_AddActionLog(FText::FromString(Log));
 		
 	ConditionalBeginDestroy();

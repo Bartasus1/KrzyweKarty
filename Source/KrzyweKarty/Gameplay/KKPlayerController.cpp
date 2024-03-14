@@ -3,15 +3,10 @@
 
 #include "KKPlayerController.h"
 #include "KKGameState.h"
-
 #include "KrzyweKarty/KrzyweKarty.h"
 #include "KrzyweKarty/Cards/Action.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
-#include "KrzyweKarty/Map/KKMap.h"
-#include "KrzyweKarty/Map/KKTile.h"
-#include "KrzyweKarty/TileStatus/TileStatus.h"
-#include "KrzyweKarty/UI/CharacterStatsWidget.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
 #include "Net/UnrealNetwork.h"
 
@@ -116,6 +111,7 @@ bool AKKPlayerController::SelectCharacter()
 		if(TracedCharacter->OwningPlayer == this)
 		{
 			SelectedCharacter = TracedCharacter;
+			SelectedCharacter->CharacterMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); //todo: re-enable it when character changes
 			ShowCharacterStats(SelectedCharacter);
 			
 			return bIsMyTurn; //dont use character if its not my turn
