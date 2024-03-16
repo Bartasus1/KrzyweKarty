@@ -89,6 +89,11 @@ void AKKCharacter::OnSelectableLostFocus()
 {
 }
 
+void AKKCharacter::OnRep_CharacterStats() const
+{
+	OnCharacterStatsChanged.Broadcast();
+}
+
 TArray<uint8> AKKCharacter::GetPossibleSpawnTiles()
 {
 	return { 0, 1, 2 ,3};
@@ -266,8 +271,13 @@ void AKKCharacter::Client_OnFinishAbilityDelegate_Implementation(uint8 Index)
 
 void AKKCharacter::PlayAnimMontage_Implementation(UAnimMontage* AnimMontage)
 {
-	UAnimInstance * AnimInstance = CharacterMesh->GetAnimInstance();
-	AnimInstance->Montage_Play(AnimMontage);
+	if(AnimMontage)
+	{
+		if(UAnimInstance * AnimInstance = CharacterMesh->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(AnimMontage);
+		}
+	}
 }
 
 void AKKCharacter::KillCharacter(AKKCharacter* TargetCharacter) const
@@ -296,6 +306,7 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 	{
 		KillCharacter(TargetCharacter); // Need to debate about it -> should it maybe be placed in ApplyDamageToSelf?
 	}
+	OnRep_CharacterStats();
 }
 
 

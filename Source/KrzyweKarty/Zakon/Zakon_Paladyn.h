@@ -19,5 +19,5 @@ public:
 
 	virtual void PerformAbility_Implementation(uint8 Index) override;
 
-	TArray<FDirection> GetAffectedTiles_Implementation(uint8 Index) override;
+	virtual TArray<FDirection> GetAffectedTiles_Implementation(uint8 Index) override;
 };

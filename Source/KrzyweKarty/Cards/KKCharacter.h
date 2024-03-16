@@ -21,6 +21,7 @@ class USkeletalMeshComponent;
 class UTextRenderComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterDiedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCharacterStatsDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterAbilityAction, uint8, Index);
 
 
@@ -61,13 +62,22 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FCharacterDiedDelegate OnCharacterDeath;
+
+	UPROPERTY(BlueprintAssignable)
+	FCharacterStatsDelegate OnCharacterStatsChanged;
 	
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	uint8 CharacterActions;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	AAbilityActor* AbilityActor;
 protected:
 	
-	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere) // track stats in game
+	UPROPERTY(ReplicatedUsing="OnRep_CharacterStats", BlueprintReadWrite, VisibleAnywhere) // track stats in game
 	FCharacterStats CharacterStats;
+
+	UFUNCTION()
+	void OnRep_CharacterStats() const;
 
 public:
 ///////////////////////////////////////////////////////////////////////	
@@ -199,10 +209,10 @@ public:
 	FORCEINLINE int32 GetDefaultDefence()  const { return CharacterDataAsset->CharacterStats.Defence; }
 	FORCEINLINE int32 GetDefaultStrength() const { return CharacterDataAsset->CharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth) 	{ CharacterStats.Health		=	FMath::Clamp<int32>(NewHealth, 0, GetDefaultHealth()); }
-	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana		=	FMath::Clamp<int32>(NewMana, 0, GetDefaultHealth()); }
-	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence	=	FMath::Clamp<int32>(NewDefence, 0, GetDefaultHealth()); }
-	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength	=	FMath::Clamp<int32>(NewStrength, 0, GetDefaultHealth()); }
+	FORCEINLINE void SetHealth(int32 NewHealth) 	{ CharacterStats.Health		=	FMath::Clamp<int32>(NewHealth, 0, GetDefaultHealth());	OnRep_CharacterStats(); }
+	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana		=	FMath::Clamp<int32>(NewMana, 0, GetDefaultHealth());		OnRep_CharacterStats(); }
+	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence	=	FMath::Clamp<int32>(NewDefence, 0, GetDefaultHealth());	OnRep_CharacterStats(); }
+	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength	=	FMath::Clamp<int32>(NewStrength, 0, GetDefaultHealth());	OnRep_CharacterStats(); }
 
 	FORCEINLINE void DecreaseHealth(int32 InHealth = 1)   { SetHealth(GetHealth() - InHealth); }
 	FORCEINLINE void DecreaseMana(int32 InMana = 1)		  { SetMana(GetMana() - InMana); }

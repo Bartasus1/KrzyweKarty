@@ -480,17 +480,20 @@ FMapCell* AKKMap::GetCellAtIndex(uint8 TileID)
 
 FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, const FDirection& Direction)
 {
-	const int32 X = GetX(Character->OwnedTileID);
-	const int32 Y = GetY(Character->OwnedTileID);
-
-	const int32 CharacterDirection = Character->Direction;
-	
-	const int32 NextX = X + (CharacterDirection * Direction.X);
-	const int32 NextY = Y + (CharacterDirection * Direction.Y);
-		
-	if(IsValidIndex(NextX, NextY))
+	if(Character->GetTilePositionID() != -1)
 	{
-		return &MapArray[NextX].MapRows[NextY];
+		const int32 X = GetX(Character->OwnedTileID);
+        const int32 Y = GetY(Character->OwnedTileID);
+    
+        const int32 CharacterDirection = Character->Direction;
+        
+        const int32 NextX = X + (CharacterDirection * Direction.X);
+        const int32 NextY = Y + (CharacterDirection * Direction.Y);
+        	
+        if(IsValidIndex(NextX, NextY))
+        {
+        	return &MapArray[NextX].MapRows[NextY];
+        }
 	}
 	
 	return nullptr;

@@ -8,6 +8,7 @@
 #include "AreaModifierInterface.generated.h"
 
 
+class UTileStatus;
 class AKKCharacter;
 
 // This class does not need to be modified.
@@ -28,5 +29,10 @@ class KRZYWEKARTY_API IAreaModifierInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	TArray<FDirection> GetAffectedTiles(uint8 Index = 0);
-	
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UTileStatus* GetStatusForTile(AKKCharacter* TargetCharacter);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) //for ability actors
+	TArray<AKKCharacter*> GetAffectedCharacters();
 };

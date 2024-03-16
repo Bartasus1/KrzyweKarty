@@ -20,10 +20,16 @@ public:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void BeginAbility();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(Client, Reliable)
+	void OnBeginAbility_Client();
+
+	UFUNCTION(Client, Reliable)
+	void OnFinishAbility_Client();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnBeginAbility();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnFinishAbility();
 	
 	UFUNCTION(Server, Reliable, BlueprintCallable)
@@ -34,12 +40,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 public:
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(ExposeOnSpawn))
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere, meta=(ExposeOnSpawn))
 	AKKCharacter* Character;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(ExposeOnSpawn))
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere, meta=(ExposeOnSpawn))
 	uint8 AbilityIndex = 0;
 
 	UPROPERTY(VisibleAnywhere)
