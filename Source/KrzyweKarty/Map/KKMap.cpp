@@ -299,6 +299,22 @@ TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 	});
 }
 
+bool AKKMap::AreCharactersInLine(AKKCharacter* Character, AKKCharacter* TargetCharacter) const
+{
+	const int32 TileID = Character->GetTilePositionID();
+	const int32 TargetTileID = TargetCharacter->GetTilePositionID();
+
+	if(TileID == -1 || TargetTileID == -1)
+	{
+		return false;
+	}
+
+	const FIntPoint Position = GetPositionByTileID(TileID);
+	const FIntPoint TargetPosition = GetPositionByTileID(TargetTileID);
+
+	return (Position.X == TargetPosition.X || Position.Y == TargetPosition.Y);
+}
+
 void AKKMap::GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*>& InitialAttackTiles)
 {
 	const uint8 BaseIndex = Character->Direction == 1 ? 1 : 0; // if facing forward, character is attacking client, so client base index is 1
@@ -358,6 +374,16 @@ AKKCharacter* AKKMap::GetCharacterAtIndex(uint8 TileID)
 	}
 	
 	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Character : nullptr;
+}
+
+AKKCharacter* AKKMap::GetCharacterByPosition(const FIntPoint& Position)
+{
+	if(const FMapCell* MapCell = GetCellByPosition(Position))
+	{
+		return MapCell->Character;
+	}
+
+	return nullptr;
 }
 
 void AKKMap::RemoveCharacterFromTile(uint8 TileID)
@@ -478,7 +504,17 @@ FMapCell* AKKMap::GetCellAtIndex(uint8 TileID)
 	return nullptr;
 }
 
-FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, const FDirection& Direction)
+FMapCell* AKKMap::GetCellByPosition(const FIntPoint& Position)
+{
+	if(IsValidIndex(Position.X, Position.Y))
+	{
+		return &MapArray[Position.X].MapRows[Position.Y];
+	}
+
+	return nullptr;
+}
+
+FMapCell* AKKMap::GetCellByDirection(const AKKCharacter* Character, const FDirection& Direction)
 {
 	if(Character->GetTilePositionID() != -1)
 	{
@@ -497,6 +533,11 @@ FMapCell* AKKMap::GetCellByDirection(AKKCharacter* Character, const FDirection& 
 	}
 	
 	return nullptr;
+}
+
+FIntPoint AKKMap::GetPositionByTileID(int32 TileID) const
+{
+	return {GetX(TileID), GetY(TileID)};
 }
 
 void AKKMap::SetFractionBase(uint8 ID, AKKCharacter* Base)

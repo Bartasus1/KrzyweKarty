@@ -49,6 +49,7 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
+	TextRenderName->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Ignore);
 	
 	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
@@ -331,6 +332,33 @@ int32 AKKCharacter::GetDistanceTo(const TScriptInterface<ISelectableInterface>& 
 	//UE_LOG(LogTemp, Warning, TEXT("%d"), static_cast<int32>(FVector2D::Distance(PositionOne, PositionTwo)))
 
 	return FVector2D::Distance(PositionOne, PositionTwo);
+}
+
+bool AKKCharacter::IsFirstCharacterInLine(AKKCharacter* TargetCharacter)
+{
+	if(!GetMap()->AreCharactersInLine(this, TargetCharacter))
+	{
+		return false;
+	}
+
+	FIntPoint Position = GetMap()->GetPositionByTileID(GetTilePositionID());
+	FIntPoint TargetPosition = GetMap()->GetPositionByTileID(TargetCharacter->GetTilePositionID());
+	
+	int32 FIntPoint::* SearchDirection = (Position.X != TargetPosition.X) ? &FIntPoint::X : &FIntPoint::Y;
+	int32 FIntPoint::* OtherAxis = (Position.X != TargetPosition.X) ? &FIntPoint::Y : &FIntPoint::X;
+
+	for(int32 i = Position.*SearchDirection + 1; i < TargetPosition.*SearchDirection; i++)
+	{
+		if(const AKKCharacter* Character = GetMap()->GetCharacterByPosition({i, Position.*OtherAxis}))
+		{
+			if(Character != TargetCharacter)
+			{
+				return false;
+			}
+		}
+	}
+	
+	return true;
 }
 
 AKKGameState* AKKCharacter::GetGameState() const

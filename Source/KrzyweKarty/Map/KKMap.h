@@ -3,9 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "MapStructs.h"
-#include "Components/ArrowComponent.h"
+#include "GameFramework/Actor.h"
 #include "KKMap.generated.h"
 
 class AFraction;
@@ -63,6 +62,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetEnemyCharactersOnMap(AKKCharacter* Character);
 
+	UFUNCTION(BlueprintCallable)
+	bool AreCharactersInLine(AKKCharacter* Character, AKKCharacter* TargetCharacter) const;
+
 	void GetTilesForBaseAttack(AKKCharacter* Character, TArray<AKKTile*>& InitialAttackTiles);
 	
 	bool CanAttackBase(const AKKCharacter* Character) const;
@@ -76,13 +78,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AKKCharacter* GetCharacterAtIndex(uint8 TileID);
 
+	UFUNCTION(BlueprintCallable)
+	AKKCharacter* GetCharacterByPosition(const FIntPoint& Position);
+
 	void RemoveCharacterFromTile(uint8 TileID);
 
 	void SpawnFraction(uint8 ID, TSubclassOf<AFraction> FractionClass);
 
 	
 	FMapCell* GetCellAtIndex(uint8 TileID);
-	FMapCell* GetCellByDirection(AKKCharacter* Character, const FDirection& Direction);
+	FMapCell* GetCellByPosition(const FIntPoint& Position);
+	FMapCell* GetCellByDirection(const AKKCharacter* Character, const FDirection& Direction);
+	
+	FIntPoint GetPositionByTileID(int32 TileID) const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess="true"))

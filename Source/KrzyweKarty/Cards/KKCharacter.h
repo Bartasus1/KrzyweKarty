@@ -182,6 +182,9 @@ protected:
 
 	int32 GetDistanceTo(const TScriptInterface<ISelectableInterface>& SelectableInterface) const;
 
+	UFUNCTION(BlueprintPure)
+	bool IsFirstCharacterInLine(AKKCharacter* TargetCharacter);
+
 ////////////////////////////////////////////////////////////////
 
 	AKKGameState* GetGameState() const;

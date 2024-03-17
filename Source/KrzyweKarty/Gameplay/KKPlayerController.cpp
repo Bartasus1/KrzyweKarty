@@ -3,6 +3,9 @@
 
 #include "KKPlayerController.h"
 #include "KKGameState.h"
+
+#include "Kismet/KismetSystemLibrary.h"
+
 #include "KrzyweKarty/KrzyweKarty.h"
 #include "KrzyweKarty/Cards/Action.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
@@ -87,6 +90,7 @@ FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel
  	FVector End = Start + (Direction * Range);
  
  	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, CollisionChannel);
+	//UKismetSystemLibrary::LineTraceSingle(this, Start, End, TraceTypeQuery3, false, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true);
 	
 	return HitResult;
 }

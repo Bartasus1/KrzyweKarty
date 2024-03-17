@@ -13,12 +13,12 @@
 UCLASS()
 class KRZYWEKARTY_API AZakon_Halabardzista : public AKKCharacter, public IAreaModifierInterface
 {
-
-
-private:
 	GENERATED_BODY()
 
 public:
+
+	virtual void PerformAbility_Implementation(uint8 Index) override;
+	
 	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter) override;
 	
 	virtual TArray<FDirection> GetAffectedTiles_Implementation(uint8 Index) override;

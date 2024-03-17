@@ -2,7 +2,6 @@
 
 
 #include "Zakon_Paladyn.h"
-
 #include "KrzyweKarty/Cards/AbilityActor.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
