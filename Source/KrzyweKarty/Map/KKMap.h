@@ -54,7 +54,7 @@ public:
 	TArray<AKKTile*> GetAllTilesOnMap();
 
 	UFUNCTION(BlueprintCallable)
-	TArray<AKKCharacter*> GetAllCharactersOnMap();
+	TArray<AKKCharacter*> GetAllCharactersOnMap(AKKCharacter* CharacterToExclude = nullptr);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetAllyCharactersOnMap(AKKCharacter* Character);

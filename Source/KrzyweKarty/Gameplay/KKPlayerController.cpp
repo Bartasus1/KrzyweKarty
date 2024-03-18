@@ -112,6 +112,11 @@ bool AKKPlayerController::SelectCharacter()
 {
 	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
 	{
+		if(SelectedCharacter)
+		{
+			SelectedCharacter->CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		}
+		
 		if(TracedCharacter->OwningPlayer == this)
 		{
 			SelectedCharacter = TracedCharacter;

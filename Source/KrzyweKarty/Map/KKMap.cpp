@@ -187,7 +187,7 @@ TArray<FMapCell> AKKMap::GetCellsByDirection(AKKCharacter* Character, const TArr
 
 	if(Character)
 	{
-		if(bBlockDirectionOnFound)
+		if(bBlockDirectionOnFound && !Directions.IsEmpty())
 		{
 			TMap<ERotationDirection, TArray<FDirection>> SortedDirections = FDirection::SortDirections(Directions);
 			for (uint8 i = ERD_Forward; i < ERD_Max; i++) //for each Direction Line
@@ -266,14 +266,14 @@ TArray<AKKTile*> AKKMap::GetAllTilesOnMap()
 	return AllTiles;
 }
 
-TArray<AKKCharacter*> AKKMap::GetAllCharactersOnMap()
+TArray<AKKCharacter*> AKKMap::GetAllCharactersOnMap(AKKCharacter* CharacterToExclude)
 {
 	TArray<AKKCharacter*> AllCharacters;
 	for(int i = 0; i < TotalMapSize; i++)
 	{
 		if(const FMapCell* MapCell = GetCellAtIndex(i))
 		{
-			if(MapCell->Character != nullptr)
+			if(MapCell->Character != nullptr && MapCell->Character != CharacterToExclude)
 			{
 				AllCharacters.Add(MapCell->Character);
 			}
@@ -285,17 +285,17 @@ TArray<AKKCharacter*> AKKMap::GetAllCharactersOnMap()
 
 TArray<AKKCharacter*> AKKMap::GetAllyCharactersOnMap(AKKCharacter* Character)
 {
-	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
+	return GetAllCharactersOnMap(Character).FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
 	{
-		return (Character != AnotherCharacter) && (Character->IsInTheSameTeam(AnotherCharacter));
+		return Character->IsInTheSameTeam(AnotherCharacter);
 	});
 }
 
 TArray<AKKCharacter*> AKKMap::GetEnemyCharactersOnMap(AKKCharacter* Character)
 {
-	return GetAllCharactersOnMap().FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
+	return GetAllCharactersOnMap(Character).FilterByPredicate([=](AKKCharacter* AnotherCharacter) -> bool
 	{
-		return (Character != AnotherCharacter && !Character->IsInTheSameTeam(AnotherCharacter));
+		return !Character->IsInTheSameTeam(AnotherCharacter);
 	});
 }
 
