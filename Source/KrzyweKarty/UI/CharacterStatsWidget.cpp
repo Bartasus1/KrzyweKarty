@@ -77,7 +77,7 @@ void UCharacterStatsWidget::UpdateImageProperty(FName PropertyName, float BaseVa
 {
 	if(StatImage)
 	{
-		const float Value = (MaxValue == 0) ? 0 : BaseValue / MaxValue;
+		const float Value = (MaxValue == 0 || BaseValue < 0) ? 0 : BaseValue / MaxValue;
 		StatImage->GetDynamicMaterial()->SetScalarParameterValue(PropertyName, Value);
 	}
 }

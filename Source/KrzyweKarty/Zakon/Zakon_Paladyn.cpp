@@ -3,6 +3,7 @@
 
 #include "Zakon_Paladyn.h"
 #include "KrzyweKarty/Cards/AbilityActor.h"
+#include "KrzyweKarty/Interfaces/AbilityInterfaces/AreaAbilityInterface.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
 
@@ -10,7 +11,7 @@ void AZakon_Paladyn::PerformAbility_Implementation(uint8 Index)
 {
 	if(Index == 0)
 	{
-		TArray<AKKCharacter*> AffectedCharacters = IAreaModifierInterface::Execute_GetAffectedCharacters(AbilityActor);
+		TArray<AKKCharacter*> AffectedCharacters = IAreaAbilityInterface::Execute_GetAffectedCharacters(AbilityActor);
 
 		for(AKKCharacter* Character : AffectedCharacters)
 		{

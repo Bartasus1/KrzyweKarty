@@ -31,8 +31,8 @@ public:
 	TArray<FDirection> GetAffectedTiles(uint8 Index = 0);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	UTileStatus* GetStatusForTile(AKKCharacter* TargetCharacter);
+	UTileStatus* GetStatusForTile(AKKCharacter* TargetCharacter, uint8 Index = 0);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) //for ability actors
-	TArray<AKKCharacter*> GetAffectedCharacters();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	const TArray<AKKCharacter*> FilterCharacters(const TArray<AKKCharacter*>& InCharacters, uint8 Index = 0);
 };

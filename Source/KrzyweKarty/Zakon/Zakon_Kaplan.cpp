@@ -2,6 +2,9 @@
 
 
 #include "Zakon_Kaplan.h"
+
+#include "KrzyweKarty/Cards/AbilityActor.h"
+#include "KrzyweKarty/Interfaces/AbilityInterfaces/SelectorAbilityInterface.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
 FAttackResultInfo AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
@@ -16,30 +19,39 @@ FAttackResultInfo AZakon_Kaplan::DefaultAttack(AKKCharacter* TargetCharacter)
 	return AttackResult;
 }
 
-// bool AZakon_Kaplan::ActiveAbility()
-// {
-// 	if (GetMana() < GetFirstAbilityManaCost())
-// 		return false;
-//
-// 	
-//
-// 	DecreaseManaForFirstAbility();
-// 	return true;
-// }
-//
-// bool AZakon_Kaplan::ActiveAbility2()
-// {
-// 	if (GetMana() < GetSecondAbilityManaCost())
-// 		return false;
-//
-// 	// if (DefaultAttackConditions(ReverseState, EAT_ActiveAbility))
-// 	// {
-// 	// 	DealDamage(ReverseState, 17);
-// 	// 	
-// 	// 	DecreaseManaForSecondAbility();
-// 	// 	return true;
-// 	// }
-//
-// 	return false;
-// }
+const TArray<AKKCharacter*> AZakon_Kaplan::FilterCharacters_Implementation(const TArray<AKKCharacter*>& InCharacters, uint8 Index)
+{
+	if(Index == 0)
+	{
+		InCharacters.FilterByPredicate([this](AKKCharacter* Character) -> bool
+		{
+			return IsInTheSameTeam(Character);
+		});
+	}
 
+	return InCharacters;
+}
+
+void AZakon_Kaplan::PerformAbility_Implementation(uint8 Index)
+{
+	switch (Index)
+	{
+		case 0:
+		{
+			AKKCharacter* SelectedCharacter = ISelectorAbilityInterface::Execute_GetSelectedCharacter(AbilityActor);
+			SelectedCharacter->IncreaseHealth(3);
+			SelectedCharacter->IncreaseMana(4);
+			break;
+		}
+		case 1:
+		{
+			AKKCharacter* SelectedCharacter = ISelectorAbilityInterface::Execute_GetSelectedCharacter(AbilityActor);
+
+			FAttackResultInfo ResultInfo;
+			SelectedCharacter->ApplyDamageToSelf(17, ResultInfo);
+			break;
+		}
+		default:
+			break;
+	}
+}

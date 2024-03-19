@@ -42,17 +42,14 @@ AKKCharacter::AKKCharacter()
 	CharacterMesh->SetRelativeRotation(FRotator(0, -90, 0));
 	CharacterMesh->SetRelativeScale3D(FVector(0.5, 0.5, 0.5));
 	CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CharacterMesh->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 	CharacterMesh->SetCastShadow(false);
 	
 	TextRenderName->SetRelativeLocation(FVector(0, 0, 110));
 	TextRenderName->SetTextRenderColor(FColor::Red);
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
-	TextRenderName->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Ignore);
-	
-	Platform->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-	Platform->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
+
+	SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 }
 
 void AKKCharacter::CharacterDied_Implementation()
@@ -88,6 +85,12 @@ void AKKCharacter::OnSelectableGainFocus()
 
 void AKKCharacter::OnSelectableLostFocus()
 {
+}
+
+void AKKCharacter::SetCollisionResponseToChannel(ECollisionChannel CollisionChannel, ECollisionResponse CollisionResponse)
+{
+	CharacterMesh->SetCollisionResponseToChannel(CollisionChannel, CollisionResponse);
+	Platform->SetCollisionResponseToChannel(CollisionChannel, CollisionResponse);
 }
 
 void AKKCharacter::OnRep_CharacterStats() const
@@ -303,11 +306,12 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 	TargetCharacter->SetHealth(NewHealth);
 	TargetCharacter->DecreaseDefence();
 
+	OnRep_CharacterStats();
+
 	if(TargetCharacter->GetHealth() <= 0)
 	{
 		KillCharacter(TargetCharacter); // Need to debate about it -> should it maybe be placed in ApplyDamageToSelf?
 	}
-	OnRep_CharacterStats();
 }
 
 

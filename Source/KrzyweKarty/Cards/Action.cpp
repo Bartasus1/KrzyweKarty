@@ -237,5 +237,5 @@ void UAbilityAction::BeginAction()
 
 FString UAbilityAction::GetLogMessage()
 {
-	return Character->GetCharacterName().ToString() + " used ability " + Character->CharacterDataAsset->ActiveAbilities[Index].AbilityName.ToString();
+	return Character->GetCharacterName().ToString() + " used ability <Ability>" + Character->CharacterDataAsset->ActiveAbilities[Index].AbilityName.ToString() + "</>";
 }

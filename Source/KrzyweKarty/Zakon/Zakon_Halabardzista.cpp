@@ -3,12 +3,13 @@
 
 #include "Zakon_Halabardzista.h"
 #include "KrzyweKarty/Cards/AbilityActor.h"
+#include "KrzyweKarty/Interfaces/AbilityInterfaces/AreaAbilityInterface.h"
 #include "KrzyweKarty/Map/KKMap.h"
 
 
 void AZakon_Halabardzista::PerformAbility_Implementation(uint8 Index)
 {
-	TArray<AKKCharacter*> AffectedCharacters = IAreaModifierInterface::Execute_GetAffectedCharacters(AbilityActor);
+	TArray<AKKCharacter*> AffectedCharacters = IAreaAbilityInterface::Execute_GetAffectedCharacters(AbilityActor);
 
 	for (AKKCharacter* Character : AffectedCharacters)
 	{

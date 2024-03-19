@@ -161,6 +161,8 @@ public:
 	virtual void OnSelectableGainFocus() override;
 	virtual void OnSelectableLostFocus() override;
 
+	void SetCollisionResponseToChannel(ECollisionChannel CollisionChannel, ECollisionResponse CollisionResponse);
+
 	UFUNCTION(BlueprintCallable)
 	virtual TArray<AKKTile*> GetMoveTiles();
 
@@ -212,10 +214,10 @@ public:
 	FORCEINLINE int32 GetDefaultDefence()  const { return CharacterDataAsset->CharacterStats.Defence; }
 	FORCEINLINE int32 GetDefaultStrength() const { return CharacterDataAsset->CharacterStats.Strength; }
 
-	FORCEINLINE void SetHealth(int32 NewHealth) 	{ CharacterStats.Health		=	FMath::Clamp<int32>(NewHealth, 0, GetDefaultHealth());	OnRep_CharacterStats(); }
-	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana		=	FMath::Clamp<int32>(NewMana, 0, GetDefaultHealth());		OnRep_CharacterStats(); }
-	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence	=	FMath::Clamp<int32>(NewDefence, 0, GetDefaultHealth());	OnRep_CharacterStats(); }
-	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength	=	FMath::Clamp<int32>(NewStrength, 0, GetDefaultHealth());	OnRep_CharacterStats(); }
+	FORCEINLINE void SetHealth(int32 NewHealth) 	{ CharacterStats.Health		=	FMath::Clamp<int32>(NewHealth, 0, GetDefaultHealth());		OnRep_CharacterStats(); }
+	FORCEINLINE void SetMana(int32 NewMana)			{ CharacterStats.Mana		=	FMath::Clamp<int32>(NewMana, 0, GetDefaultMana());			OnRep_CharacterStats(); }
+	FORCEINLINE void SetDefence(int32 NewDefence)	{ CharacterStats.Defence	=	FMath::Clamp<int32>(NewDefence, 0, GetDefaultDefence());		OnRep_CharacterStats(); }
+	FORCEINLINE void SetStrength(int32 NewStrength) { CharacterStats.Strength	=	FMath::Clamp<int32>(NewStrength, 0, GetDefaultStrength());	OnRep_CharacterStats(); }
 
 	FORCEINLINE void DecreaseHealth(int32 InHealth = 1)   { SetHealth(GetHealth() - InHealth); }
 	FORCEINLINE void DecreaseMana(int32 InMana = 1)		  { SetMana(GetMana() - InMana); }
