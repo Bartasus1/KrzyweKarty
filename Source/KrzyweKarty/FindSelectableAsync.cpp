@@ -7,11 +7,13 @@
 #include "Gameplay/KKPlayerController.h"
 #include "Gameplay/Input/PlayerInputDataAsset.h"
 
-UFindSelectableAsync* UFindSelectableAsync::FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, bool bTraceWithHigherPriority)
+UFindSelectableAsync* UFindSelectableAsync::FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, ECollisionChannel CollisionChannel, FGameplayTag EnterGameplayTag, FGameplayTag ExitGameplayTag)
 {
 	UFindSelectableAsync* FindSelectableAsync = NewObject<UFindSelectableAsync>();
 	FindSelectableAsync->PlayerController = PlayerController;
-	FindSelectableAsync->bTraceWithHigherPriority = bTraceWithHigherPriority;
+	FindSelectableAsync->CollisionChannel = CollisionChannel;
+	FindSelectableAsync->EnterGameplayTag = EnterGameplayTag;
+	FindSelectableAsync->ExitGameplayTag = ExitGameplayTag;
 
 	return FindSelectableAsync;
 }
@@ -34,7 +36,7 @@ void UFindSelectableAsync::Activate()
 
 void UFindSelectableAsync::FindSelectable()
 {
-	if(TScriptInterface<ISelectableInterface> SelectableInterface = PlayerController->TraceForSelectable(bTraceWithHigherPriority))
+	if(TScriptInterface<ISelectableInterface> SelectableInterface = PlayerController->TraceForCollisionChannel(CollisionChannel))
 	{
 		SelectableFound.Broadcast(SelectableInterface);
 

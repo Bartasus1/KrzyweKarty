@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
 #include "GameFramework/PlayerController.h"
 #include "KKPlayerController.generated.h"
 
@@ -14,6 +16,7 @@ class AKKCharacter;
 class AKKTile;
 class ISelectableInterface;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSelectableSelected);
 
 UCLASS()
 class KRZYWEKARTY_API AKKPlayerController : public APlayerController
@@ -33,7 +36,13 @@ public:
 	bool bIsMyTurn = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag SelectionInputTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPlayerInputDataAsset* PlayerInputDataAsset;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FSelectableSelected OnSelectableSelected;
 	
 protected:
 	UFUNCTION(BlueprintCallable)
@@ -51,7 +60,10 @@ public:
 	FHitResult CastLineTrace(ECollisionChannel CollisionChannel) const;
 
 	UFUNCTION(BlueprintCallable)
-	TScriptInterface<ISelectableInterface> TraceForSelectable(bool bHigherPriority = false) const;
+	TScriptInterface<ISelectableInterface> TraceForCollisionChannel(ECollisionChannel CollisionChannel) const;
+
+	UFUNCTION(BlueprintCallable)
+	AKKCharacter* TraceForCharacter() const;
 	
 	void UpdateCharacterInActions();
 

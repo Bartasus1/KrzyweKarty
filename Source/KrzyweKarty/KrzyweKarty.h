@@ -4,5 +4,5 @@
 
 #include "CoreMinimal.h"
 
-#define SelectableTraceChannel ECC_GameTraceChannel1
-#define PriorityTraceChannel ECC_GameTraceChannel2
+#define SelectableTraceChannel ECC_GameTraceChannel1 //for objects on the map
+#define CharacterTraceChannel ECC_GameTraceChannel2 //for characters only (useful if character is outside the map)

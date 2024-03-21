@@ -49,7 +49,7 @@ AKKCharacter::AKKCharacter()
 	TextRenderName->SetHorizontalAlignment(EHTA_Center);
 	TextRenderName->SetWorldSize(18.f);
 
-	SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
+	SetCollisionResponseToChannel(CharacterTraceChannel, ECR_Block);
 }
 
 void AKKCharacter::CharacterDied_Implementation()
@@ -69,7 +69,7 @@ TSubclassOf<AAbilityActor> AKKCharacter::GetAbilityClass(uint8 Index) const
 	return AAbilityActor::StaticClass();
 }
 
-int32 AKKCharacter::GetTilePositionID() const
+uint8 AKKCharacter::GetTilePositionID() const
 {
 	return OwnedTileID;
 }

@@ -18,6 +18,8 @@ public:
 
 	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter) override;
 
+	virtual void CommitAbilityCost_Implementation(uint8 Index) override;
+
 private:
 	bool SecondAbilityInUse = false;
 };

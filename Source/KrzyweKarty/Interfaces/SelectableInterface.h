@@ -24,7 +24,7 @@ class KRZYWEKARTY_API ISelectableInterface
 public:
 
 	UFUNCTION(BlueprintCallable)
-	virtual int32 GetTilePositionID() const = 0;
+	virtual uint8 GetTilePositionID() const = 0;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnSelectableHighlighted() = 0;

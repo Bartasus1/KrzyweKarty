@@ -41,25 +41,12 @@ void AKKPlayerController::BeginPlay()
 void AKKPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	if(const TScriptInterface<ISelectableInterface> TracedSelectable = TraceForSelectable())
+	
+	if(AKKCharacter* TracedCharacter = TraceForCharacter())
 	{
-		if(CachedTracedSelectableInterface != TracedSelectable)
-		{
-			if(CachedTracedSelectableInterface != nullptr)
-			{
-				CachedTracedSelectableInterface->OnSelectableLostFocus();
-			}
-			
-			CachedTracedSelectableInterface = TracedSelectable;
-			CachedTracedSelectableInterface->OnSelectableGainFocus();
-		}
-
-		if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TracedSelectable.GetObject()))
-		{
-			ShowTargetStats(TracedCharacter);
-		}
+		ShowTargetStats(TracedCharacter);
 	}
+	
 }
 
 void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -88,16 +75,24 @@ FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel
  
  	FHitResult HitResult;
  	FVector End = Start + (Direction * Range);
- 
- 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, CollisionChannel);
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(SelectedCharacter); //nullptr check is already there
+	
+ 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, CollisionChannel, QueryParams);
 	//UKismetSystemLibrary::LineTraceSingle(this, Start, End, TraceTypeQuery3, false, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true);
 	
 	return HitResult;
 }
 
-TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForSelectable(bool bHigherPriority /* = false */) const
+TScriptInterface<ISelectableInterface> AKKPlayerController::TraceForCollisionChannel(ECollisionChannel CollisionChannel) const
 {
-	return CastLineTrace((bHigherPriority ? PriorityTraceChannel : SelectableTraceChannel)).GetActor();
+	return CastLineTrace(CollisionChannel).GetActor();
+}
+
+AKKCharacter* AKKPlayerController::TraceForCharacter() const
+{
+	return Cast<AKKCharacter>(CastLineTrace(CharacterTraceChannel).GetActor());
 }
 
 void AKKPlayerController::UpdateCharacterInActions()
@@ -110,17 +105,11 @@ void AKKPlayerController::UpdateCharacterInActions()
 
 bool AKKPlayerController::SelectCharacter()
 {
-	if(AKKCharacter* TracedCharacter = Cast<AKKCharacter>(TraceForSelectable().GetObject()))
+	if(AKKCharacter* TracedCharacter = TraceForCharacter())
 	{
-		if(SelectedCharacter)
-		{
-			SelectedCharacter->CharacterMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		}
-		
 		if(TracedCharacter->OwningPlayer == this)
 		{
 			SelectedCharacter = TracedCharacter;
-			SelectedCharacter->CharacterMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision); //todo: re-enable it when character changes
 			ShowCharacterStats(SelectedCharacter);
 			
 			return bIsMyTurn; //dont use character if its not my turn

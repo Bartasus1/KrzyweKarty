@@ -3,6 +3,8 @@
 #include "KKMap.h"
 #include "Fraction.h"
 #include "KKTile.h"
+
+#include "KrzyweKarty/KrzyweKarty.h"
 #include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKGameMode.h"
@@ -69,6 +71,7 @@ bool AKKMap::AddCharacterToMap(AKKCharacter* Character, uint8 TileID)
 	if (Destination && Destination->Character == nullptr && !Character->IsCharacterOnMap())
 	{
 		AssignCharacterToTile(Character, Destination);
+		Character->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 		return true;
 	}
 

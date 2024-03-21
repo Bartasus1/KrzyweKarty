@@ -24,6 +24,18 @@ int32 AZakon_Kusznik::DefineDamageAmount(AKKCharacter* TargetCharacter)
 	return GetStrength();
 }
 
+void AZakon_Kusznik::CommitAbilityCost_Implementation(uint8 Index)
+{
+	if(Index == 1)
+	{
+		DecreaseHealth(2);
+	}
+	else
+	{
+		Super::CommitAbilityCost_Implementation(Index);
+	}
+}
+
 // bool AZakon_Kusznik::ActiveAbility()
 // {
 // 	if(GetMana() < GetFirstAbilityManaCost())

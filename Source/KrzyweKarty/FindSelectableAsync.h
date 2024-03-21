@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "FindSelectableAsync.generated.h"
 
@@ -22,7 +24,7 @@ class KRZYWEKARTY_API UFindSelectableAsync : public UBlueprintAsyncActionBase
 
 public:
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"))
-	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController,bool bTraceWithHigherPriority = true);
+	static UFindSelectableAsync* FindSelectableAsync(const UObject* WorldContextObject, AKKPlayerController* PlayerController, ECollisionChannel CollisionChannel, FGameplayTag EnterGameplayTag, FGameplayTag ExitGameplayTag);
 
 	virtual void Activate() override;
 
@@ -37,8 +39,14 @@ private:
 	UPROPERTY()
 	AKKPlayerController* PlayerController;
 
-	UPROPERTY(EditAnywhere)
-	bool bTraceWithHigherPriority;
+	UPROPERTY()
+	TEnumAsByte<ECollisionChannel> CollisionChannel;
+
+	UPROPERTY()
+	FGameplayTag EnterGameplayTag;
+
+	UPROPERTY()
+	FGameplayTag ExitGameplayTag;
 
 	UFUNCTION()
 	void FindSelectable();

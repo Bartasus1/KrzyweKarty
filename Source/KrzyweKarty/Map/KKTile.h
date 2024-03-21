@@ -39,7 +39,7 @@ public:
 #endif
 
 	UFUNCTION(BlueprintCallable)
-	virtual int32 GetTilePositionID() const override;
+	virtual uint8 GetTilePositionID() const override;
 
 	virtual void OnSelectableHighlighted() override;
 
