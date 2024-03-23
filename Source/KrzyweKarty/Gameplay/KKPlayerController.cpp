@@ -10,6 +10,7 @@
 #include "KrzyweKarty/Cards/Action.h"
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Interfaces/SelectableInterface.h"
+#include "KrzyweKarty/Map/KKTile.h"
 #include "KrzyweKarty/UI/PlayerHUD.h"
 #include "Net/UnrealNetwork.h"
 
@@ -30,7 +31,8 @@ void AKKPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -70;
 	PlayerCameraManager->ViewPitchMax = 10;
 
-	if(IsLocalPlayerController())
+
+	if(HasAuthority())
 	{
 		CharacterActions.Add(USummonAction::StaticClass(), NewObject<USummonAction>(this, "Summon Action"));
 		CharacterActions.Add(UMoveAction::StaticClass(), NewObject<UMoveAction>(this, "Move Action"));
@@ -55,6 +57,7 @@ void AKKPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(AKKPlayerController, PlayerID);
 	DOREPLIFETIME(AKKPlayerController, bIsMyTurn);
+	DOREPLIFETIME(AKKPlayerController, SelectedCharacter);
 }
 
 bool AKKPlayerController::MinMoveRequirements() const
@@ -77,10 +80,12 @@ FHitResult AKKPlayerController::CastLineTrace(ECollisionChannel CollisionChannel
  	FVector End = Start + (Direction * Range);
 
 	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(SelectedCharacter); //nullptr check is already there
+	QueryParams.AddIgnoredActor(SelectedCharacter); // todo: maybe make it a parameter 
 	
  	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, CollisionChannel, QueryParams);
-	//UKismetSystemLibrary::LineTraceSingle(this, Start, End, TraceTypeQuery3, false, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true);
+	//uint8 TraceChannel = CollisionChannel - 14;
+	// TraceTypeQuery = static_cast<ETraceTypeQuery>((TraceChannel + 2));
+	//UKismetSystemLibrary::LineTraceSingle(this, Start, End, TraceTypeQuery, false, {SelectedCharacter}, EDrawDebugTrace::ForDuration, HitResult, true);
 	
 	return HitResult;
 }
@@ -95,15 +100,7 @@ AKKCharacter* AKKPlayerController::TraceForCharacter() const
 	return Cast<AKKCharacter>(CastLineTrace(CharacterTraceChannel).GetActor());
 }
 
-void AKKPlayerController::UpdateCharacterInActions()
-{
-	for(auto& Action: CharacterActions)
-	{
-		Action.Value->Character = SelectedCharacter;
-	}
-}
-
-bool AKKPlayerController::SelectCharacter()
+AKKCharacter* AKKPlayerController::SelectCharacter()
 {
 	if(AKKCharacter* TracedCharacter = TraceForCharacter())
 	{
@@ -111,27 +108,10 @@ bool AKKPlayerController::SelectCharacter()
 		{
 			SelectedCharacter = TracedCharacter;
 			ShowCharacterStats(SelectedCharacter);
-			
-			return bIsMyTurn; //dont use character if its not my turn
 		}
 	}
 
-	return false;
-}
-
-void AKKPlayerController::OnCharacterSelection()
-{
-	UpdateCharacterInActions();
-	
-	if(SelectedCharacter->IsCharacterOnMap())
-	{
-		CharacterActions[UMoveAction::StaticClass()]->ShowActionAffectedTiles();
-		CharacterActions[UAttackAction::StaticClass()]->ShowActionAffectedTiles();
-	}
-	else
-	{
-		CharacterActions[USummonAction::StaticClass()]->ShowActionAffectedTiles();
-	}
+	return SelectedCharacter;
 }
 
 
@@ -150,5 +130,33 @@ void AKKPlayerController::OnRep_TurnChanged()
 	if(GetHUD())
 	{
 		GetHUD<APlayerHUD>()->OnTurnChange(bIsMyTurn);
+	}
+}
+
+void AKKPlayerController::OnCharacterSelection_Server_Implementation(AKKCharacter* InCharacter)
+{
+	SelectedCharacter = InCharacter; //assign on server
+	
+	if(bIsMyTurn && SelectedCharacter)
+	{
+		for (const auto& CharacterAction : CharacterActions)
+		{
+			UAction* Action = CharacterAction.Value;
+			
+			Action->Character = SelectedCharacter;
+
+			if(Action->ShouldShowTiles())
+			{
+				ShowTilesForAction(Action->GetActionAffectedTiles(), Action->GetActionTileStatus());
+			}
+		}
+	}
+}
+
+void AKKPlayerController::ShowTilesForAction_Implementation(const TArray<AKKTile*>& InTiles, UTileStatus* TileStatus)
+{
+	for (AKKTile* Tile : InTiles)
+	{
+		Tile->SetTileStatus(TileStatus);
 	}
 }

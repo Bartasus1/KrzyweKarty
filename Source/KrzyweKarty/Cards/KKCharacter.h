@@ -161,6 +161,7 @@ public:
 	virtual void OnSelectableGainFocus() override;
 	virtual void OnSelectableLostFocus() override;
 
+	UFUNCTION(NetMulticast, Reliable)
 	void SetCollisionResponseToChannel(ECollisionChannel CollisionChannel, ECollisionResponse CollisionResponse);
 
 	UFUNCTION(BlueprintCallable)

@@ -7,6 +7,8 @@
 #include "UObject/Object.h"
 #include "Action.generated.h"
 
+class UTileStatus;
+class AKKTile;
 class UCharacterAbilityComponent;
 class AKKMap;
 class AKKGameState;
@@ -30,13 +32,17 @@ public:
 
 	virtual bool CanCharacterMakeAction() const;
 	virtual void BeginAction();
+	
+	virtual TArray<AKKTile*> GetActionAffectedTiles() const;
+	virtual UTileStatus* GetActionTileStatus() const;
 
-	UFUNCTION(BlueprintCallable)
 	virtual void ShowActionAffectedTiles() const;
+	virtual bool ShouldShowTiles() const;
 
 	virtual FString GetLogMessage();
 	
 	uint8 GetActionWeight() const;
+	bool RequiresCharacterOnMap() const;
 
 protected:
 	uint8 ActionWeight = 0;
@@ -65,7 +71,10 @@ public:
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
 
-	virtual void ShowActionAffectedTiles() const override;
+	virtual TArray<AKKTile*> GetActionAffectedTiles() const override;
+	virtual UTileStatus* GetActionTileStatus() const override;
+
+	virtual bool ShouldShowTiles() const override;
 
 	virtual FString GetLogMessage() override;
 };
@@ -86,7 +95,8 @@ public:
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
 
-	virtual void ShowActionAffectedTiles() const override;
+	virtual TArray<AKKTile*> GetActionAffectedTiles() const override;
+	virtual UTileStatus* GetActionTileStatus() const override;
 
 	virtual FString GetLogMessage() override;
 };
@@ -108,7 +118,8 @@ public:
 	virtual bool CanCharacterMakeAction() const override;
 	virtual void BeginAction() override;
 
-	virtual void ShowActionAffectedTiles() const override;
+	virtual TArray<AKKTile*> GetActionAffectedTiles() const override;
+	virtual UTileStatus* GetActionTileStatus() const override;
 
 	virtual FString GetLogMessage() override;
 };

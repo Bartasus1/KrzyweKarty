@@ -87,7 +87,7 @@ void AKKCharacter::OnSelectableLostFocus()
 {
 }
 
-void AKKCharacter::SetCollisionResponseToChannel(ECollisionChannel CollisionChannel, ECollisionResponse CollisionResponse)
+void AKKCharacter::SetCollisionResponseToChannel_Implementation(ECollisionChannel CollisionChannel, ECollisionResponse CollisionResponse)
 {
 	CharacterMesh->SetCollisionResponseToChannel(CollisionChannel, CollisionResponse);
 	Platform->SetCollisionResponseToChannel(CollisionChannel, CollisionResponse);

@@ -36,7 +36,7 @@ void UFindSelectableAsync::Activate()
 
 void UFindSelectableAsync::FindSelectable()
 {
-	if(TScriptInterface<ISelectableInterface> SelectableInterface = PlayerController->TraceForCollisionChannel(CollisionChannel))
+	if(const TScriptInterface<ISelectableInterface> SelectableInterface = PlayerController->TraceForCollisionChannel(CollisionChannel))
 	{
 		SelectableFound.Broadcast(SelectableInterface);
 

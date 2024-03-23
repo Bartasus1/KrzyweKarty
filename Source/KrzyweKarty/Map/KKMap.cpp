@@ -93,22 +93,6 @@ bool AKKMap::MoveCharacter(AKKCharacter* Character, uint8 TileID)
 	return false;
 }
 
-void AKKMap::ShowTilesForAttack_Implementation(AKKCharacter* Character)
-{
-	TArray<AKKTile*> InitialTiles = GetTilesByDirection(Character, Character->GetPossibleAttackTiles(), TSP_EnemyCharactersOnly, true);
-
-	if(CanAttackBase(Character))
-	{
-		GetTilesForBaseAttack(Character, InitialTiles);
-	}
-
-	for(AKKTile* Tile : InitialTiles)
-	{
-		Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->AttackTileStatus);
-	}
-	
-}
-
 TArray<AKKCharacter*> AKKMap::GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy, bool bBlockDirectionOnFound)
 {
 	TArray<AKKCharacter*> FoundCharacters;
@@ -492,6 +476,8 @@ void AKKMap::AssignCharacterToTile(AKKCharacter* Character, FMapCell* MapCell)
 	
 	Character->OwnedTileID = MapCell->Tile->TileID;
 	Character->SetActorLocation(MapCell->Tile->GetActorLocation());
+
+	Character->SetCollisionResponseToChannel(SelectableTraceChannel, ECR_Block);
 }
 
 FMapCell* AKKMap::GetCellAtIndex(uint8 TileID)

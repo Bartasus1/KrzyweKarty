@@ -39,8 +39,30 @@ void UAction::BeginAction()
 {
 }
 
+TArray<AKKTile*> UAction::GetActionAffectedTiles() const
+{
+	return TArray<AKKTile*>();
+}
+
+UTileStatus* UAction::GetActionTileStatus() const
+{
+	return nullptr;
+}
+
 void UAction::ShowActionAffectedTiles() const
 {
+	if(Character->GetTopActionWeight() < ActionWeight)
+	{
+		for (AKKTile* Tile : GetActionAffectedTiles())
+		{
+			Tile->SetTileStatus(GetActionTileStatus());
+		}
+	}
+}
+
+bool UAction::ShouldShowTiles() const
+{
+	return Character->IsCharacterOnMap() && Character->GetTopActionWeight() < ActionWeight;
 }
 
 FString UAction::GetLogMessage()
@@ -51,6 +73,11 @@ FString UAction::GetLogMessage()
 uint8 UAction::GetActionWeight() const
 {
 	return ActionWeight;
+}
+
+bool UAction::RequiresCharacterOnMap() const
+{
+	return bRequiresCharacterOnMap;
 }
 
 void UAction::AddActionToCharacterList() const
@@ -105,12 +132,19 @@ void USummonAction::BeginAction()
 	GetMap()->AddCharacterToMap(Character, DestinationTileID);
 }
 
-void USummonAction::ShowActionAffectedTiles() const
+TArray<AKKTile*> USummonAction::GetActionAffectedTiles() const
 {
-	for(AKKTile* Tile: GetMap()->GetTilesForSpawn(Character, Character->GetPossibleSpawnTiles()))
-	{
-		Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->SummonTileStatus);
-	}
+	return GetMap()->GetTilesForSpawn(Character, Character->GetPossibleSpawnTiles());
+}
+
+UTileStatus* USummonAction::GetActionTileStatus() const
+{
+	return UTileStatusSettings::GetDataAsset()->SummonTileStatus;
+}
+
+bool USummonAction::ShouldShowTiles() const
+{
+	return !Character->IsCharacterOnMap() && Character->GetTopActionWeight() < ActionWeight;
 }
 
 FString USummonAction::GetLogMessage()
@@ -136,15 +170,14 @@ void UMoveAction::BeginAction()
 	GetMap()->MoveCharacter(Character, DestinationTileID);
 }
 
-void UMoveAction::ShowActionAffectedTiles() const
+TArray<AKKTile*> UMoveAction::GetActionAffectedTiles() const
 {
-	if(Character->GetTopActionWeight() < ActionWeight)
-	{
-		for(AKKTile* Tile: Character->GetMoveTiles())
-		{
-			Tile->SetTileStatus(UTileStatusSettings::GetDataAsset()->MovementTileStatus);
-		}
-	}
+	return Character->GetMoveTiles();
+}
+
+UTileStatus* UMoveAction::GetActionTileStatus() const
+{
+	return UTileStatusSettings::GetDataAsset()->MovementTileStatus;
 }
 
 FString UMoveAction::GetLogMessage()
@@ -177,12 +210,21 @@ void UAttackAction::BeginAction()
 	Character->DefaultAttack(TargetCharacter);
 }
 
-void UAttackAction::ShowActionAffectedTiles() const
+TArray<AKKTile*> UAttackAction::GetActionAffectedTiles() const
 {
-	if(Character->GetTopActionWeight() < ActionWeight)
+	TArray<AKKTile*> AttackTiles = GetMap()->GetTilesByDirection(Character, Character->GetPossibleAttackTiles(), TSP_EnemyCharactersOnly, true);
+
+	if(GetMap()->CanAttackBase(Character))
 	{
-		GetMap()->ShowTilesForAttack(Character);
+		GetMap()->GetTilesForBaseAttack(Character, AttackTiles);
 	}
+
+	return AttackTiles;
+}
+
+UTileStatus* UAttackAction::GetActionTileStatus() const
+{
+	return UTileStatusSettings::GetDataAsset()->AttackTileStatus;
 }
 
 FString UAttackAction::GetLogMessage()

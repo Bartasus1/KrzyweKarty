@@ -31,9 +31,6 @@ public:
 	bool AddCharacterToMap(AKKCharacter* Character, uint8 TileID); //todo: change those to void (later)
 	bool MoveCharacter(AKKCharacter* Character, uint8 TileID);
 	//bool MoveCharacter(AKKCharacter* Character, EMovementDirection MovementDirection);
-
-	UFUNCTION(Client, Reliable)
-	void ShowTilesForAttack(AKKCharacter* Character);
 	
 	UFUNCTION(BlueprintCallable)
 	TArray<AKKCharacter*> GetCharactersByDirection(AKKCharacter* Character, const TArray<FDirection>& Directions, ECharacterSelectionPolicy CharacterSelectionPolicy = CSP_AllCharacters, bool bBlockDirectionOnFound = false);

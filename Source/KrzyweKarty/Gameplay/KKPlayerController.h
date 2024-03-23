@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-
 #include "GameFramework/PlayerController.h"
 #include "KKPlayerController.generated.h"
 
+class ALocalMapManager;
 class AKKMap;
 class UTileStatus;
 class UPlayerInputDataAsset;
@@ -26,7 +26,7 @@ class KRZYWEKARTY_API AKKPlayerController : public APlayerController
 public:
 	AKKPlayerController();
 	
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	AKKCharacter* SelectedCharacter = nullptr;
 
 	UPROPERTY(Replicated, BlueprintReadWrite)
@@ -43,6 +43,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FSelectableSelected OnSelectableSelected;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<TSubclassOf<UAction>, UAction*> CharacterActions;
 	
 protected:
 	UFUNCTION(BlueprintCallable)
@@ -50,9 +53,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void ShowTargetStats(AKKCharacter* CardCharacter);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TMap<TSubclassOf<UAction>, UAction*> CharacterActions;
 
 public:
 	
@@ -64,17 +64,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AKKCharacter* TraceForCharacter() const;
-	
-	void UpdateCharacterInActions();
 
 	UFUNCTION(BlueprintCallable)
-	bool SelectCharacter();
-
-	UFUNCTION(BlueprintCallable)
-	void OnCharacterSelection();
+	AKKCharacter* SelectCharacter();
 	
 	UFUNCTION()
 	void OnRep_TurnChanged();
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void OnCharacterSelection_Server(AKKCharacter* InCharacter);
+
+	UFUNCTION(Client, Reliable)
+	void ShowTilesForAction(const TArray<AKKTile*>& InTiles, UTileStatus* TileStatus);
 
 protected:
 	virtual void BeginPlay() override;
