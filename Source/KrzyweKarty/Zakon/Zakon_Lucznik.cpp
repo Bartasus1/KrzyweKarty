@@ -30,7 +30,7 @@ void AZakon_Lucznik::PerformAbility_Implementation(uint8 Index)
 	for(AKKCharacter* Character : IAreaAbilityInterface::Execute_GetAffectedCharacters(AbilityActor)) //probably a good idea to move it to separate interface
 	{
 		FAttackResultInfo AttackResultInfo;
-		Character->ApplyDamageToSelf(5, AttackResultInfo);
+		Character->ApplyDamageToSelf(5, AttackResultInfo, this);
 	}
 }
 

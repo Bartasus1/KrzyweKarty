@@ -33,6 +33,9 @@ public:
 	void ShowCharacterStats(AKKCharacter* Character, bool bIsCurrentCharacter);
 	void ShowCharacterStatsPreview(AKKCharacter* Character, bool bIsCurrentCharacter);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void DisplayWinner(APlayerState* PlayerState);
+
 protected:
 	
 	// Called when the game starts or when spawned

@@ -53,7 +53,10 @@ void AKKGameMode::PostLogin(APlayerController* NewPlayer)
 void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 {
 	AKKPlayerController* Winner = Players[PlayerID - 1];
-	//todo
+
+	GetGameState<AKKGameState>()->DisplayWinner(Winner->PlayerState.Get());
+
+	//todo: stop the game
 }
 
 

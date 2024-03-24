@@ -2,8 +2,13 @@
 
 
 #include "KKGameState.h"
+
+#include "Kismet/GameplayStatics.h"
+
 #include "KrzyweKarty/Cards/KKCharacter.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
+#include "KrzyweKarty/UI/PlayerHUD.h"
+
 #include "Net/UnrealNetwork.h"
 
 
@@ -42,6 +47,18 @@ void AKKGameState::ChangeTurn_Implementation()
 	}
 	
 	CountedMoves = 0;
+}
+
+void AKKGameState::DisplayWinner_Implementation(APlayerState* Winner)
+{
+	if(AKKPlayerController* PlayerController = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		if(PlayerController->GetHUD())
+        {
+        	PlayerController->GetHUD<APlayerHUD>()->DisplayWinner(Winner);
+        }
+	}
+
 }
 
 TArray<AKKCharacter*> AKKGameState::GetCharactersForPlayer(int32 PlayerID)

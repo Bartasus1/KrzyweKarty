@@ -15,7 +15,7 @@ class KRZYWEKARTY_API AZakon_Rycerz : public AKKCharacter
 	GENERATED_BODY()
 
 protected:
-	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo) override;
+	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* InInstigator) override;
 
 	virtual void PerformAbility_Implementation(uint8 Index) override;
 

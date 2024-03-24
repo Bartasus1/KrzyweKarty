@@ -195,7 +195,7 @@ FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 
 	int32 Damage = DefineDamageAmount(TargetCharacter);
 
-	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo);
+	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo, this);
 
 	if(AttackResultInfo.AttackStatus == EAttackResult::AttackConfirmed)
 	{
@@ -210,9 +210,9 @@ int32 AKKCharacter::DefineDamageAmount(AKKCharacter* TargetCharacter)
 	return GetStrength();
 }
 
-void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo)
+void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* InInstigator)
 {
-	DealDamage(this, DamageAmount);
+	InInstigator->DealDamage(this, DamageAmount);
 }
 
 FCharacterStats AKKCharacter::CalculateCharacterStatsAfterAttack(AKKCharacter* TargetCharacter)
@@ -306,11 +306,9 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 	TargetCharacter->SetHealth(NewHealth);
 	TargetCharacter->DecreaseDefence();
 
-	OnRep_CharacterStats();
-
 	if(TargetCharacter->GetHealth() <= 0)
 	{
-		KillCharacter(TargetCharacter); // Need to debate about it -> should it maybe be placed in ApplyDamageToSelf?
+		KillCharacter(TargetCharacter);
 	}
 }
 

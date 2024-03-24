@@ -7,6 +7,7 @@
 #include "KrzyweKarty/TileStatusSettings.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 #include "KrzyweKarty/Gameplay/KKPlayerController.h"
+#include "KrzyweKarty/Interfaces/BaseInterface.h"
 #include "KrzyweKarty/Map/KKMap.h"
 #include "KrzyweKarty/Map/KKTile.h"
 
@@ -91,7 +92,7 @@ void UAction::AddActionToCharacterList() const
 
 bool UAction::CanCharacterMakeAction() const
 {
-	if(Character == nullptr)
+	if(Character == nullptr || Character->Implements<UBaseInterface>())
 	{
 		return false;
 	}

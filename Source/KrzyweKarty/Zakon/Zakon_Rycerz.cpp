@@ -15,7 +15,7 @@
 // 	return true;
 // }
 
-void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo)
+void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* InInstigator)
 {
 	ReceivedAttacksCounter++;
 
@@ -27,7 +27,7 @@ void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Att
 	}
 	else
 	{
-		Super::ApplyDamageToSelf(DamageAmount, AttackResultInfo);
+		Super::ApplyDamageToSelf(DamageAmount, AttackResultInfo, InInstigator);
 	}
 }
 

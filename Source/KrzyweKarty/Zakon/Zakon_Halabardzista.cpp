@@ -30,7 +30,7 @@ void AZakon_Halabardzista::PerformAbility_Implementation(uint8 Index)
 			}
 
 			FAttackResultInfo AttackResultInfo;
-			Character->ApplyDamageToSelf(Damage, AttackResultInfo);
+			Character->ApplyDamageToSelf(Damage, AttackResultInfo, this);
 		}
 	}
 }

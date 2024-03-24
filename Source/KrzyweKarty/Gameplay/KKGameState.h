@@ -45,6 +45,9 @@ public:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void ChangeTurn();
 
+	UFUNCTION(NetMulticast, Reliable)
+	void DisplayWinner(APlayerState* Winner);
+
 private:
 	
 	TArray<AKKCharacter*> GetCharactersForPlayer(int32 PlayerID);

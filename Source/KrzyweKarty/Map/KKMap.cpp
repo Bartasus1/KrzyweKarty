@@ -340,9 +340,9 @@ void AKKMap::ClearTilesHighlights()
 
 AKKTile* AKKMap::GetTileAtIndex(uint8 TileID)
 {
-	if(TileID == UINT8_MAX || TileID == UINT8_MAX - 1)
+	if(TileID == TotalMapSize || TileID == TotalMapSize + 1)
 	{
-		return BaseArray[UINT8_MAX - TileID].Tile;
+		return BaseArray[TileID - TotalMapSize].Tile;
 	}
 
 	if(const FMapCell* MapCell = GetCellAtIndex(TileID))
@@ -355,9 +355,9 @@ AKKTile* AKKMap::GetTileAtIndex(uint8 TileID)
 
 AKKCharacter* AKKMap::GetCharacterAtIndex(uint8 TileID)
 {
-	if(TileID == UINT8_MAX || TileID == UINT8_MAX - 1)
+	if(TileID == TotalMapSize || TileID == TotalMapSize + 1)
 	{
-		return BaseArray[UINT8_MAX - TileID].Character;
+		return BaseArray[TileID - TotalMapSize].Character;
 	}
 	
 	return GetCellAtIndex(TileID) ? GetCellAtIndex(TileID)->Character : nullptr;
@@ -401,6 +401,7 @@ void AKKMap::SpawnFraction(uint8 ID, TSubclassOf<AFraction> FractionClass)
 
 			TArray<AKKCharacter*> SpawnedCharacters = FractionActor->SpawnCharacters();
 			AKKCharacter* FractionBase = FractionActor->SpawnBase();
+			FractionBase->Direction = (ID == 0) ? 1 : -1;
 		
 			AssignCharacterToTile(FractionBase, &BaseArray[FractionComponent->ID]);
 			SpawnedCharacters.Add(FractionBase);
@@ -463,7 +464,7 @@ void AKKMap::SetupBaseTiles()
 	for (int32 i = 0; i < 2; i++)
 	{
 		AKKTile* Tile = GetWorld()->SpawnActor<AKKTile>(TileClass, FVector(BaseLocationX[i], 0.f, 0.f), FRotator(0.f, BaseRotationYaw[i], 0.f));
-		Tile->TileID = UINT8_MAX - i;
+		Tile->TileID = TotalMapSize + i;
 		Tile->OnRep_TileID();
 
 		BaseArray.Add({Tile, nullptr});

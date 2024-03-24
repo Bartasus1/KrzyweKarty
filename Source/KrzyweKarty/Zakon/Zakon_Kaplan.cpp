@@ -48,7 +48,7 @@ void AZakon_Kaplan::PerformAbility_Implementation(uint8 Index)
 			AKKCharacter* SelectedCharacter = ISelectorAbilityInterface::Execute_GetSelectedCharacter(AbilityActor);
 
 			FAttackResultInfo ResultInfo;
-			SelectedCharacter->ApplyDamageToSelf(17, ResultInfo);
+			SelectedCharacter->ApplyDamageToSelf(17, ResultInfo, this);
 			break;
 		}
 		default:

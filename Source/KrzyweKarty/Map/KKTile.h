@@ -25,7 +25,7 @@ public:
 	UBoxComponent* BoxCollision;
 
 	UPROPERTY(ReplicatedUsing="OnRep_TileID", VisibleAnywhere, BlueprintReadOnly)
-	int32 TileID;
+	uint8 TileID;
 
 	UPROPERTY(BlueprintReadOnly)
 	UTileStatus* TileStatus;

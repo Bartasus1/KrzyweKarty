@@ -22,7 +22,7 @@ void AZakon_Paladyn::PerformAbility_Implementation(uint8 Index)
 			else
 			{
 				FAttackResultInfo AttackResultInfo;
-				Character->ApplyDamageToSelf(10, AttackResultInfo);
+				Character->ApplyDamageToSelf(10, AttackResultInfo, this);
 			}
 		}
 	}
