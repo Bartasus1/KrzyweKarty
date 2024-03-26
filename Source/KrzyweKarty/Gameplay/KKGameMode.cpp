@@ -56,7 +56,10 @@ void AKKGameMode::EndGameWithWinner(int32 PlayerID)
 
 	GetGameState<AKKGameState>()->DisplayWinner(Winner->PlayerState.Get());
 
-	//todo: stop the game
+	for(AKKPlayerController* PlayerController : Players)
+	{
+		PlayerController->bIsMyTurn = false; //prevent players from interacting with map
+	}
 }
 
 
@@ -67,7 +70,7 @@ void AKKGameMode::BeginPlay()
 	while (Map == nullptr)
 	{
 		Map = Cast<AKKMap>(UGameplayStatics::GetActorOfClass(GetWorld(), AKKMap::StaticClass()));
-		//todo: Use Delegate to determine if Map has been Spawned
+		//todo: Use Delegate to determine if Map has been Spawned or spawn it here
 	}
 
 	GetGameState<AKKGameState>()->Map = Map;
@@ -84,17 +87,5 @@ void AKKGameMode::SpawnCharacterForPlayer()
 	{
 		const int32 PlayerID = Players.Num() - 1;
 		Map->SpawnFraction(PlayerID, PlayersFractions[PlayerID]);
-	}
-}
-
-void AKKGameMode::AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action)
-{
-	if(AKKPlayerController* PlayerController = Character->OwningPlayer)
-	{
-		FString PlayerName = PlayerController->PlayerState->GetPlayerName();
-
-		FText Log = FText::FormatOrdered(FTextFormat::FromString("{0}: {1}({2}) {3} {4}") , FText::FromString(PlayerName), Character->GetCharacterName(), Character->CharacterID , Action, (TargetCharacter ? TargetCharacter->GetCharacterName() : FText::FromString(" ")));
-
-		GetGameState<AKKGameState>()->Server_AddActionLog(Log);
 	}
 }

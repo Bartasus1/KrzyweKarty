@@ -109,7 +109,7 @@ public:
 	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter);
 	
 	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter);
-	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* InInstigator);
+	virtual void ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* DamageCauser);
 
 	UFUNCTION(BlueprintCallable)
 	FCharacterStats CalculateCharacterStatsAfterAttack(AKKCharacter* TargetCharacter);

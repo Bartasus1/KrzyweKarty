@@ -13,8 +13,6 @@ class AKKMap;
 class AKKCharacter;
 class URoundManager;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerJoinedDelegate);
-
 UCLASS()
 class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 {
@@ -22,9 +20,6 @@ class KRZYWEKARTY_API AKKGameMode : public AGameModeBase
 
 public:
 	AKKGameMode();
-
-	UPROPERTY(BlueprintAssignable)
-	FPlayerJoinedDelegate OnPlayerJoined; // assign cards to player on join
 
 protected:
 	virtual APlayerController* Login(UPlayer* NewPlayer, ENetRole InRemoteRole, const FString& Portal, const FString& Options, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
@@ -44,10 +39,7 @@ protected:
 	void SpawnCharacterForPlayer();
 
 private:
-	void AddActionLog(AKKCharacter* Character, AKKCharacter* TargetCharacter, FText Action);
-
-protected:
-	UPROPERTY(Transient, EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Transient, EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	AKKMap* Map = nullptr;
 
 	UPROPERTY(Transient)

@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Zakon_Kusznik.h"
+#include "KrzyweKarty/Cards/AbilityActor.h"
+#include "KrzyweKarty/Interfaces/AbilityInterfaces/SelectorAbilityInterface.h"
 
 FAttackResultInfo AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 {
@@ -8,6 +10,11 @@ FAttackResultInfo AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 	if(AttackResult.AttackStatus == EAttackResult::AttackConfirmed)
 	{
 		IncreaseHealth(2);
+		
+		if(bSecondAbilityInUse)
+		{
+			bSecondAbilityInUse = false;
+		}
 	}
 	
 	return AttackResult;
@@ -15,13 +22,34 @@ FAttackResultInfo AZakon_Kusznik::DefaultAttack(AKKCharacter* TargetCharacter)
 
 int32 AZakon_Kusznik::DefineDamageAmount(AKKCharacter* TargetCharacter)
 {
-	if(SecondAbilityInUse)
+	if(bSecondAbilityInUse)
 	{
-		SecondAbilityInUse = false;
 		return GetStrength() + 2;
 	}
 
 	return GetStrength();
+}
+
+void AZakon_Kusznik::PerformAbility_Implementation(uint8 Index)
+{
+	switch (Index)
+	{
+	case 0:
+		{
+			AKKCharacter* SelectedCharacter = ISelectorAbilityInterface::Execute_GetSelectedCharacter(AbilityActor);
+
+			FAttackResultInfo AttackResultInfo;
+			SelectedCharacter->ApplyDamageToSelf(15, AttackResultInfo, this);
+			SelectedCharacter->DecreaseDefence();
+		}
+	case 1:
+		{
+			IncreaseMana(2);
+			bSecondAbilityInUse = true;
+		}
+	default:
+		break;
+	}
 }
 
 void AZakon_Kusznik::CommitAbilityCost_Implementation(uint8 Index)
@@ -35,30 +63,4 @@ void AZakon_Kusznik::CommitAbilityCost_Implementation(uint8 Index)
 		Super::CommitAbilityCost_Implementation(Index);
 	}
 }
-
-// bool AZakon_Kusznik::ActiveAbility()
-// {
-// 	if(GetMana() < GetFirstAbilityManaCost())
-// 		return false;
-//
-// 	// if(!DefaultAttackConditions(ReverseState, EAT_ActiveAbility))
-// 	// 	return false;
-// 	//
-// 	// DealDamage(ReverseState, 15);
-// 	// ReverseState->DecreaseDefence();
-//
-// 	DecreaseManaForFirstAbility();
-// 	return true;
-// }
-//
-// bool AZakon_Kusznik::ActiveAbility2()
-// {
-// 	if(GetHealth() < GetSecondAbilityManaCost())
-// 		return false;
-//
-// 	IncreaseMana(2);
-// 	SecondAbilityInUse = true;
-// 	DecreaseHealth(GetSecondAbilityManaCost());
-// 	return true;
-// }
 

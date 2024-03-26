@@ -51,7 +51,7 @@ void AKKGameState::ChangeTurn_Implementation()
 
 void AKKGameState::DisplayWinner_Implementation(APlayerState* Winner)
 {
-	if(AKKPlayerController* PlayerController = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+	if(AKKPlayerController* PlayerController = Cast<AKKPlayerController>(UGameplayStatics::GetPlayerController(this, 0))) // get local player controller
 	{
 		if(PlayerController->GetHUD())
         {

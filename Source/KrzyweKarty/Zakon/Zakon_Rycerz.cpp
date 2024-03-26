@@ -4,18 +4,7 @@
 #include "Zakon_Rycerz.h"
 #include "KrzyweKarty/Gameplay/KKGameState.h"
 
-// bool AZakon_Rycerz::ActiveAbility()
-// {
-// 	if (GetMana() < GetFirstAbilityManaCost())
-// 		return false;
-//
-// 	IncreaseHealth(4);
-// 	DecreaseManaForFirstAbility();
-//
-// 	return true;
-// }
-
-void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* InInstigator)
+void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* DamageCauser)
 {
 	ReceivedAttacksCounter++;
 
@@ -23,11 +12,11 @@ void AZakon_Rycerz::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& Att
 	{
 		ReceivedAttacksCounter = 0;
 		
-		GetGameState()->Multicast_AddActionLog(FText::FromString("Rycerz zablokowal atak dzieki swojej umiejetnosci pasywnej: Fechtunek")); //todo: move it to some kind of DataTable
+		GetGameState()->Multicast_AddActionLog(FText::FromString("Rycerz zablokowal atak dzieki swojej umiejetnosci pasywnej: Fechtunek")); //todo: move it to some kind of DataTable; add visuals
 	}
 	else
 	{
-		Super::ApplyDamageToSelf(DamageAmount, AttackResultInfo, InInstigator);
+		Super::ApplyDamageToSelf(DamageAmount, AttackResultInfo, DamageCauser);
 	}
 }
 

@@ -9,22 +9,29 @@
 
 void AZakon_Paladyn::PerformAbility_Implementation(uint8 Index)
 {
-	if(Index == 0)
+	switch (Index)
 	{
-		TArray<AKKCharacter*> AffectedCharacters = IAreaAbilityInterface::Execute_GetAffectedCharacters(AbilityActor);
-
-		for(AKKCharacter* Character : AffectedCharacters)
+	case 0:
 		{
-			if(IsInTheSameTeam(Character))
+			TArray<AKKCharacter*> AffectedCharacters = IAreaAbilityInterface::Execute_GetAffectedCharacters(AbilityActor);
+
+			for(AKKCharacter* Character : AffectedCharacters)
 			{
-				Character->IncreaseHealth(4);
+				if(IsInTheSameTeam(Character))
+				{
+					Character->IncreaseHealth(4);
+				}
+				else
+				{
+					FAttackResultInfo AttackResultInfo;
+					Character->ApplyDamageToSelf(10, AttackResultInfo, this);
+				}
 			}
-			else
-			{
-				FAttackResultInfo AttackResultInfo;
-				Character->ApplyDamageToSelf(10, AttackResultInfo, this);
-			}
+			
+			break;
 		}
+	default:
+		break;
 	}
 }
 
@@ -48,11 +55,12 @@ TArray<FDirection> AZakon_Paladyn::GetAffectedTiles_Implementation(uint8 Index)
 		*/
 	case 1:
 		return {
+			{1, 0},
 			{1, -1},
 			{1, 1}
 		};
 		/*
-			# #
+		   @ # @
 			 O
 		 */
 	default:

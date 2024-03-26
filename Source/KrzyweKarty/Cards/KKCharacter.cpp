@@ -193,7 +193,7 @@ FAttackResultInfo AKKCharacter::DefaultAttack(AKKCharacter* TargetCharacter)
 {
 	FAttackResultInfo AttackResultInfo;
 
-	int32 Damage = DefineDamageAmount(TargetCharacter);
+	const int32 Damage = DefineDamageAmount(TargetCharacter);
 
 	TargetCharacter->ApplyDamageToSelf(Damage, AttackResultInfo, this);
 
@@ -210,9 +210,9 @@ int32 AKKCharacter::DefineDamageAmount(AKKCharacter* TargetCharacter)
 	return GetStrength();
 }
 
-void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* InInstigator)
+void AKKCharacter::ApplyDamageToSelf(int32 DamageAmount, FAttackResultInfo& AttackResultInfo, AKKCharacter* DamageCauser)
 {
-	InInstigator->DealDamage(this, DamageAmount);
+	DamageCauser->DealDamage(this, DamageAmount);
 }
 
 FCharacterStats AKKCharacter::CalculateCharacterStatsAfterAttack(AKKCharacter* TargetCharacter)
@@ -311,7 +311,6 @@ void AKKCharacter::DealDamage(AKKCharacter* TargetCharacter, int32 Damage) const
 		KillCharacter(TargetCharacter);
 	}
 }
-
 
 int32 AKKCharacter::GetDistanceTo(const TScriptInterface<ISelectableInterface>& SelectableInterface) const
 {

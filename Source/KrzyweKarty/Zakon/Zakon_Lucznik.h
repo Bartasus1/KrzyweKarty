@@ -24,5 +24,5 @@ public:
 
 private:
 
-	int8 AttacksCounter = 0;
+	uint8 AttacksCounter = 0;
 };

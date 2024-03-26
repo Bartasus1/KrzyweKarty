@@ -17,9 +17,10 @@ public:
 	virtual FAttackResultInfo DefaultAttack(AKKCharacter* TargetCharacter) override;
 
 	virtual int32 DefineDamageAmount(AKKCharacter* TargetCharacter) override;
-
+	
+	virtual void PerformAbility_Implementation(uint8 Index) override;
 	virtual void CommitAbilityCost_Implementation(uint8 Index) override;
 
 private:
-	bool SecondAbilityInUse = false;
+	bool bSecondAbilityInUse = false;
 };
